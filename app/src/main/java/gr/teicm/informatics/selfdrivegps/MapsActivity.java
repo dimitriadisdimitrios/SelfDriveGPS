@@ -24,6 +24,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
@@ -42,6 +44,8 @@ public class MapsActivity extends FragmentActivity implements
     private LocationManager locationManager;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
+    private ArrayList<LatLng> points; //added
+    Polyline line; //added
 
 
     @Override
@@ -56,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements
         }
         
         createLocationRequest();
+        points = new ArrayList<LatLng>(); //added
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -71,17 +76,21 @@ public class MapsActivity extends FragmentActivity implements
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
         
-        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-
-                Toast.makeText(getApplicationContext(), "Location button has been clicked", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setAllGesturesEnabled(true);
+        
     }
+    
+    private void redrawLine(){
+    
+        mMap.clear();  //clears all Markers and Polylines
+
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        for (int i = 0; i < points.size(); i++) {
+                LatLng point = points.get(i);
+                options.add(point);
+            }
+        addMarker(); //add Marker in current position
+        line = mMap.addPolyline(options); //add Polyline
+        }
     
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -129,6 +138,9 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
         Log.i(TAG, "!!! Location is " + latLng);
+        
+        points.add(latLng); //added
+        redrawLine(); //added
     }
 
     @Override

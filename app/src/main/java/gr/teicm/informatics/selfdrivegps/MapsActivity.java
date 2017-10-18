@@ -33,6 +33,8 @@ public class MapsActivity extends FragmentActivity implements
 {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
+    public static final long INTERVAL = 1000 * 60 * 1; //1 minute
+    public static final long FASTEST_INTERVAL = 1000 * 60 * 1;
 
     GoogleApiClient googleApiClient = null;
 

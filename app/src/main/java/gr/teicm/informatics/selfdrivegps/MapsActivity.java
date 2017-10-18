@@ -39,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleMap mMap;
     private LocationManager locationManager;
     private Location mLastLocation;
+    private LocationRequest mLocationRequest;
 
 
     @Override
@@ -51,6 +52,8 @@ public class MapsActivity extends FragmentActivity implements
         {
             checkLocationPermission();
         }
+        
+        createLocationRequest();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -65,6 +68,24 @@ public class MapsActivity extends FragmentActivity implements
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
+        
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+
+                Toast.makeText(getApplicationContext(), "Location button has been clicked", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setAllGesturesEnabled(true);
+    }
+    
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override

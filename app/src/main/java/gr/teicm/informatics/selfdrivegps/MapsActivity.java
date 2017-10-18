@@ -98,6 +98,36 @@ public class MapsActivity extends FragmentActivity implements
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+    
+    private void addMarker() {
+        MarkerOptions options = new MarkerOptions();
+
+        // following four lines requires 'Google Maps Android API Utility Library'
+        // https://developers.google.com/maps/documentation/android/utility/
+        // I have used this to display the time as title for location markers
+        // you can safely comment the following four lines but for this info
+        IconGenerator iconFactory = new IconGenerator(this);
+        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+        // options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(mLastUpdateTime + requiredArea + city)));
+        options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(requiredArea + ", " + city)));
+        options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+        LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        options.position(currentLatLng);
+        Marker mapMarker = googleMap.addMarker(options);
+        long atTime = mCurrentLocation.getTime();
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date(atTime));
+        String title = mLastUpdateTime.concat(", " + requiredArea).concat(", " + city).concat(", " + country);
+        mapMarker.setTitle(title);
+
+
+        TextView mapTitle = (TextView) findViewById(R.id.textViewTitle);
+        mapTitle.setText(title);
+
+        Log.d(TAG, "Marker added.............................");
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,
+                13));
+        Log.d(TAG, "Zoom done.............................");
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

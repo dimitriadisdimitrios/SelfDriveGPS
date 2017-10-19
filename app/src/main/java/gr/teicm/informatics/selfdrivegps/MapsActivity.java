@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,7 +26,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
@@ -45,8 +47,6 @@ public class MapsActivity extends FragmentActivity implements
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     private ArrayList<LatLng> points; //added
-    Polyline line; //added
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements
         }
         
         createLocationRequest();
-        points = new ArrayList<LatLng>(); //added
+        points = new ArrayList(); //added
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -76,57 +76,13 @@ public class MapsActivity extends FragmentActivity implements
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
         
-        
     }
-    
-    private void redrawLine(){
-    
-        mMap.clear();  //clears all Markers and Polylines
-
-        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-        for (int i = 0; i < points.size(); i++) {
-                LatLng point = points.get(i);
-                options.add(point);
-            }
-        addMarker(); //add Marker in current position
-        line = mMap.addPolyline(options); //add Polyline
-        }
     
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-    
-    private void addMarker() {
-        MarkerOptions options = new MarkerOptions();
-
-        // following four lines requires 'Google Maps Android API Utility Library'
-        // https://developers.google.com/maps/documentation/android/utility/
-        // I have used this to display the time as title for location markers
-        // you can safely comment the following four lines but for this info
-        IconGenerator iconFactory = new IconGenerator(this);
-        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
-        // options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(mLastUpdateTime + requiredArea + city)));
-        options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(requiredArea + ", " + city)));
-        options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-        LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        options.position(currentLatLng);
-        Marker mapMarker = googleMap.addMarker(options);
-        long atTime = mCurrentLocation.getTime();
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date(atTime));
-        String title = mLastUpdateTime.concat(", " + requiredArea).concat(", " + city).concat(", " + country);
-        mapMarker.setTitle(title);
-
-
-        TextView mapTitle = (TextView) findViewById(R.id.textViewTitle);
-        mapTitle.setText(title);
-
-        Log.d(TAG, "Marker added.............................");
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,
-                13));
-        Log.d(TAG, "Zoom done.............................");
     }
 
     @Override
@@ -164,13 +120,12 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
-        locationManager.removeUpdates(this);
-        Log.i(TAG, "!!! Location is " + latLng);
-        
+//        locationManager.removeUpdates(this);
         points.add(latLng); //added
-        redrawLine(); //added
+        Log.i(TAG, "!!! Location is " + latLng +"\n" + points );
+
     }
 
     @Override
@@ -191,7 +146,8 @@ public class MapsActivity extends FragmentActivity implements
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Connected to Google Api Client");
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             // TODO: Consider calling
             return;
@@ -204,7 +160,8 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Suspended connection to Google Api Client");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             // TODO: Consider calling
             return;

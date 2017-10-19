@@ -3,6 +3,7 @@ package gr.teicm.informatics.selfdrivegps;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -37,8 +39,10 @@ public class MapsActivity extends FragmentActivity implements
 {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
-    public static final long INTERVAL = 1000 * 60 * 1; //1 minute
-    public static final long FASTEST_INTERVAL = 1000 * 60 * 1;
+    public static final long INTERVAL = 1000 * 60; //1 minute
+    public static final long FASTEST_INTERVAL = 1000 * 60;
+    public static final long MIN_TIME = 100;
+    public static final long MIN_DISTANCE = 2;
 
     GoogleApiClient googleApiClient = null;
 
@@ -52,12 +56,10 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //Checking if it needs different permission access
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            checkLocationPermission();
-        }
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
         
         createLocationRequest();
         points = new ArrayList(); //added
@@ -75,7 +77,6 @@ public class MapsActivity extends FragmentActivity implements
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
-        
     }
     
     protected void createLocationRequest() {
@@ -117,20 +118,38 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+    public void handleGetDirectionsResult(ArrayList<LatLng> directionPoints) {
+        PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
+        Polyline routePolyline = null;
+        for (int i = 0; i < directionPoints.size(); i++)
+        {
+            rectLine.add(directionPoints.get(i));
+        }
+        //clear the old line
+        if (routePolyline != null)
+        {
+            routePolyline.remove();
+        }
+        mMap.addPolyline(rectLine);
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
-//        locationManager.removeUpdates(this);
+
         points.add(latLng); //added
-        Log.i(TAG, "!!! Location is " + latLng +"\n" + points );
+
+        Log.i(TAG, "!!! Location is " + latLng + "\n" + points );
+
+        handleGetDirectionsResult(points);
 
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-    }
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
 
     @Override
     public void onProviderEnabled(String s) {
@@ -153,7 +172,7 @@ public class MapsActivity extends FragmentActivity implements
             return;
         }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6000, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
     }
 
@@ -166,8 +185,7 @@ public class MapsActivity extends FragmentActivity implements
             // TODO: Consider calling
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6000, 100, this);
-
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override

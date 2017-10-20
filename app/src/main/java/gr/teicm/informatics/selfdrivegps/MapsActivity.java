@@ -48,7 +48,6 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private Location mLastLocation;
     private LocationRequest mLocationRequest;
     private ArrayList<LatLng> points; //added
 
@@ -57,13 +56,13 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
         
         createLocationRequest();
         points = new ArrayList(); //added
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -99,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements
         }
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
-
+// TODO: I must find a way to make more simply the function checkLocationPerimission
     public boolean checkLocationPermission()
     {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -118,9 +117,12 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
-    public void handleGetDirectionsResult(ArrayList<LatLng> directionPoints) {
+    public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
+
         PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
+
         Polyline routePolyline = null;
+
         for (int i = 0; i < directionPoints.size(); i++)
         {
             rectLine.add(directionPoints.get(i));
@@ -140,11 +142,11 @@ public class MapsActivity extends FragmentActivity implements
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
 
-        points.add(latLng); //added
+        points.add(latLng);
 
-        Log.i(TAG, "!!! Location is " + latLng + "\n" + points );
+        Log.i(TAG, "!!! Location is " + latLng /*+ "\n" + points */); //check if latLng save on ArrayList() -> points
 
-        handleGetDirectionsResult(points);
+        placePolylineForRoute(points);
 
     }
 
@@ -163,6 +165,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+//        Location mLastLocation;
         Log.i(TAG, "Connected to Google Api Client");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -173,7 +176,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
     }
 
     @Override
@@ -192,6 +195,5 @@ public class MapsActivity extends FragmentActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
         googleApiClient.reconnect();
-
     }
 }

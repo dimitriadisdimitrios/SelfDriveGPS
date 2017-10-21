@@ -2,6 +2,7 @@ package gr.teicm.informatics.selfdrivegps;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -48,7 +50,7 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private LocationRequest mLocationRequest;
+//    private LocationRequest mLocationRequest;
     private ArrayList<LatLng> points; //added
 
     @Override
@@ -59,7 +61,7 @@ public class MapsActivity extends FragmentActivity implements
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
         
-        createLocationRequest();
+//        createLocationRequest();
         points = new ArrayList(); //added
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -77,13 +79,13 @@ public class MapsActivity extends FragmentActivity implements
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
-    
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
+//    TODO: See where i need createLocationRequest Function
+//    protected void createLocationRequest() {
+//        mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(INTERVAL);
+//        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -98,6 +100,12 @@ public class MapsActivity extends FragmentActivity implements
         }
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
+
+//    public void startMapSys(View view)
+//    {
+//        Intent intent = new Intent(this, MapsActivity.class);
+//        startActivity(intent);
+//    }
 // TODO: I must find a way to make more simply the function checkLocationPerimission
     public boolean checkLocationPermission()
     {

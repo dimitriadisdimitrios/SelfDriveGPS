@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -16,11 +15,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,8 +38,6 @@ public class MapsActivity extends FragmentActivity implements
 {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
-    public static final long INTERVAL = 1000 * 60; //1 minute
-    public static final long FASTEST_INTERVAL = 1000 * 60;
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
 
@@ -50,7 +45,6 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleMap mMap;
     private LocationManager locationManager;
-//    private LocationRequest mLocationRequest;
     private ArrayList<LatLng> points; //added
 
     @Override
@@ -61,7 +55,6 @@ public class MapsActivity extends FragmentActivity implements
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
         
-//        createLocationRequest();
         points = new ArrayList(); //added
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -101,12 +94,7 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
-//    public void startMapSys(View view)
-//    {
-//        Intent intent = new Intent(this, MapsActivity.class);
-//        startActivity(intent);
-//    }
-// TODO: I must find a way to make more simply the function checkLocationPerimission
+//  TODO: I must find a way to make more simply the function checkLocationPerimission
     public boolean checkLocationPermission()
     {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -152,10 +140,10 @@ public class MapsActivity extends FragmentActivity implements
 
         points.add(latLng);
 
-        Log.i(TAG, "!!! Location is " + latLng /*+ "\n" + points */); //check if latLng save on ArrayList() -> points
+        //check if latLng save on ArrayList() -> points
+        Log.i(TAG, "!!! Location is " + latLng /*+ "\n" + points */);
 
         placePolylineForRoute(points);
-
     }
 
     @Override
@@ -184,7 +172,6 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
     }
 
     @Override

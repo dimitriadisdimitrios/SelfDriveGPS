@@ -13,6 +13,7 @@
         android:textAllCaps="false"
         android:layout_centerInParent="true"
         android:gravity="center_vertical|center_horizontal"/>
-        <!--android:onClick="startMapSys"-->
+        <!--android:onClick="st
+        artMapSys"-->
         <!--/>-->
 </RelativeLayout>

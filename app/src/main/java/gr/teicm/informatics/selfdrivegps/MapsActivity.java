@@ -15,6 +15,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
+    boolean btn_haveBeenClicked = false;
 
     GoogleApiClient googleApiClient = null;
 
@@ -47,15 +50,32 @@ public class MapsActivity extends FragmentActivity implements
     private LocationManager locationManager;
     private ArrayList<LatLng> points; //added
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
+
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
-        
+
+
         points = new ArrayList(); //added
+
+        //Todo: Improve If-Else methdod with his variable
+        mainStartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (btn_haveBeenClicked)
+                    btn_haveBeenClicked=false;
+                else
+                    btn_haveBeenClicked=true;
+
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -71,6 +91,11 @@ public class MapsActivity extends FragmentActivity implements
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
+
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference("message");
+//
+//        myRef.setValue("Hello, World!");
     }
 //    TODO: See where i need createLocationRequest Function
 //    protected void createLocationRequest() {
@@ -138,10 +163,11 @@ public class MapsActivity extends FragmentActivity implements
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
 
-        points.add(latLng);
+        if(btn_haveBeenClicked)
+            points.add(latLng);
 
         //check if latLng save on ArrayList() -> points
-        Log.i(TAG, "!!! Location is " + latLng /*+ "\n" + points */);
+        Log.i(TAG, "!!! Location is " + /*latLng */  points );
 
         placePolylineForRoute(points);
     }

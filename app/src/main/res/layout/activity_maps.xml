@@ -9,9 +9,16 @@
         android:id="@+id/start_calculations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
+        android:layout_gravity="end|bottom"
         android:text="DemoBtn"
         android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:paddingRight="10dp"/>
+        android:layout_marginTop="20dp" />
+    <Button
+        android:id="@+id/fireBase_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:text="SendData"
+        android:padding="10dp"
+        android:layout_marginTop="20dp" />
 </fragment>

@@ -29,6 +29,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -57,15 +59,21 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //Set FireBase Database
+        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
+
+        //Set Button from layout
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
+        Button sendDataToFirebase = (Button) findViewById(R.id.fireBase_btn);
 
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
 
+        //Set arrayList for LatLng
+        points = new ArrayList();
 
-        points = new ArrayList(); //added
-
-        //Todo: Improve If-Else methdod with his variable
+        //Todo: Improve If-Else methdod with his variable. Poor method code development
+        //Set listener on button to start store LatLng on array
         mainStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,7 +81,14 @@ public class MapsActivity extends FragmentActivity implements
                     btn_haveBeenClicked=false;
                 else
                     btn_haveBeenClicked=true;
+            }
+        });
 
+        //Set listener on button to transfer data to database
+        sendDataToFirebase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myRef1.setValue(points);
             }
         });
 
@@ -91,12 +106,8 @@ public class MapsActivity extends FragmentActivity implements
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
-
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference("message");
-//
-//        myRef.setValue("Hello, World!");
     }
+
 //    TODO: See where i need createLocationRequest Function
 //    protected void createLocationRequest() {
 //        mLocationRequest = new LocationRequest();

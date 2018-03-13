@@ -2,6 +2,7 @@ package gr.teicm.informatics.selfdrivegps;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -64,12 +65,12 @@ public class MapsActivity extends FragmentActivity implements
 
         //Set Button from layout
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
-        Button sendDataToFirebase = (Button) findViewById(R.id.fireBase_btn);
+        Button sendDataToFireBase = (Button) findViewById(R.id.fireBase_btn);
 
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
 
-        //Set arrayList for LatLng
+        //Set arrayList for LatLng$
         points = new ArrayList();
 
         //Todo: Improve If-Else methdod with his variable. Poor method code development
@@ -85,10 +86,12 @@ public class MapsActivity extends FragmentActivity implements
         });
 
         //Set listener on button to transfer data to database
-        sendDataToFirebase.setOnClickListener(new View.OnClickListener() {
+        sendDataToFireBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MapsActivity.this, Pop.class));
                 myRef1.setValue(points);
+
             }
         });
 

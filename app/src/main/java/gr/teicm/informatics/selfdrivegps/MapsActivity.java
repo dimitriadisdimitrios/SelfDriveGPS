@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements
@@ -51,8 +52,7 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private ArrayList<LatLng> points; //added
-
+    private ArrayList<LatLng> points = new ArrayList<>();
 
 
     @Override
@@ -60,8 +60,8 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        //Set FireBase Database
-        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
+//        //Set FireBase Database
+//        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
 
         //Set Button from layout
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
@@ -70,10 +70,8 @@ public class MapsActivity extends FragmentActivity implements
         //Checking if it needs different permission access
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
 
-        //Set arrayList for LatLng$
-        points = new ArrayList();
 
-        //Todo: Improve If-Else methdod with his variable. Poor method code development
+        //Todo: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
         mainStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +87,12 @@ public class MapsActivity extends FragmentActivity implements
         sendDataToFireBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MapsActivity.this, Pop.class));
-                myRef1.setValue(points);
+//                Array[] storeLatLng = new Array[points.size()];
+                Intent openPopAndSendArrayList = new Intent(MapsActivity.this, Pop.class);
+//                startActivity(new Intent(MapsActivity.this, Pop.class));
+                openPopAndSendArrayList.putExtra("ArrayList", points);
+                startActivity(openPopAndSendArrayList);
+//                myRef1.setValue(storeLatLng );
 
             }
         });
@@ -108,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements
                 build();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        assert locationManager != null; //Auto-generate method for function requestLocationUpdates
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
 

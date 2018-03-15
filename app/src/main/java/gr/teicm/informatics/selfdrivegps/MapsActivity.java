@@ -1,6 +1,5 @@
 package gr.teicm.informatics.selfdrivegps;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,10 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements
@@ -60,18 +56,15 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-//        //Set FireBase Database
-//        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
-
+        //TODO: Improve names of buttons on both classes
         //Set Button from layout
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
         Button sendDataToFireBase = (Button) findViewById(R.id.fireBase_btn);
 
         //Checking if it needs different permission access
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
+        checkLocationPermission();
 
-
-        //Todo: Improve If-Else method with his variable. Poor method code development
+        //TODO: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
         mainStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,31 +110,13 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //checking again about sdk
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            checkLocationPermission();
-            mMap.setMyLocationEnabled(true);
-        }
+
+        checkLocationPermission();
+        mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
-//  TODO: I must find a way to make more simply the function checkLocationPerimission
-    public void checkLocationPermission()
-    {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
-            {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            } else
-            {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-
-        }
-    }
-
+    //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
 
         PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
@@ -211,4 +186,14 @@ public class MapsActivity extends FragmentActivity implements
 
         googleApiClient.reconnect();
     }
+
+    //All Permissions i need for android 6.0 and above
+    public void checkLocationPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
+    }
+
 }

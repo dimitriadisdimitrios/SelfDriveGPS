@@ -114,30 +114,20 @@ public class MapsActivity extends FragmentActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
 
-//    TODO: See where i need createLocationRequest Function
-//    protected void createLocationRequest() {
-//        mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(INTERVAL);
-//        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         //checking again about sdk
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            {
-                mMap.setMyLocationEnabled(true);
-            }
+            checkLocationPermission();
+            mMap.setMyLocationEnabled(true);
         }
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
 //  TODO: I must find a way to make more simply the function checkLocationPerimission
-    public boolean checkLocationPermission()
+    public void checkLocationPermission()
     {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
@@ -148,10 +138,7 @@ public class MapsActivity extends FragmentActivity implements
             {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             }
-            return false;
-        } else
-        {
-            return true;
+
         }
     }
 
@@ -204,34 +191,24 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-//        Location mLastLocation;
         Log.i(TAG, "Connected to Google Api Client");
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            // TODO: Consider calling
-            return;
-        }
-
+        checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Suspended connection to Google Api Client");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            // TODO: Consider calling
-            return;
-        }
+
+        checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
+
         googleApiClient.reconnect();
     }
 }

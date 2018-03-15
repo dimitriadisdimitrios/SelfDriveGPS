@@ -14,10 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-/**
- * Created by Dimitriadis983 on 13-Mar-18.
- */
-
 public class Pop extends Activity {
 
     @Override

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "512551524402",
+    "firebase_url": "https://selfdrivegps-2c0f3.firebaseio.com",
+    "project_id": "selfdrivegps-2c0f3",
+    "storage_bucket": "selfdrivegps-2c0f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512551524402:android:6a3acaed4a4d3ce3",
+        "android_client_info": {
+          "package_name": "gr.teicm.informatics.selfdrivegps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "512551524402-09v2p721os6tbdeqei39vu6u79hvji1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gr.teicm.informatics.selfdrivegps",
+            "certificate_hash": "5b05c8e52fe2633da1d06354f9dded6d909f8876"
+          }
+        },
+        {
+          "client_id": "512551524402-gj573shog5q8kjrtdee5jouiub6lkb9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeJuL6kFLDRpMN7J1BM_newf3f-jkoovM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "512551524402-gj573shog5q8kjrtdee5jouiub6lkb9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,12 +50,15 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleMap mMap;
     private LocationManager locationManager;
     private ArrayList<LatLng> points = new ArrayList<>();
+    private Context context = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        context = getApplicationContext();
 
         //TODO: Improve names of buttons on both classes
         //Set Button from layout
@@ -70,9 +74,15 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void onClick(View view) {
                 if (btn_haveBeenClicked)
+                {
+                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked=false;
+                }
                 else
+                {
+                    Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked=true;
+                }
             }
         });
 
@@ -85,8 +95,6 @@ public class MapsActivity extends FragmentActivity implements
 //                startActivity(new Intent(MapsActivity.this, Pop.class));
                 openPopAndSendArrayList.putExtra("ArrayList", points);
                 startActivity(openPopAndSendArrayList);
-//                myRef1.setValue(storeLatLng );
-
             }
         });
 

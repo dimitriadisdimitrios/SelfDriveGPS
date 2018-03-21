@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:text="DemoBtn"
+        android:text="@string/demoBtn"
         android:padding="10dp"
         android:layout_marginTop="20dp" />
     <Button
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
-        android:text="SendData"
+        android:text="@string/sendData"
         android:padding="10dp"
         android:layout_marginTop="20dp" />
 </fragment>

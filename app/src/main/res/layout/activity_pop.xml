@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:background="@color/common_google_signin_btn_text_light_default">
+
+    <TextView
+        android:id="@+id/label_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="@string/give_a_suitable_name_to_be_stored_in_the_base" />
+
+    <EditText
+        android:id="@+id/pop_name_DB_ET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="@string/field_name" />
+
+    <Button
+        android:id="@+id/etc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:textAllCaps="false"
+        android:text="@string/send" />
+</LinearLayout>

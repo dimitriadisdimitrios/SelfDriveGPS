@@ -1,7 +1,7 @@
 package gr.teicm.informatics.selfdrivegps;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,20 +31,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements
-        OnMapReadyCallback,
-        LocationListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
     boolean btn_haveBeenClicked = false;
+    public String nameOfDataBaseKey;
 
     GoogleApiClient googleApiClient = null;
 
@@ -60,10 +60,12 @@ public class MapsActivity extends FragmentActivity implements
 
         context = getApplicationContext();
 
-        //TODO: Improve names of buttons on both classes
-        //Set Button from layout
+        //Set Button from layout_maps
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
-        Button sendDataToFireBase = (Button) findViewById(R.id.start_pop_btn);
+        final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
+
+        //Connect FireBase Database so I will able to use it
+        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
 
         //Checking if it needs different permission access
         checkLocationPermission();
@@ -85,14 +87,38 @@ public class MapsActivity extends FragmentActivity implements
         });
 
         //Set listener on button to transfer data to database
-        sendDataToFireBase.setOnClickListener(new View.OnClickListener() {
+        openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Array[] storeLatLng = new Array[points.size()];
-                Intent openPopAndSendArrayList = new Intent(MapsActivity.this, PopToFireBase.class);
-//                startActivity(new Intent(MapsActivity.this, PopToFireBase.class));
-                openPopAndSendArrayList.putExtra("ArrayList", points);
-                startActivity(openPopAndSendArrayList);
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
+                mBuilder.setView(mView);
+                final AlertDialog dialog = mBuilder.create();
+                dialog.show();
+                dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
+
+                //Set Button from layout_pop
+                final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
+                Button sendToFireBase = (Button) mView.findViewById(R.id.etc);
+
+                sendToFireBase.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        //Get text from editBox
+                        nameOfDataBaseKey = collectionOfLatLng.getText().toString();
+
+                        if(!nameOfDataBaseKey.matches("")) {
+                            myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
+                            Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                        else {
+                            Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 

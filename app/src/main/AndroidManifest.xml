@@ -47,9 +47,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PopToFireBase"
-            android:theme="@style/AppTheme.PopUpCustomTheme"/>
-
     </application>
 
 </manifest>

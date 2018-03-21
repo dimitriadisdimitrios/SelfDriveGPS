@@ -6,14 +6,22 @@
     tools:context="gr.teicm.informatics.selfdrivegps.MainActivity">
 
     <Button
-        android:id="@+id/start_button"
+        android:id="@+id/start_calculations_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_btn"
         android:textAllCaps="false"
         android:layout_centerInParent="true"
         android:gravity="center_vertical|center_horizontal"/>
-        <!--android:onClick="st
-        artMapSys"-->
-        <!--/>-->
+
+    <Button
+        android:id="@+id/load_plans_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start_calculations_btn"
+        android:text="Load Plan"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textAllCaps="false" />
 </RelativeLayout>

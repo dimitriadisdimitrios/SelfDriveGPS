@@ -63,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements
         //TODO: Improve names of buttons on both classes
         //Set Button from layout
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
-        Button sendDataToFireBase = (Button) findViewById(R.id.fireBase_btn);
+        Button sendDataToFireBase = (Button) findViewById(R.id.start_pop_btn);
 
         //Checking if it needs different permission access
         checkLocationPermission();
@@ -73,13 +73,11 @@ public class MapsActivity extends FragmentActivity implements
         mainStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (btn_haveBeenClicked)
-                {
+                if (btn_haveBeenClicked) {
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked=false;
                 }
-                else
-                {
+                else {
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked=true;
                 }
@@ -91,8 +89,8 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void onClick(View view) {
 //                Array[] storeLatLng = new Array[points.size()];
-                Intent openPopAndSendArrayList = new Intent(MapsActivity.this, Pop.class);
-//                startActivity(new Intent(MapsActivity.this, Pop.class));
+                Intent openPopAndSendArrayList = new Intent(MapsActivity.this, PopToFireBase.class);
+//                startActivity(new Intent(MapsActivity.this, PopToFireBase.class));
                 openPopAndSendArrayList.putExtra("ArrayList", points);
                 startActivity(openPopAndSendArrayList);
             }
@@ -131,13 +129,11 @@ public class MapsActivity extends FragmentActivity implements
 
         Polyline routePolyline = null;
 
-        for (int i = 0; i < directionPoints.size(); i++)
-        {
+        for (int i = 0; i < directionPoints.size(); i++) {
             rectLine.add(directionPoints.get(i));
         }
         //clear the old line
-        if (routePolyline != null)
-        {
+        if (routePolyline != null) {
             routePolyline.remove();
         }
         mMap.addPolyline(rectLine);
@@ -150,8 +146,9 @@ public class MapsActivity extends FragmentActivity implements
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
 
-        if(btn_haveBeenClicked)
+        if(btn_haveBeenClicked) {
             points.add(latLng);
+        }
 
         //check if latLng save on ArrayList() -> points
         Log.i(TAG, "!!! Location is " + /*latLng */  points );

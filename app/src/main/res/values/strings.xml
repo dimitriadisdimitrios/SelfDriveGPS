@@ -10,4 +10,5 @@
     <string name="begin_calculations">Begin calculations</string>
     <string name="sendData">SendData</string>
     <string name="demoBtn">DemoBtn</string>
+    <string name="cancel">Cancel</string>
 </resources>

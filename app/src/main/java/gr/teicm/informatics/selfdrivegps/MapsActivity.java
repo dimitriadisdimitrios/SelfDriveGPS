@@ -58,6 +58,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //Checking if it needs different permission access And create googleApiClient plus locationManager
+        checkLocationPermission();
+        createGoogleApiClient();
+
         context = getApplicationContext();
 
         //Set Button from layout_maps
@@ -67,8 +71,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Connect FireBase Database so I will able to use it
         final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
 
-        //Checking if it needs different permission access
-        checkLocationPermission();
 
         //TODO: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
@@ -90,25 +92,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //Create mView to interAct with activity_pop
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
                 mBuilder.setView(mView);
-                final AlertDialog dialog = mBuilder.create();
-                dialog.show();
-                dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
 
                 //Set Button from layout_pop
                 final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
-                Button sendToFireBase = (Button) mView.findViewById(R.id.etc);
+                Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
+                Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
 
-                sendToFireBase.setOnClickListener(new View.OnClickListener() {
+                final AlertDialog dialog = mBuilder.create(); // Create dialog
+                dialog.show(); // Show the dialog
+                dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
+
+                //Cancel Button listener
+                cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog.dismiss();
+                        Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT);
+                    }
+                });
 
+                //Send Button listener
+                sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         //Get text from editBox
                         nameOfDataBaseKey = collectionOfLatLng.getText().toString();
 
+                        //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
                         if(!nameOfDataBaseKey.matches("")) {
                             myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
                             Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
@@ -121,22 +135,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             }
         });
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        googleApiClient = new GoogleApiClient.Builder(this).
-                enableAutoManage(this, this).
-                addApi(LocationServices.API).
-                addConnectionCallbacks(this).
-                addOnConnectionFailedListener(this).
-                build();
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        assert locationManager != null; //Auto-generate method for function requestLocationUpdates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
 
     @Override
@@ -225,6 +223,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
+    }
+
+    public void createGoogleApiClient(){
+
+        checkLocationPermission();
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        googleApiClient = new GoogleApiClient.Builder(this).
+                enableAutoManage(this, this).
+                addApi(LocationServices.API).
+                addConnectionCallbacks(this).
+                addOnConnectionFailedListener(this).
+                build();
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        assert locationManager != null; //Auto-generate method for function requestLocationUpdates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
 
 }

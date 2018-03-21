@@ -1,6 +1,6 @@
 package gr.teicm.informatics.selfdrivegps;
 
-import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,6 +15,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,105 +31,133 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements
-        OnMapReadyCallback,
-        LocationListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
+    boolean btn_haveBeenClicked = false;
+    public String nameOfDataBaseKey;
 
     GoogleApiClient googleApiClient = null;
 
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private ArrayList<LatLng> points; //added
+    private ArrayList<LatLng> points = new ArrayList<>();
+    private Context context = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        //Checking if it needs different permission access
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {    checkLocationPermission();  }
-        
-        points = new ArrayList(); //added
+        //Checking if it needs different permission access And create googleApiClient plus locationManager
+        checkLocationPermission();
+        createGoogleApiClient();
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        context = getApplicationContext();
 
-        googleApiClient = new GoogleApiClient.Builder(this).
-                enableAutoManage(this, this).
-                addApi(LocationServices.API).
-                addConnectionCallbacks(this).
-                addOnConnectionFailedListener(this).
-                build();
+        //Set Button from layout_maps
+        Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
+        final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
+        //Connect FireBase Database so I will able to use it
+        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
+
+
+        //TODO: Improve If-Else method with his variable. Poor method code development
+        //Set listener on button to start store LatLng on array
+        mainStartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (btn_haveBeenClicked) {
+                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
+                    btn_haveBeenClicked=false;
+                }
+                else {
+                    Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
+                    btn_haveBeenClicked=true;
+                }
+            }
+        });
+
+        //Set listener on button to transfer data to database
+        openPopUpWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Create mView to interAct with activity_pop
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
+                mBuilder.setView(mView);
+
+                //Set Button from layout_pop
+                final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
+                Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
+                Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
+
+                final AlertDialog dialog = mBuilder.create(); // Create dialog
+                dialog.show(); // Show the dialog
+                dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
+
+                //Cancel Button listener
+                cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT);
+                    }
+                });
+
+                //Send Button listener
+                sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Get text from editBox
+                        nameOfDataBaseKey = collectionOfLatLng.getText().toString();
+
+                        //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
+                        if(!nameOfDataBaseKey.matches("")) {
+                            myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
+                            Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                        else {
+                            Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
     }
-//    TODO: See where i need createLocationRequest Function
-//    protected void createLocationRequest() {
-//        mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(INTERVAL);
-//        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //checking again about sdk
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            {
-                mMap.setMyLocationEnabled(true);
-            }
-        }
+
+        checkLocationPermission();
+        mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
-//  TODO: I must find a way to make more simply the function checkLocationPerimission
-    public boolean checkLocationPermission()
-    {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
-            {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            } else
-            {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-            return false;
-        } else
-        {
-            return true;
-        }
-    }
-
+    //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
 
         PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
 
         Polyline routePolyline = null;
 
-        for (int i = 0; i < directionPoints.size(); i++)
-        {
+        for (int i = 0; i < directionPoints.size(); i++) {
             rectLine.add(directionPoints.get(i));
         }
         //clear the old line
-        if (routePolyline != null)
-        {
+        if (routePolyline != null) {
             routePolyline.remove();
         }
         mMap.addPolyline(rectLine);
@@ -138,10 +170,12 @@ public class MapsActivity extends FragmentActivity implements
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
 
-        points.add(latLng);
+        if(btn_haveBeenClicked) {
+            points.add(latLng);
+        }
 
         //check if latLng save on ArrayList() -> points
-        Log.i(TAG, "!!! Location is " + latLng /*+ "\n" + points */);
+        Log.i(TAG, "!!! Location is " + /*latLng */  points );
 
         placePolylineForRoute(points);
     }
@@ -161,34 +195,55 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-//        Location mLastLocation;
         Log.i(TAG, "Connected to Google Api Client");
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            // TODO: Consider calling
-            return;
-        }
-
+        checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Suspended connection to Google Api Client");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            // TODO: Consider calling
-            return;
-        }
+
+        checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
+
         googleApiClient.reconnect();
     }
+
+    //All Permissions i need for android 6.0 and above
+    public void checkLocationPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
+    }
+
+    public void createGoogleApiClient(){
+
+        checkLocationPermission();
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        googleApiClient = new GoogleApiClient.Builder(this).
+                enableAutoManage(this, this).
+                addApi(LocationServices.API).
+                addConnectionCallbacks(this).
+                addOnConnectionFailedListener(this).
+                build();
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        assert locationManager != null; //Auto-generate method for function requestLocationUpdates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
+    }
+
 }

@@ -4,4 +4,21 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="gr.teicm.informatics.selfdrivegps.MapsActivity" />
+    tools:context="gr.teicm.informatics.selfdrivegps.MapsActivity" >
+    <Button
+        android:id="@+id/start_calculations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:text="@string/demoBtn"
+        android:padding="10dp"
+        android:layout_marginTop="20dp" />
+    <Button
+        android:id="@+id/start_pop_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:text="@string/sendData"
+        android:padding="10dp"
+        android:layout_marginTop="20dp" />
+</fragment>

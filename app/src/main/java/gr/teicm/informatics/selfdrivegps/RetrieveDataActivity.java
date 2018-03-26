@@ -1,5 +1,6 @@
 package gr.teicm.informatics.selfdrivegps;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,7 +55,7 @@ public class RetrieveDataActivity extends AppCompatActivity {
                 listOfLatLng.addAll(baseRetrievedData.values());
 
                 //TODO: Transfer data to mapsActivity
-                Log.d(TAG, "!!!!! Testing fireBase !!! " + listOfLatLng.size() +"   !!!!!");
+                Log.d(TAG,""+ listOfLatLng );
             }
 
             @Override

@@ -22,7 +22,7 @@ public class RetrieveDataActivity extends Activity {
     public static final int REQUEST_CODE_SECOND_ACTIVITY = 100; // This value can be any number. It doesn't matter
     public static final String SHOW_BUTTON = "shouldShowButton"; //at all. The only important thing is to have the
                                                                 //same value you started the child activity with when you're checking the onActivityResult.
-
+    //TODO: Create a list view with name of keys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +61,8 @@ public class RetrieveDataActivity extends Activity {
         });
     }
 
-//TODO:    https://stackoverflow.com/questions/34951270/how-to-set-a-button-visible-from-another-activity-in-android/34951687
+//  https://stackoverflow.com/questions/34951270/how-to-set-a-button-visible-from-another-activity-in-android/34951687
+    //TODO: Hide btn when i transfer on Maps Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

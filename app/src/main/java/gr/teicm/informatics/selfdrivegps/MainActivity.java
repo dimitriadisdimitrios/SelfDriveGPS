@@ -32,4 +32,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        //Back Btn do nothing !
+//        super.onBackPressed();
+    }
 }

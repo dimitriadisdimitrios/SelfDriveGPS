@@ -217,6 +217,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googleApiClient.reconnect();
     }
 
+    @Override
+    public void onBackPressed() {
+        //Back Btn do nothing !
+//        super.onBackPressed();
+    }
+
     //All Permissions i need for android 6.0 and above
     public void checkLocationPermission() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

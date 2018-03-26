@@ -4,12 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -30,15 +32,18 @@ public class RetrieveDataActivity extends AppCompatActivity {
         rootRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-//                System.out.println("!!!!! Testing fireBase !!!" + map +"   !!!!!");
-                Log.d(TAG, "!!!!! Testing fireBase !!! " + map +"   !!!!!");
+                //Retrieve data from fireBase and place it on Map and then ArrayList
+                Map<String, LatLng> baseRetrievedData = (Map<String, LatLng>) dataSnapshot.getValue();
+                ArrayList<LatLng> listOfLatLng = new ArrayList<>();
+                listOfLatLng.addAll(baseRetrievedData.values());
 
+                //TODO: Transfer data to mapsActivity
+                Log.d(TAG, "!!!!! Testing fireBase !!! " + listOfLatLng.size() +"   !!!!!");
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
+
             }
         });
 

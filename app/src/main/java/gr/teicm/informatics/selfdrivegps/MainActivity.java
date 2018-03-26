@@ -6,12 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -22,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
         Button startBtn = (Button) findViewById(R.id.start_calculations_btn);
         Button loadPlanBtn = (Button) findViewById(R.id.load_plans_btn);
 
-        final DatabaseReference retRef = FirebaseDatabase.getInstance().getReference();
-        HashMap<LatLng, String> retrieveLatLngData = new HashMap<>();
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, RetrieveDataActivity.class));
-                System.out.println(retRef.getKey()+"!!!!!");
-
             }
         });
     }

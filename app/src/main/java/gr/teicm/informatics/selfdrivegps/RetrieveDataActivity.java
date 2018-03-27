@@ -1,5 +1,6 @@
 package gr.teicm.informatics.selfdrivegps;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 
-public class RetrieveDataActivity extends AppCompatActivity {
+public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
-    public static final int REQUEST_CODE_SECOND_ACTIVITY = 100; // This value can be any number. It doesn't matter
+//    public static final int REQUEST_CODE_SECOND_ACTIVITY = 100; // This value can be any number. It doesn't matter
     public static final String SHOW_BUTTON = "shouldShowButton"; //at all. The only important thing is to have the
                                                                 //same value you started the child activity with when you're checking the onActivityResult.
     //TODO: Create a list view with name of keys
@@ -31,7 +32,6 @@ public class RetrieveDataActivity extends AppCompatActivity {
 
         //TODO: Revision layout page
         Button startMapsWithDataBtn = (Button) findViewById(R.id.send_data_to_mapsActivity_btn);
-
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
 //        DatabaseReference demoRef = rootRef.child("Demo");
@@ -46,6 +46,7 @@ public class RetrieveDataActivity extends AppCompatActivity {
         });
 
         //TODO: Find a way to retrieve Data from a specific child
+        //TODO: Catch - Try attempt to stop crash when i remove data
         rootRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -67,16 +68,16 @@ public class RetrieveDataActivity extends AppCompatActivity {
 
 //  https://stackoverflow.com/questions/34951270/how-to-set-a-button-visible-from-another-activity-in-android/34951687
     //TODO: Hide btn when i transfer on Maps Activity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SECOND_ACTIVITY && resultCode == RESULT_OK) {
-            //Check if you passed 'true' from the other activity to show the button, and also, only set visibility to VISIBLE if the view is not yet VISIBLE
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_CODE_SECOND_ACTIVITY && resultCode == RESULT_OK) {
+//            //Check if you passed 'true' from the other activity to show the button, and also, only set visibility to VISIBLE if the view is not yet VISIBLE
 //            if (data.hasExtra(SHOW_BUTTON) && data.getBooleanExtra(SHOW_BUTTON, false) && mMyButtonToBeHidden.getVisibility() != View.VISIBLE) {
 //                mMyButtonToBeHidden.setVisibility(View.VISIBLE);
 //            }
-        }
-    }
+//        }
+//    }
 
     @Override
     public void onBackPressed() {

@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +21,7 @@ import java.util.Map;
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 //    public static final int REQUEST_CODE_SECOND_ACTIVITY = 100; // This value can be any number. It doesn't matter
-    public static final String SHOW_BUTTON = "shouldShowButton"; //at all. The only important thing is to have the
+//    public static final String SHOW_BUTTON = "shouldShowButton"; //at all. The only important thing is to have the
                                                                 //same value you started the child activity with when you're checking the onActivityResult.
     //TODO: Create a list view with name of keys
     @Override
@@ -34,8 +33,7 @@ public class RetrieveDataActivity extends Activity {
         Button startMapsWithDataBtn = (Button) findViewById(R.id.send_data_to_mapsActivity_btn);
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-//        DatabaseReference demoRef = rootRef.child("Demo");
-//        demoRef.push().setValue("asd123");
+
         startMapsWithDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,12 +49,19 @@ public class RetrieveDataActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Retrieve data from fireBase and place it on Map and then ArrayList
+                //TODO: Check warning!!!
                 Map<String, LatLng> baseRetrievedData = (Map<String, LatLng>) dataSnapshot.getValue();
                 ArrayList<LatLng> listOfLatLng = new ArrayList<>();
-                listOfLatLng.addAll(baseRetrievedData.values());
+
+                if(baseRetrievedData != null) {
+                    listOfLatLng.addAll(baseRetrievedData.values());
+                }
+                else{
+                    Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
+                }
 
                 //TODO: Transfer data to mapsActivity
-                Log.d(TAG,""+ listOfLatLng );
+                Log.d(TAG, ""+ listOfLatLng );
             }
 
             @Override

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -17,23 +19,24 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Map;
 
-
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
-//    public static final int REQUEST_CODE_SECOND_ACTIVITY = 100; // This value can be any number. It doesn't matter
-//    public static final String SHOW_BUTTON = "shouldShowButton"; //at all. The only important thing is to have the
-                                                                //same value you started the child activity with when you're checking the onActivityResult.
+
+    String[] mFlist = {"China","Amsaterdam","Serres","Greece","Thessaloniki","Athens",
+            "China","Amsaterdam","Serres","Greece","Thessaloniki","Athens","China","Amsaterdam",
+            "Serres","Greece","Thessaloniki","Athens","China","Amsaterdam","Serres","Greece","Thessaloniki","Athens"};
     //TODO: Create a list view with name of keys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieve_data);
 
+        ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_view, R.id.list_view_sample, mFlist);
+        listView.setAdapter(adapter);
+
         //TODO: Revision layout page
         Button startMapsWithDataBtn = (Button) findViewById(R.id.send_data_to_mapsActivity_btn);
-
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-
         startMapsWithDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,6 +48,7 @@ public class RetrieveDataActivity extends Activity {
 
         //TODO: Find a way to retrieve Data from a specific child
         //TODO: Catch - Try attempt to stop crash when i remove data
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         rootRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,19 +74,6 @@ public class RetrieveDataActivity extends Activity {
             }
         });
     }
-
-//  https://stackoverflow.com/questions/34951270/how-to-set-a-button-visible-from-another-activity-in-android/34951687
-    //TODO: Hide btn when i transfer on Maps Activity
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_CODE_SECOND_ACTIVITY && resultCode == RESULT_OK) {
-//            //Check if you passed 'true' from the other activity to show the button, and also, only set visibility to VISIBLE if the view is not yet VISIBLE
-//            if (data.hasExtra(SHOW_BUTTON) && data.getBooleanExtra(SHOW_BUTTON, false) && mMyButtonToBeHidden.getVisibility() != View.VISIBLE) {
-//                mMyButtonToBeHidden.setVisibility(View.VISIBLE);
-//            }
-//        }
-//    }
 
     @Override
     public void onBackPressed() {

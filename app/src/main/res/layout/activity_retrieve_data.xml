@@ -2,24 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_weight="1"
     tools:context="gr.teicm.informatics.selfdrivegps.RetrieveDataActivity">
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="417dp"
+    <ListView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="@string/sendData"
-        android:textAllCaps="false"
-        android:textSize="25sp"
-        android:textStyle="bold|italic" />
+        android:id="@+id/list_view_main_frame">
+    </ListView>
     <Button
         android:id="@+id/send_data_to_mapsActivity_btn"
         android:layout_width="wrap_content"
@@ -27,6 +20,6 @@
         android:layout_gravity="bottom"
         android:text="@string/begin"
         android:textAllCaps="false"
-        android:layout_weight="0"
-        />
+        android:layout_weight="0">
+    </Button>
 </LinearLayout>

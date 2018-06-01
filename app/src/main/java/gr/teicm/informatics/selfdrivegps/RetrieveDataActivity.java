@@ -59,13 +59,22 @@ public class RetrieveDataActivity extends Activity {
 
                 if(baseRetrievedData != null) {
                     listOfLatLng.addAll(baseRetrievedData.values());
+
                 }
                 else{
                     Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
                 }
 
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    String id = child.getKey();
+//                    String title = child.child("title").getValue().toString();
+                    String mTest1 = dataSnapshot.child("").getKey();
+                    Log.d("FireBase", ""+id);
+
+                }
+
                 //TODO: Transfer data to mapsActivity
-                Log.d(TAG, ""+ listOfLatLng );
+//                Log.d(TAG, ""+ listOfLatLng );
             }
 
             @Override

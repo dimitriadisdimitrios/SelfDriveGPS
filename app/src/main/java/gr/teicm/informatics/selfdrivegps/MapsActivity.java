@@ -92,6 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO:Take care this mess !!!
                 //Create mView to interAct with activity_pop
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);

@@ -22,9 +22,9 @@ import java.util.Map;
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 
-    String[] mFlist = {"China","Amsaterdam","Serres","Greece","Thessaloniki","Athens",
-            "China","Amsaterdam","Serres","Greece","Thessaloniki","Athens","China","Amsaterdam",
-            "Serres","Greece","Thessaloniki","Athens","China","Amsaterdam","Serres","Greece","Thessaloniki","Athens"};
+    final String[] mFlist = {"China","Amsaterdam","Serres"};
+//    final String[] mFlist = new String[10];
+
     //TODO: Create a list view with name of keys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +64,14 @@ public class RetrieveDataActivity extends Activity {
                 else{
                     Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
                 }
+                int counter=0;
 
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
                     String id = child.getKey();
-//                    String title = child.child("title").getValue().toString();
-                    String mTest1 = dataSnapshot.child("").getKey();
-                    Log.d("FireBase", ""+id);
-
+//                    mFlist[counter] = id;
+//                    counter++;
+                    Log.d("FireBase",""+id);
                 }
-
                 //TODO: Transfer data to mapsActivity
 //                Log.d(TAG, ""+ listOfLatLng );
             }

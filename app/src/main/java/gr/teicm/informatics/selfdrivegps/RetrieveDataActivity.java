@@ -31,6 +31,8 @@ public class RetrieveDataActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieve_data);
 
+        new GetNamesFromBase().execute();
+
         ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_view, R.id.list_view_sample, mFlist);
         listView.setAdapter(adapter);
@@ -48,39 +50,38 @@ public class RetrieveDataActivity extends Activity {
 
         //TODO: Find a way to retrieve Data from a specific child
         //TODO: Catch - Try attempt to stop crash when i remove data
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Retrieve data from fireBase and place it on Map and then ArrayList
-                //TODO: Check warning!!!
-                Map<String, LatLng> baseRetrievedData = (Map<String, LatLng>) dataSnapshot.getValue();
-                ArrayList<LatLng> listOfLatLng = new ArrayList<>();
-
-                if(baseRetrievedData != null) {
-                    listOfLatLng.addAll(baseRetrievedData.values());
-
-                }
-                else{
-                    Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
-                }
-                int counter=0;
-
-                for(DataSnapshot child : dataSnapshot.getChildren()) {
-                    String id = child.getKey();
-//                    mFlist[counter] = id;
-//                    counter++;
-                    Log.d("FireBase",""+id);
-                }
-                //TODO: Transfer data to mapsActivity
-//                Log.d(TAG, ""+ listOfLatLng );
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
+//        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+//        rootRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                //Retrieve data from fireBase and place it on Map and then ArrayList
+//                //TODO: Check warning!!!
+//                Map<String, LatLng> baseRetrievedData = (Map<String, LatLng>) dataSnapshot.getValue();
+//                ArrayList<LatLng> listOfLatLng = new ArrayList<>();
+//
+//                if(baseRetrievedData != null) {
+//                    listOfLatLng.addAll(baseRetrievedData.values());
+//
+//                }
+//                else{
+//                    Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
+//                }
+//
+//                for(DataSnapshot child : dataSnapshot.getChildren()) {
+//                    String id = child.getKey();
+////                    mFlist[counter] = id;
+////                    counter++;
+//                    Log.d("FireBase",""+id);
+//                }
+//                //TODO: Transfer data to mapsActivity
+////                Log.d(TAG, ""+ listOfLatLng );
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });
     }
 
     @Override

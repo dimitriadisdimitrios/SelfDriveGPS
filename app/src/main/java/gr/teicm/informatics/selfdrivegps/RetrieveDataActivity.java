@@ -22,8 +22,7 @@ import java.util.Map;
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 
-    final String[] mFlist = {"China","Amsaterdam","Serres"};
-//    final String[] mFlist = new String[10];
+    private ArrayList<String> mFlist = new ArrayList<>();
 
     //TODO: Create a list view with name of keys
     @Override
@@ -31,11 +30,27 @@ public class RetrieveDataActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieve_data);
 
-        new GetNamesFromBase().execute();
 
-        ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_view, R.id.list_view_sample, mFlist);
-        listView.setAdapter(adapter);
+        final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    String id = child.getKey();
+                    if(id!=null){
+                        mFlist.add(id);
+                    }
+                }
+                ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, mFlist);
+                listView.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
 
         //TODO: Revision layout page
         Button startMapsWithDataBtn = (Button) findViewById(R.id.send_data_to_mapsActivity_btn);

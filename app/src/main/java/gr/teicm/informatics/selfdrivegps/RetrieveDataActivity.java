@@ -3,13 +3,11 @@ package gr.teicm.informatics.selfdrivegps;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,12 +15,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 
-    private ArrayList<String> mFlist = new ArrayList<>();
+    private ArrayList<String> fList = new ArrayList<>();
 
     //TODO: Create a list view with name of keys
     @Override
@@ -38,11 +35,11 @@ public class RetrieveDataActivity extends Activity {
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
                     String id = child.getKey();
                     if(id!=null){
-                        mFlist.add(id);
+                        fList.add(id);
                     }
                 }
                 ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, mFlist);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
             }
             @Override
@@ -63,14 +60,13 @@ public class RetrieveDataActivity extends Activity {
             }
         });
 
-        //TODO: Find a way to retrieve Data from a specific child
-        //TODO: Catch - Try attempt to stop crash when i remove data
 //        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
 //        rootRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
-//                //Retrieve data from fireBase and place it on Map and then ArrayList
+//                //Retrieve data from fireBase and place it on Map and then ArrayLis
 //                //TODO: Check warning!!!
+//        //TODO: Retrive Lat-Log from FireBase and place it on ArrayList<LatLng>
 //                Map<String, LatLng> baseRetrievedData = (Map<String, LatLng>) dataSnapshot.getValue();
 //                ArrayList<LatLng> listOfLatLng = new ArrayList<>();
 //
@@ -82,23 +78,7 @@ public class RetrieveDataActivity extends Activity {
 //                    Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
 //                }
 //
-//                for(DataSnapshot child : dataSnapshot.getChildren()) {
-//                    String id = child.getKey();
-////                    mFlist[counter] = id;
-////                    counter++;
-//                    Log.d("FireBase",""+id);
-//                }
-//                //TODO: Transfer data to mapsActivity
-////                Log.d(TAG, ""+ listOfLatLng );
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });
     }
-
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !

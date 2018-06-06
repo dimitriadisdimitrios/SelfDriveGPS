@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -41,22 +42,17 @@ public class RetrieveDataActivity extends Activity {
                 ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Intent strMaps = new Intent(RetrieveDataActivity.this, MapsActivity.class);
+                        RetrieveDataActivity.this.startActivity(strMaps);
+                    }
+                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-
-        //TODO: Revision layout page
-        Button startMapsWithDataBtn = (Button) findViewById(R.id.send_data_to_mapsActivity_btn);
-        startMapsWithDataBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent strMaps = new Intent(RetrieveDataActivity.this, MapsActivity.class);
-                RetrieveDataActivity.this.startActivity(strMaps);
             }
         });
 

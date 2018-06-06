@@ -16,11 +16,26 @@ public class MainActivity extends AppCompatActivity {
         Button startBtn = (Button) findViewById(R.id.start_calculations_btn);
         Button loadPlanBtn = (Button) findViewById(R.id.load_plans_btn);
 
+
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MapsActivity.class));
             }
         });
+
+        //TODO: Retrieve Data from fireBase so i will be able to see it on next activity
+        loadPlanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, RetrieveDataActivity.class));
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Back Btn do nothing !
+//        super.onBackPressed();
     }
 }

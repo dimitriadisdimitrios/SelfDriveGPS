@@ -58,6 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+
+
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         checkLocationPermission();
         createGoogleApiClient();
@@ -67,6 +69,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set Button from layout_maps
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
         final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
+
+        try{
+            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
+            if(valueFromRetrieveDataActivityClass.equals("invisible")){
+                mainStartBtn.setVisibility(View.INVISIBLE);
+                openPopUpWindow.setVisibility(View.INVISIBLE);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
         //Connect FireBase Database so I will able to use it
         final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
@@ -92,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO:Take care this mess !!!
                 //Create mView to interAct with activity_pop
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
@@ -163,6 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addPolyline(rectLine);
     }
 
+    //TODO: Change the blue dot which is on center of map with something else so i will be able to see on other versions
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -214,6 +228,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
 
         googleApiClient.reconnect();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Back Btn do nothing !
+//        super.onBackPressed();
     }
 
     //All Permissions i need for android 6.0 and above

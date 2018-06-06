@@ -45,7 +45,9 @@ public class RetrieveDataActivity extends Activity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                         Intent strMaps = new Intent(RetrieveDataActivity.this, MapsActivity.class);
+                        strMaps.putExtra("buttonStatus", "invisible");
                         RetrieveDataActivity.this.startActivity(strMaps);
                     }
                 });

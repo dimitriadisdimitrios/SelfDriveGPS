@@ -58,6 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+
+
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         checkLocationPermission();
         createGoogleApiClient();
@@ -67,6 +69,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set Button from layout_maps
         Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
         final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
+
+        try{
+            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
+            if(valueFromRetrieveDataActivityClass.equals("invisible")){
+                mainStartBtn.setVisibility(View.INVISIBLE);
+                openPopUpWindow.setVisibility(View.INVISIBLE);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
         //Connect FireBase Database so I will able to use it
         final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();

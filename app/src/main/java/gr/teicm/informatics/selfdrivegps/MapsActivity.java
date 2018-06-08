@@ -58,8 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-
-
+        //TODO: Fix first startup which the app crash because awaits the permission window
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         checkLocationPermission();
         createGoogleApiClient();

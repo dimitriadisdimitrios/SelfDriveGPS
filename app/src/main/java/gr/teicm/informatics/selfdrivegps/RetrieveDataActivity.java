@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -51,20 +52,23 @@ public class RetrieveDataActivity extends Activity {
                 else{
                     Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
                 }
-                for(int i=0;i<listOfLatLng.size();i++)
-                {
-                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
+                for(int i=0;i<listOfLatLng.size();i++) {
+//                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
                 }
+
+//                Log.d(TAG, "!!" +String.valueOf(baseRetrievedData.values()));
 
                 //Create ListView to show data from FireBase
                 ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
-                //When you click Items on ListView it send you to maps Activity
+                //When you click Items on ListView it send you to maps Activity and make buttons there, invisible
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+                        String childName = (String) adapterView.getItemAtPosition(i);
+                        Toast.makeText(getApplicationContext(), childName,Toast.LENGTH_LONG).show();
                         Intent strMaps = new Intent(RetrieveDataActivity.this, MapsActivity.class);
                         strMaps.putExtra("buttonStatus", "invisible");
                         RetrieveDataActivity.this.startActivity(strMaps);

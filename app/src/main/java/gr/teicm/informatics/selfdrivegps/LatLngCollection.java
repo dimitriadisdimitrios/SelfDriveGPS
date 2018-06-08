@@ -1,31 +1,63 @@
 package gr.teicm.informatics.selfdrivegps;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Dimitriadis983 on 13-Mar-18.
  */
 
-public class LatLngCollection extends AsyncTask<ArrayList,String, ArrayList> {
+public class LatLngCollection extends AsyncTask<String, Void, String> {
+    private String TAG = "LatLngCollection";
+    private Context context;
 
-//    private ArrayList<LatLng> points; //added
-    final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
-
-//    ArrayList mPoint = MapsActivity.a
-
+    public LatLngCollection(Context context){
+        this.context = context;
+    }
 
     @Override
-    protected ArrayList doInBackground(ArrayList[] arrayLists) {
+    protected String doInBackground(String... strings) {
+        final String childName = strings[0];
 
-//        points = new ArrayList();
-//        myRef1.setValue(points);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(childName);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //TODO: Check warning!!!
+                //Save value of LatLng of chosen name of ListView
+                List<LatLng> listOfLatLng = (List<LatLng>) dataSnapshot.getValue();
+                if(listOfLatLng == null) {
+                    Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
+                }
+                Intent strMaps = new Intent(context, MapsActivity.class);
+                strMaps.putExtra("buttonStatus", "invisible");
+                context.startActivity(strMaps);
+                for(int i=0;i<listOfLatLng.size();i++) {
+                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        return childName;
+    }
 
-        return null;
+    @Override
+    protected void onPostExecute(String arrayList) {
+        super.onPostExecute(arrayList);
+        Toast.makeText(context, arrayList, Toast.LENGTH_LONG).show();
     }
 }

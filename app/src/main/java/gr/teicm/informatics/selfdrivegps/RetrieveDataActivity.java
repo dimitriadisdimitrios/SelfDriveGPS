@@ -37,6 +37,7 @@ public class RetrieveDataActivity extends Activity {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 //Get child names from FireBase to show it on ListView
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
                     String id = child.getKey();
@@ -53,10 +54,8 @@ public class RetrieveDataActivity extends Activity {
                     Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
                 }
                 for(int i=0;i<listOfLatLng.size();i++) {
-//                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
+                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
                 }
-
-//                Log.d(TAG, "!!" +String.valueOf(baseRetrievedData.values()));
 
                 //Create ListView to show data from FireBase
                 ListView listView = (ListView) findViewById(R.id.list_view_main_frame);

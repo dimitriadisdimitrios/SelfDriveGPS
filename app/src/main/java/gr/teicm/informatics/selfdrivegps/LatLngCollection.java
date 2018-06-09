@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,15 +38,16 @@ public class LatLngCollection extends AsyncTask<String, Void, String> {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //TODO: Check warning!!!
                 //Save value of LatLng of chosen name of ListView
-                List<LatLng> listOfLatLng = (List<LatLng>) dataSnapshot.getValue();
+                ArrayList<LatLng> listOfLatLng = (ArrayList<LatLng>) dataSnapshot.getValue();
                 if(listOfLatLng == null) {
                     Log.d(TAG, "Attempt to invoke interface method 'java.util.Collection java.util.Map.values()' on a null object reference");
                 }
                 Intent strMaps = new Intent(context, MapsActivity.class);
                 strMaps.putExtra("buttonStatus", "invisible");
+                strMaps.putParcelableArrayListExtra("latLng", listOfLatLng);
                 context.startActivity(strMaps);
                 for(int i=0;i<listOfLatLng.size();i++) {
-                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
+//                    Log.d(TAG, String.valueOf(listOfLatLng.get(i)));
                 }
             }
             @Override

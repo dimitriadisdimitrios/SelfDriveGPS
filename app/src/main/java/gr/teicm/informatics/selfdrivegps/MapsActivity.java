@@ -71,12 +71,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         try{
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
+            ArrayList<LatLng> mArray = getIntent().getParcelableArrayListExtra("latLng");
+            for(int i=0;i<mArray.size();i++) {
+                Log.d(TAG, String.valueOf(mArray.get(i))+"!!!\n");
+            }
             if(valueFromRetrieveDataActivityClass.equals("invisible")){
                 mainStartBtn.setVisibility(View.INVISIBLE);
                 openPopUpWindow.setVisibility(View.INVISIBLE);
             }
         }catch (NullPointerException e){
-            e.printStackTrace();
+            Log.d(TAG, "Start to create");
         }
 
         //Connect FireBase Database so I will able to use it

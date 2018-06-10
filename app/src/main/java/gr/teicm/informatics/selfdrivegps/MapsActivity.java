@@ -42,11 +42,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
-    boolean btn_haveBeenClicked = false;
     public String nameOfDataBaseKey;
 
+    boolean btn_haveBeenClicked = false;
     GoogleApiClient googleApiClient = null;
 
+    private ArrayList<LatLng> mArray;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private ArrayList<LatLng> points = new ArrayList<>();
@@ -71,7 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         try{
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
-            ArrayList<LatLng> mArray = getIntent().getParcelableArrayListExtra("latLng");
+            mArray = getIntent().getParcelableArrayListExtra("latLng");
             for(int i=0;i<mArray.size();i++) {
                 Log.d(TAG, String.valueOf(mArray.get(i))+"!!!\n");
             }
@@ -265,5 +266,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         assert locationManager != null; //Auto-generate method for function requestLocationUpdates
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
-
 }

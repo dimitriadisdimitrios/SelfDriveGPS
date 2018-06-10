@@ -191,9 +191,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             points.add(latLng);
         }
 
-        //check if latLng save on ArrayList() -> points
-        Log.i(TAG, "!!! Location is " + /*latLng */  points );
-
         placePolylineForRoute(points);
     }
 

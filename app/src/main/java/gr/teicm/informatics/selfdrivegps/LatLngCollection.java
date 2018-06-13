@@ -3,7 +3,6 @@ package gr.teicm.informatics.selfdrivegps;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -15,12 +14,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-/**
- * Created by Dimitriadis983 on 13-Mar-18.
- */
-
 public class LatLngCollection extends AsyncTask<String, Void, String> {
-    private String TAG = "LatLngCollection";
+//    private String TAG = "LatLngCollection";
     private ArrayList<LatLng> points = new ArrayList<>();
     //TODO: Fix the warning
 
@@ -38,24 +33,12 @@ public class LatLngCollection extends AsyncTask<String, Void, String> {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i(TAG, String.valueOf(dataSnapshot.getChildrenCount()));
-//                int childrenCount = (int) dataSnapshot.getChildrenCount();
-//                for(int i=0; i<childrenCount; i++){
-//
-//                }
-                for (DataSnapshot snapm: dataSnapshot.getChildren()) {
-                    Double latitude = snapm.child("latitude").getValue(Double.class);
-                    Double longitude = snapm.child("longitude").getValue(Double.class);
+                for (DataSnapshot childCount: dataSnapshot.getChildren()) {
+                    Double latitude = childCount.child("latitude").getValue(Double.class);
+                    Double longitude = childCount.child("longitude").getValue(Double.class);
                     LatLng latLng = new LatLng(latitude, longitude);
                     points.add(latLng);
-                    Log.d(TAG, latitude+"\t"+longitude+"\n");
                 }
-
-
-                //TODO: Check warning!!!
-                //Save value of LatLng of chosen name of ListView
-//                ArrayList<LatLng> listOfLatLng = (ArrayList<LatLng>) dataSnapshot.getValue();
-
                 Intent strMaps = new Intent(context, MapsActivity.class);
                 strMaps.putExtra("buttonStatus", "invisible");
                 strMaps.putParcelableArrayListExtra("latLng", points);

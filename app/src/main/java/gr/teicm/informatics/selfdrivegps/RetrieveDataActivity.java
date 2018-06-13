@@ -16,11 +16,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class RetrieveDataActivity extends Activity {
-    final String TAG = "RetrieveDataActivity";
+//    final String TAG = "RetrieveDataActivity";
 
     private ArrayList<String> fList = new ArrayList<>();
 
-    //TODO: Create a list view with name of keys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

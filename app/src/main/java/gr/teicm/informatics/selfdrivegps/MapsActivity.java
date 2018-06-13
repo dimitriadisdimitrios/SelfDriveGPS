@@ -83,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch (NullPointerException e){
             Log.d(TAG, "Start to create");
         }
+        placePolylineForRoute(mArray);
 
         //Connect FireBase Database so I will able to use it
         final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();

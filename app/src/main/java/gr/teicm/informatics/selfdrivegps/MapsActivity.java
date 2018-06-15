@@ -73,9 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try{
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
             mArray = getIntent().getParcelableArrayListExtra("latLng");
-            for(int i=0;i<mArray.size();i++) {
-                Log.d(TAG, String.valueOf(mArray.get(i))+"!!!\n");
-            }
+
             if(valueFromRetrieveDataActivityClass.equals("invisible")){
                 mainStartBtn.setVisibility(View.INVISIBLE);
                 openPopUpWindow.setVisibility(View.INVISIBLE);
@@ -83,12 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch (NullPointerException e){
             Log.d(TAG, "Start to create");
         }
-        //TODO: Fix the error invoke on null 'object'
-//        placePolylineForRoute(mArray);
-
-        //Connect FireBase Database so I will able to use it
-        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
-
 
         //TODO: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
@@ -110,48 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:Take care this mess !!!
-                //Create mView to interAct with activity_pop
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
-                mBuilder.setView(mView);
-
-                //Set Button from layout_pop
-                final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
-                Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
-                Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
-
-                final AlertDialog dialog = mBuilder.create(); // Create dialog
-                dialog.show(); // Show the dialog
-                dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
-
-                //Cancel Button listener
-                cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT);
-                    }
-                });
-
-                //Send Button listener
-                sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Get text from editBox
-                        nameOfDataBaseKey = collectionOfLatLng.getText().toString();
-
-                        //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
-                        if(!nameOfDataBaseKey.matches("")) {
-                            myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
-                            Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                        else {
-                            Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                showAlertDialog();
             }
         });
     }
@@ -163,6 +114,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         checkLocationPermission();
         mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        //TODO: Separate it from 'Record state'
+//        placePolylineForRoute(mArray);
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
@@ -267,5 +220,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         assert locationManager != null; //Auto-generate method for function requestLocationUpdates
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
+    }
+
+    public void showAlertDialog(){
+        //TODO:Take care this mess !!!
+        //Create mView to interAct with activity_pop
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
+        mBuilder.setView(mView);
+
+        //Set Button from layout_pop
+        final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
+        Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
+        Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
+
+        final AlertDialog dialog = mBuilder.create(); // Create dialog
+        dialog.show(); // Show the dialog
+        dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
+
+        //Cancel Button listener
+        cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT);
+            }
+        });
+
+        //Send Button listener
+        sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Get text from editBox
+                nameOfDataBaseKey = collectionOfLatLng.getText().toString();
+
+                //Connect FireBase Database so I will able to use it
+                final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
+
+
+                //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
+                if(!nameOfDataBaseKey.matches("")) {
+                    myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
+                    Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+                else {
+                    Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

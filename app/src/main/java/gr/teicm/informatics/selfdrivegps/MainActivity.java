@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //TODO: Retrieve Data from fireBase so i will be able to see it on next activity
         loadPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

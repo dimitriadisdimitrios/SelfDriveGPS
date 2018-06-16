@@ -17,8 +17,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,11 +44,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
-    boolean btn_haveBeenClicked = false;
     public String nameOfDataBaseKey;
 
+    boolean btn_haveBeenClicked = false;
     GoogleApiClient googleApiClient = null;
 
+    private ArrayList<LatLng> mArray;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private ArrayList<LatLng> points = new ArrayList<>();
@@ -58,44 +61,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-
-
+        //TODO: Fix first startup which the app crash because awaits the permission window
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         checkLocationPermission();
         createGoogleApiClient();
-
         context = getApplicationContext();
 
         //Set Button from layout_maps
-        Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
+        final ToggleButton mainStartBtn = (ToggleButton) findViewById(R.id.start_calculations);
         final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
 
-        try{
-            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
-            if(valueFromRetrieveDataActivityClass.equals("invisible")){
-                mainStartBtn.setVisibility(View.INVISIBLE);
-                openPopUpWindow.setVisibility(View.INVISIBLE);
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
-
-        //Connect FireBase Database so I will able to use it
-        final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
-
+        checkToGetDataFromAnotherActivity(mainStartBtn, openPopUpWindow);
 
         //TODO: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
-        mainStartBtn.setOnClickListener(new View.OnClickListener() {
+        mainStartBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                if (btn_haveBeenClicked) {
-                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
-                    btn_haveBeenClicked=false;
-                }
-                else {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
-                    btn_haveBeenClicked=true;
+                    btn_haveBeenClicked = true;
+
+                } else {
+                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
+                    btn_haveBeenClicked = false;
                 }
             }
         });
@@ -104,48 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:Take care this mess !!!
-                //Create mView to interAct with activity_pop
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
-                mBuilder.setView(mView);
-
-                //Set Button from layout_pop
-                final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
-                Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
-                Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
-
-                final AlertDialog dialog = mBuilder.create(); // Create dialog
-                dialog.show(); // Show the dialog
-                dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
-
-                //Cancel Button listener
-                cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT);
-                    }
-                });
-
-                //Send Button listener
-                sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Get text from editBox
-                        nameOfDataBaseKey = collectionOfLatLng.getText().toString();
-
-                        //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
-                        if(!nameOfDataBaseKey.matches("")) {
-                            myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
-                            Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                        else {
-                            Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                showAlertDialog();
             }
         });
     }
@@ -156,14 +104,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkLocationPermission();
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        //TODO: Separate it from 'Record state'
+        if(getIntent()!=null){
+            placePolylineForRoute(mArray);
+        }
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
 
         PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
-
         Polyline routePolyline = null;
 
         for (int i = 0; i < directionPoints.size(); i++) {
@@ -186,11 +138,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(btn_haveBeenClicked) {
             points.add(latLng);
+//            Log.d(TAG, String.valueOf(points));
         }
-
-        //check if latLng save on ArrayList() -> points
-        Log.i(TAG, "!!! Location is " + /*latLng */  points );
-
         placePolylineForRoute(points);
     }
 
@@ -266,4 +215,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
     }
 
+    public void showAlertDialog(){
+        //TODO:Take care this mess !!!
+        //Create mView to interAct with activity_pop
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
+        mBuilder.setView(mView);
+
+        //Set Button from layout_pop
+        final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
+        Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
+        Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
+
+        final AlertDialog dialog = mBuilder.create(); // Create dialog
+        dialog.show(); // Show the dialog
+        dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
+
+        //Cancel Button listener
+        cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Send Button listener
+        sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Get text from editBox
+                nameOfDataBaseKey = collectionOfLatLng.getText().toString();
+
+                //Connect FireBase Database so I will able to use it
+                final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
+
+
+                //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
+                if(!nameOfDataBaseKey.matches("")) {
+                    myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
+                    Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+                else {
+                    Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn, Button openPopUp){
+        try{
+            //Fill mArray with Lat\Lng
+            mArray = getIntent().getParcelableArrayListExtra("latLng");
+
+            //Make buttons invisible
+            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
+            if(valueFromRetrieveDataActivityClass.equals("invisible")){
+                mainBtn.setVisibility(View.INVISIBLE);
+                openPopUp.setVisibility(View.INVISIBLE);
+            }
+        }catch (NullPointerException e){
+            Log.d(TAG, "Start to create plan");
+        }
+    }
 }

@@ -12,4 +12,6 @@
     <string name="demoBtn">DemoBtn</string>
     <string name="cancel">Cancel</string>
     <string name="begin">Begin</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
 </resources>

@@ -73,7 +73,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkToGetDataFromAnotherActivity(mainStartBtn, openPopUpWindow);
 
-        //TODO: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
         mainStartBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -113,22 +112,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
+    //TODO: Check if ArrayList save the same Lat\Lng up to 1 time
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
-
         PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
-        Polyline routePolyline = null;
 
-        for (int i = 0; i < directionPoints.size(); i++) {
-            rectLine.add(directionPoints.get(i));
-        }
-        //clear the old line
-        if (routePolyline != null) {
-            routePolyline.remove();
+        if(directionPoints!=null){
+            for (int i = 0; i < directionPoints.size(); i++) {
+                rectLine.add(directionPoints.get(i));
+            }
         }
         mMap.addPolyline(rectLine);
     }
 
-    //TODO: Change the blue dot which is on center of map with something else so i will be able to see on other versions
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -216,7 +211,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showAlertDialog(){
-        //TODO:Take care this mess !!!
         //Create mView to interAct with activity_pop
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);

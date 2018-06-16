@@ -17,8 +17,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -63,37 +65,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         checkLocationPermission();
         createGoogleApiClient();
-
         context = getApplicationContext();
 
         //Set Button from layout_maps
-        Button mainStartBtn = (Button) findViewById(R.id.start_calculations);
+        final ToggleButton mainStartBtn = (ToggleButton) findViewById(R.id.start_calculations);
         final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
 
-        try{
-            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
-            mArray = getIntent().getParcelableArrayListExtra("latLng");
-
-            if(valueFromRetrieveDataActivityClass.equals("invisible")){
-                mainStartBtn.setVisibility(View.INVISIBLE);
-                openPopUpWindow.setVisibility(View.INVISIBLE);
-            }
-        }catch (NullPointerException e){
-            Log.d(TAG, "Start to create");
-        }
+        checkToGetDataFromAnotherActivity(mainStartBtn, openPopUpWindow);
 
         //TODO: Improve If-Else method with his variable. Poor method code development
         //Set listener on button to start store LatLng on array
-        mainStartBtn.setOnClickListener(new View.OnClickListener() {
+        mainStartBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                if (btn_haveBeenClicked) {
-                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
-                    btn_haveBeenClicked=false;
-                }
-                else {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
-                    btn_haveBeenClicked=true;
+                    btn_haveBeenClicked = true;
+
+                } else {
+                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
+                    btn_haveBeenClicked = false;
                 }
             }
         });
@@ -113,16 +104,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkLocationPermission();
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         //TODO: Separate it from 'Record state'
-//        placePolylineForRoute(mArray);
+        if(getIntent()!=null){
+            placePolylineForRoute(mArray);
+        }
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
 
         PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
-
         Polyline routePolyline = null;
 
         for (int i = 0; i < directionPoints.size(); i++) {
@@ -145,8 +138,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(btn_haveBeenClicked) {
             points.add(latLng);
+//            Log.d(TAG, String.valueOf(points));
         }
-
         placePolylineForRoute(points);
     }
 
@@ -243,7 +236,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT);
+                Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -269,5 +262,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+    }
+
+    public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn, Button openPopUp){
+        try{
+            //Fill mArray with Lat\Lng
+            mArray = getIntent().getParcelableArrayListExtra("latLng");
+
+            //Make buttons invisible
+            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
+            if(valueFromRetrieveDataActivityClass.equals("invisible")){
+                mainBtn.setVisibility(View.INVISIBLE);
+                openPopUp.setVisibility(View.INVISIBLE);
+            }
+        }catch (NullPointerException e){
+            Log.d(TAG, "Start to create plan");
+        }
     }
 }

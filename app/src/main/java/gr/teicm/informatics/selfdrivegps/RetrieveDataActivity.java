@@ -36,9 +36,6 @@ public class RetrieveDataActivity extends Activity {
                     String id = child.getKey();
                     fList.add(id);
                 }
-                //Retrieve data from fireBase and place it on Map and then ArrayLis
-//                Map<String, LatLng> baseRetrievedData = (Map<String, LatLng>) dataSnapshot.getValue();
-//                ArrayList<LatLng> listOfLatLng = new ArrayList<>();
 
                 //Create ListView to show data from FireBase
                 ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
@@ -59,5 +56,10 @@ public class RetrieveDataActivity extends Activity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 }

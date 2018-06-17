@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.SensorEventListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -67,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createGoogleApiClient();
         context = getApplicationContext();
 
+
         //Set Button from layout_maps
         final ToggleButton mainStartBtn = (ToggleButton) findViewById(R.id.start_calculations);
         final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
@@ -127,12 +129,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
+        //Get bearing so i can use it to follow the user with the right direction
+        float mBearing = location.getBearing();
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)      // Sets the center of the map to Mountain View
-                .zoom(17)                   // Sets the zoom
-                .bearing(90)                // Sets the orientation of the camera to east
+                .zoom(15)                   // Sets the zoom
+                .bearing(mBearing)                // Sets the orientation of the camera to east
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
 

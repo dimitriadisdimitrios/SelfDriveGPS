@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -38,7 +39,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+public class MapsActivity extends FragmentActivity
+        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
@@ -107,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         //TODO: Separate it from 'Record state'
-        if(getIntent()!=null){
+        if(getIntent()==null){
             placePolylineForRoute(mArray);
         }
     }
@@ -132,6 +134,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        float speedOfUser = location.getSpeed();
+        getSpeedOfUser(speedOfUser);
+
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
@@ -278,5 +283,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch (NullPointerException e){
             Log.d(TAG, "Start to create plan");
         }
+    }
+    public void getSpeedOfUser(float speed){
+        TextView mSpeed = (TextView) findViewById(R.id.tv_speed_of_user);
+
+        //Convert m/s to km/h
+        float kmH = (float) (speed *3.6);
+        String result = String.format("%.1f", kmH);
+        mSpeed.setText(result+" km/h ");
     }
 }

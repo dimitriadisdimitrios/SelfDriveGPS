@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button startBtn = (Button) findViewById(R.id.start_calculations_btn);
         Button loadPlanBtn = (Button) findViewById(R.id.load_plans_btn);
-
+        Button settingBtn = (Button) findViewById(R.id.setting_btn);
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, RetrieveDataActivity.class));
+            }
+        });
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
     }

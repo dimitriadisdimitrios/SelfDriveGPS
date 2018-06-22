@@ -135,8 +135,10 @@ public class MapsActivity extends FragmentActivity
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
+        float accuracyOfGps = location.getAccuracy();
         getSpeedOfUser(speedOfUser);
-        
+        getGpsAccuracy(accuracyOfGps);
+
         //Get bearing so i can use it to follow the user with the right direction
         float mBearing = location.getBearing();
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
@@ -299,5 +301,10 @@ public class MapsActivity extends FragmentActivity
         float kmH = (float) (speed *3.6);
         String result = String.format("%.1f", kmH);
         mSpeed.setText(result+" km/h ");
+    }
+
+    public void getGpsAccuracy(float accuracy){
+        TextView mAccuracy = (TextView) findViewById(R.id.tv_accuracy_of_gps);
+        mAccuracy.setText(accuracy+" m ");
     }
 }

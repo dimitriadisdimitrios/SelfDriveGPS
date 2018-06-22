@@ -35,7 +35,6 @@
             android:label="@string/settings_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,7 +48,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RetrieveDataActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+
+        <service android:name=".GeofenceService"/>
     </application>
 
 </manifest>

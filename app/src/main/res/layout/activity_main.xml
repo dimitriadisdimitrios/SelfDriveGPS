@@ -3,25 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="gr.teicm.informatics.selfdrivegps.MainActivity">
+    tools:context="gr.teicm.informatics.selfdrivegps.MainActivity"
+    android:gravity="center">
 
-    <Button
-        android:id="@+id/start_calculations_btn"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/begin_calculations"
-        android:textAllCaps="false"
-        android:layout_centerInParent="true"
-        android:gravity="center_vertical|center_horizontal"/>
-
-    <Button
-        android:id="@+id/load_plans_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/start_calculations_btn"
-        android:text="@string/load_plan"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:textAllCaps="false" />
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/start_calculations_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/begin_calculations"
+            android:textAllCaps="false"
+            android:gravity="center_vertical|center_horizontal"/>
+        <Button
+            android:id="@+id/load_plans_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/load_plan"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAllCaps="false" />
+        <Button
+            android:id="@+id/setting_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/settings"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAllCaps="false"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -119,7 +119,9 @@ public class MapsActivity extends FragmentActivity
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     //TODO: Check if ArrayList save the same Lat\Lng up to 1 time
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
-        PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GREEN);
+        PolylineOptions rectLine = new PolylineOptions()
+                .width(5)
+                .color(Color.GREEN);
 
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
@@ -129,7 +131,10 @@ public class MapsActivity extends FragmentActivity
         mMap.addPolyline(rectLine);
     }
     public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
-        PolygonOptions polygonOptions = new PolygonOptions().fillColor(Color.GREEN);
+        PolygonOptions polygonOptions = new PolygonOptions()
+                .fillColor(Color.GREEN)
+                .strokeColor(Color.GREEN)
+                .strokeWidth(2);
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
                 polygonOptions.add(directionPoints.get(i));

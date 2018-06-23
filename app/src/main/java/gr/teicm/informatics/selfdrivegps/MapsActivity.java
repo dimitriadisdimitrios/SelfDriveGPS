@@ -110,8 +110,8 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        //TODO: Separate it from 'Record state'
-        if(getIntent()!=null){
+        //Check if app start from Start or from load field
+        if(getIntent().getExtras()!=null){
             placePolygonForRoute(mArray);
         }
     }
@@ -119,7 +119,7 @@ public class MapsActivity extends FragmentActivity
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     //TODO: Check if ArrayList save the same Lat\Lng up to 1 time
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
-        PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
+        PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GREEN);
 
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
@@ -129,7 +129,7 @@ public class MapsActivity extends FragmentActivity
         mMap.addPolyline(rectLine);
     }
     public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
-        PolygonOptions polygonOptions = new PolygonOptions().fillColor(Color.RED);
+        PolygonOptions polygonOptions = new PolygonOptions().fillColor(Color.GREEN);
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
                 polygonOptions.add(directionPoints.get(i));
@@ -150,9 +150,9 @@ public class MapsActivity extends FragmentActivity
         float mBearing = location.getBearing();
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)      // Sets the center of the map to Mountain View
+                .target(latLng)             // Sets the center of the map to Mountain View
                 .zoom(12)                   // Sets the zoom
-                .bearing(mBearing)                // Sets the orientation of the camera to east
+                .bearing(mBearing)          // Sets the orientation of the camera to east
                 .tilt(90)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
 

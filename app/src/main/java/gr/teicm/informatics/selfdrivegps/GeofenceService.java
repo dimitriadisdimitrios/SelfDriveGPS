@@ -24,6 +24,7 @@ public class GeofenceService extends IntentService {
         List<Geofence> geofences = event.getTriggeringGeofences();
         Geofence geofence = geofences.get(0);
         String requestId = geofence.getRequestId();
+//        GlobalVariables globalVariables = new GlobalVariables();
 
         if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             Log.d(TAG, "Entering geofence - " + requestId);

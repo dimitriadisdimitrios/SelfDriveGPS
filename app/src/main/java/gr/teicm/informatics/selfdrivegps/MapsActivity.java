@@ -58,10 +58,8 @@ public class MapsActivity extends FragmentActivity
 
     private ArrayList<LatLng> mArray;
     private GoogleMap mMap;
-    private LocationManager locationManager;
     private ArrayList<LatLng> points = new ArrayList<>();
     private Context context = null;
-    private int counterGeo=0;
 
 
     @Override
@@ -71,7 +69,6 @@ public class MapsActivity extends FragmentActivity
 
         //TODO: Fix first startup which the app crash because awaits the permission window
         //Checking if it needs different permission access And create googleApiClient plus locationManager
-        checkLocationPermission();
         createGoogleApiClient();
         context = getApplicationContext();
 
@@ -108,9 +105,9 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
         checkLocationPermission();
+
+        mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
@@ -119,7 +116,6 @@ public class MapsActivity extends FragmentActivity
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
-    //TODO: Check if ArrayList save the same Lat\Lng up to 1 time
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
         PolylineOptions rectLine = new PolylineOptions()
                 .width(5)
@@ -168,7 +164,10 @@ public class MapsActivity extends FragmentActivity
         mMap.animateCamera(cameraUpdate);
 
         if(btn_haveBeenClicked) {
-            points.add(latLng);
+            if(!MapsUtilities.checkIfLatLngExist(latLng, points)){
+                points.add(latLng);
+                Log.d(TAG, String.valueOf(points));
+            }
         }
 
         placePolylineForRoute(points);
@@ -190,10 +189,6 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Connected to Google Api Client");
-
-        checkLocationPermission();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-
         //Check if app start from Start or from load field
         if(getIntent().getExtras()!=null){
             placePolygonForRoute(mArray);
@@ -201,7 +196,6 @@ public class MapsActivity extends FragmentActivity
                 //Use it on connected because need to initialize googleApiClient which created on connected`
                 createGeofenceObject(""+i, mArray.get(i));
             }
-            Log.d("Get util", String.valueOf(MapsUtilities.getPolygonCenterPoint(mArray)));
 
         }
     }
@@ -209,8 +203,6 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Suspended connection to Google Api Client");
-        checkLocationPermission();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
@@ -235,9 +227,7 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void createGoogleApiClient(){
-
         checkLocationPermission();
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -250,11 +240,12 @@ public class MapsActivity extends FragmentActivity
                 addOnConnectionFailedListener(this).
                 build();
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         assert locationManager != null; //Auto-generate method for function requestLocationUpdates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600, 10, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
+    //TODO: Remove showAlertDialog to MapsUtilities
     public void showAlertDialog(){
         //Create mView to interAct with activity_pop
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
@@ -304,19 +295,16 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn, Button openPopUp){
-        try{
-            //Fill mArray with Lat\Lng
-            mArray = getIntent().getParcelableArrayListExtra("latLng");
+        //Fill mArray with Lat\Lng
+        mArray = getIntent().getParcelableArrayListExtra("latLng");
 
-            //Make buttons invisible
-            //TODO: Fix the warning
+        //Make buttons invisible
+        if(getIntent().getExtras()!=null) {
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
-            if(valueFromRetrieveDataActivityClass.equals("invisible")){
+            if (valueFromRetrieveDataActivityClass!=null&& valueFromRetrieveDataActivityClass.equals("invisible")) {
                 mainBtn.setVisibility(View.INVISIBLE);
                 openPopUp.setVisibility(View.INVISIBLE);
             }
-        }catch (NullPointerException e){
-            Log.d(TAG, "Start to create plan");
         }
     }
 
@@ -325,17 +313,15 @@ public class MapsActivity extends FragmentActivity
 
         //Convert m/s to km/h
         float kmH = (float) (speed *3.6);
-        //TODO: Fix the warning
-        String result = String.format("%.1f", kmH);
-        mSpeed.setText(result+" km/h ");
+        mSpeed.setText(getString(R.string.speed_counter, kmH));
     }
 
     public void getGpsAccuracy(float accuracy){
         TextView mAccuracy = (TextView) findViewById(R.id.tv_accuracy_of_gps);
-        //TODO: Fix the warning
-        mAccuracy.setText(accuracy+" m ");
+        mAccuracy.setText(getString(R.string.accuracy_of_gps, accuracy));
     }
 
+    //Create Geo fence object on map through MapsUtilities
     public void createGeofenceObject(String id, LatLng latLng){
         Geofence geofence = MapsUtilities.createGeofenceObject(id,latLng);
         GeofencingRequest geofencingRequest = MapsUtilities.createGeofencingRequest(geofence);

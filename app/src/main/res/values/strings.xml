@@ -17,6 +17,7 @@
     <string name="wi_fi">Wi-Fi</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="settings">Settings</string>
-    <string name="_0_km_h">0 km/h</string>
     <string name="gps_not_found">GPS Not Found</string>
+    <string name="speed_counter"> %.1f km/h </string>
+    <string name="accuracy_of_gps"> %.1f m </string>
 </resources>

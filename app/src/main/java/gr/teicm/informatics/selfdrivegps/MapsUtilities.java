@@ -64,7 +64,6 @@ public class MapsUtilities {
                     @Override
                     public void onResult(@NonNull Status status) {
                         if (status.isSuccess()) {
-//                            Log.d(TAG, String.valueOf(status.getStatusCode()));
                             Log.d(TAG, "Successfully added to geofence");
                         } else {
                             Log.d(TAG, "Failed to add geofence");
@@ -72,6 +71,16 @@ public class MapsUtilities {
                         }
                     }
                 });
+    }
+
+    public static boolean checkIfLatLngExist(LatLng latLng, ArrayList<LatLng> points){
+        boolean latLngExist = false;
+        for(int i=0; i<points.size(); i++){
+            if(points.get(i)==latLng){
+                latLngExist=true;
+            }
+        }
+        return latLngExist;
     }
 }
 

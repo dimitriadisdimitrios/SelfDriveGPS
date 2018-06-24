@@ -19,7 +19,7 @@ public class LatLngCollection extends AsyncTask<String, Void, String> {
     private ArrayList<LatLng> points = new ArrayList<>();
     //TODO: Fix the warning
 
-    private Context context;
+    public Context context;
 
     public LatLngCollection(Context context){
         this.context = context;
@@ -36,8 +36,10 @@ public class LatLngCollection extends AsyncTask<String, Void, String> {
                 for (DataSnapshot childCount: dataSnapshot.getChildren()) {
                     Double latitude = childCount.child("latitude").getValue(Double.class);
                     Double longitude = childCount.child("longitude").getValue(Double.class);
-                    LatLng latLng = new LatLng(latitude, longitude);
-                    points.add(latLng);
+                    if(latitude!=null && longitude!=null) {
+                        LatLng latLng = new LatLng(latitude, longitude);
+                        points.add(latLng);
+                    }
                 }
                 Intent strMaps = new Intent(context, MapsActivity.class);
                 strMaps.putExtra("buttonStatus", "invisible");

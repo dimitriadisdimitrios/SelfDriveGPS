@@ -1,10 +1,11 @@
 package gr.teicm.informatics.selfdrivegps;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.SensorEventListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,16 +27,19 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -59,6 +63,7 @@ public class MapsActivity extends FragmentActivity
     private LocationManager locationManager;
     private ArrayList<LatLng> points = new ArrayList<>();
     private Context context = null;
+    private int counterGeo=0;
 
 
     @Override
@@ -112,16 +117,16 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        //TODO: Separate it from 'Record state'
-        if(getIntent()==null){
-            placePolylineForRoute(mArray);
-        }
+        //Check if app start from Start or from load field
+
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     //TODO: Check if ArrayList save the same Lat\Lng up to 1 time
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
-        PolylineOptions rectLine = new PolylineOptions().width(5).color(Color.GRAY);
+        PolylineOptions rectLine = new PolylineOptions()
+                .width(5)
+                .color(Color.GREEN);
 
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
@@ -130,20 +135,35 @@ public class MapsActivity extends FragmentActivity
         }
         mMap.addPolyline(rectLine);
     }
+    public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
+        PolygonOptions polygonOptions = new PolygonOptions()
+                .fillColor(Color.GREEN)
+                .strokeColor(Color.GREEN)
+                .strokeWidth(2);
+        if(directionPoints!=null){
+            for (int i = 0; i < directionPoints.size(); i++) {
+                polygonOptions.add(directionPoints.get(i));
+            }
+        }
+        mMap.addPolygon(polygonOptions);
+    }
+
 
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
+        float accuracyOfGps = location.getAccuracy();
         getSpeedOfUser(speedOfUser);
-        
+        getGpsAccuracy(accuracyOfGps);
+
         //Get bearing so i can use it to follow the user with the right direction
         float mBearing = location.getBearing();
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)      // Sets the center of the map to Mountain View
-                .zoom(18)                   // Sets the zoom
-                .bearing(mBearing)                // Sets the orientation of the camera to east
+                .target(latLng)             // Sets the center of the map to Mountain View
+                .zoom(17)                   // Sets the zoom
+                .bearing(mBearing)          // Sets the orientation of the camera to east
                 .tilt(90)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
 
@@ -176,12 +196,18 @@ public class MapsActivity extends FragmentActivity
 
         checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        if(getIntent().getExtras()!=null){
+            placePolygonForRoute(mArray);
+            for(int i=0; i<mArray.size(); i++){
+                //Use it on connected because need to initialize googleApiClient which created on connected`
+                createGeofenceObject(""+i, mArray.get(i));
+            }
+        }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Suspended connection to Google Api Client");
-
         checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
@@ -189,7 +215,6 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
-
         googleApiClient.reconnect();
     }
 
@@ -283,6 +308,7 @@ public class MapsActivity extends FragmentActivity
             mArray = getIntent().getParcelableArrayListExtra("latLng");
 
             //Make buttons invisible
+            //TODO: Fix the warning
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
             if(valueFromRetrieveDataActivityClass.equals("invisible")){
                 mainBtn.setVisibility(View.INVISIBLE);
@@ -292,12 +318,55 @@ public class MapsActivity extends FragmentActivity
             Log.d(TAG, "Start to create plan");
         }
     }
+
     public void getSpeedOfUser(float speed){
         TextView mSpeed = (TextView) findViewById(R.id.tv_speed_of_user);
 
         //Convert m/s to km/h
         float kmH = (float) (speed *3.6);
+        //TODO: Fix the warning
         String result = String.format("%.1f", kmH);
         mSpeed.setText(result+" km/h ");
     }
+
+    public void getGpsAccuracy(float accuracy){
+        TextView mAccuracy = (TextView) findViewById(R.id.tv_accuracy_of_gps);
+        //TODO: Fix the warning
+        mAccuracy.setText(accuracy+" m ");
+    }
+
+    public void createGeofenceObject(String id, LatLng latLng){
+        Geofence geofence = new Geofence.Builder()
+                .setRequestId(id)
+                .setCircularRegion(latLng.latitude, latLng.longitude, 50)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setNotificationResponsiveness(1000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+
+        GeofencingRequest geofencingRequest = new GeofencingRequest.Builder()
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .addGeofence(geofence)
+                .build();
+
+        Intent intent = new Intent(this, GeofenceService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        checkLocationPermission();
+        LocationServices.GeofencingApi.addGeofences(googleApiClient, geofencingRequest, pendingIntent)
+                    .setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if (status.isSuccess()) {
+                                Log.d(TAG, String.valueOf(status.getStatusCode()));
+                                Log.d(TAG, "Successfully added to geofence");
+                                counterGeo++;
+                                Log.d("Counter", String.valueOf(counterGeo));
+                            } else {
+                                Log.d(TAG, "Failed to add geofence");
+                                Log.d(TAG, "Called... FAILURE: " + status.getStatusMessage() + " code: " + status.getStatusCode());
+                            }
+                        }
+                    });
+        }
 }

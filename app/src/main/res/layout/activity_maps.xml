@@ -5,13 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="gr.teicm.informatics.selfdrivegps.MapsActivity" >
-    <TextView
-        android:id="@+id/tv_speed_of_user"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:textColor="@color/colorAccent"
-        android:text="@string/_0_km_h" />
+        android:layout_gravity="right"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_speed_of_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textColor="@color/colorAccent"
+            android:text="@string/_0_km_h" />
+        <TextView
+            android:id="@+id/tv_accuracy_of_gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="@color/colorAccent"
+            android:text="@string/gps_not_found" />
+    </LinearLayout>
     <ToggleButton
         android:id="@+id/start_calculations"
         android:layout_width="wrap_content"

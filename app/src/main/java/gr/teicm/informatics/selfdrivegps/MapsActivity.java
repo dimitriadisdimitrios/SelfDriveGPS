@@ -27,8 +27,6 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
@@ -117,7 +115,6 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        //Check if app start from Start or from load field
 
     }
 
@@ -196,12 +193,16 @@ public class MapsActivity extends FragmentActivity
 
         checkLocationPermission();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+
+        //Check if app start from Start or from load field
         if(getIntent().getExtras()!=null){
             placePolygonForRoute(mArray);
             for(int i=0; i<mArray.size(); i++){
                 //Use it on connected because need to initialize googleApiClient which created on connected`
                 createGeofenceObject(""+i, mArray.get(i));
             }
+            Log.d("Get util", String.valueOf(MapsUtilities.getPolygonCenterPoint(mArray)));
+
         }
     }
 
@@ -336,37 +337,12 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void createGeofenceObject(String id, LatLng latLng){
-        Geofence geofence = new Geofence.Builder()
-                .setRequestId(id)
-                .setCircularRegion(latLng.latitude, latLng.longitude, 50)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setNotificationResponsiveness(1000)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build();
-
-        GeofencingRequest geofencingRequest = new GeofencingRequest.Builder()
-                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                .addGeofence(geofence)
-                .build();
+        Geofence geofence = MapsUtilities.createGeofenceObject(id,latLng);
+        GeofencingRequest geofencingRequest = MapsUtilities.createGeofencingRequest(geofence);
 
         Intent intent = new Intent(this, GeofenceService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        checkLocationPermission();
-        LocationServices.GeofencingApi.addGeofences(googleApiClient, geofencingRequest, pendingIntent)
-                    .setResultCallback(new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(@NonNull Status status) {
-                            if (status.isSuccess()) {
-                                Log.d(TAG, String.valueOf(status.getStatusCode()));
-                                Log.d(TAG, "Successfully added to geofence");
-                                counterGeo++;
-                                Log.d("Counter", String.valueOf(counterGeo));
-                            } else {
-                                Log.d(TAG, "Failed to add geofence");
-                                Log.d(TAG, "Called... FAILURE: " + status.getStatusMessage() + " code: " + status.getStatusCode());
-                            }
-                        }
-                    });
-        }
+        MapsUtilities.checkIfGeoFenceHasBeenAdded(googleApiClient,geofencingRequest,pendingIntent,this);
+    }
 }

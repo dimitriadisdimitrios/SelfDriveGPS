@@ -17,11 +17,11 @@ public class PermissionUtilities extends Activity {
     private static final int PERMISSION_ALL = 0;
     private Handler h;
     private Runnable r;
-    /*
-      SharedPreferences mPrefs;
-      final String settingScreenShownPref = "settingScreenShown";
-      final String versionCheckedPref = "versionChecked";
-    */
+    private String[] PERMISSIONS = {ACCESS_FINE_LOCATION};
+//    SharedPreferences mPrefs;
+//    final String settingScreenShownPref = "settingScreenShown";
+//    final String versionCheckedPref = "versionChecked";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +30,6 @@ public class PermissionUtilities extends Activity {
         r = new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(PermissionUtilities.this, "Runnable started", Toast.LENGTH_SHORT).show();
-
   /*          // (OPTIONAL) these lines to check if the `First run` ativity is required
                 int versionCode = BuildConfig.VERSION_CODE;
                 String versionName = BuildConfig.VERSION_NAME;
@@ -55,21 +53,12 @@ public class PermissionUtilities extends Activity {
             }
         };
 
-        String[] PERMISSIONS = {
-//                READ_PHONE_STATE,
-//                MODIFY_AUDIO_SETTINGS,
-                ACCESS_FINE_LOCATION,
-//                READ_SMS
-        };
-
         if(!MapsUtilities.hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
         else
             h.postDelayed(r, 1500);
     }
-
-    // Put the below OnRequestPermissionsResult code here
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

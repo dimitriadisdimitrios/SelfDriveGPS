@@ -27,8 +27,6 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -193,7 +191,8 @@ public class MapsActivity extends FragmentActivity
             placePolygonForRoute(mArray);
             for(int i=0; i<mArray.size(); i++){
                 //Use it on connected because need to initialize googleApiClient which created on connected`
-                createGeofenceObject(""+i, mArray.get(i));
+                geofenceInitialize(""+i, mArray.get(i));
+                Log.d("Center of polygon: ", String.valueOf(MapsUtilities.getPolygonCenterPoint(mArray)));
             }
 
         }
@@ -321,13 +320,10 @@ public class MapsActivity extends FragmentActivity
     }
 
     //Create Geo fence object on map through MapsUtilities
-    public void createGeofenceObject(String id, LatLng latLng){
-        Geofence geofence = MapsUtilities.createGeofenceObject(id,latLng);
-        GeofencingRequest geofencingRequest = MapsUtilities.createGeofencingRequest(geofence);
-
+    public void geofenceInitialize(String id, LatLng latLng){
         Intent intent = new Intent(this, GeofenceService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        MapsUtilities.checkIfGeoFenceHasBeenAdded(googleApiClient,geofencingRequest,pendingIntent,this);
+        MapsUtilities.geofenceInitialize(id, latLng, googleApiClient,pendingIntent,this);
     }
 }

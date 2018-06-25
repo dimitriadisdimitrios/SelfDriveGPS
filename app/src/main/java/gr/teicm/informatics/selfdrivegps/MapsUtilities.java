@@ -36,7 +36,7 @@ public class MapsUtilities {
     }
 
     //Create Geo fence objects
-    public static Geofence createGeofenceObject(String id, LatLng latLng) {
+    public static void geofenceInitialize(String id, LatLng latLng, GoogleApiClient googleApiClient,PendingIntent pendingIntent, Context context) {
 
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(id)
@@ -45,20 +45,13 @@ public class MapsUtilities {
                 .setNotificationResponsiveness(1000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build();
-        return geofence;
-    }
-
-    public static GeofencingRequest createGeofencingRequest(Geofence geofence) {
 
         GeofencingRequest geofencingRequest = new GeofencingRequest.Builder()
                 .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
                 .addGeofence(geofence)
                 .build();
-        return geofencingRequest;
-    }
 
-    //Check if Geofence has been added
-    public static void checkIfGeoFenceHasBeenAdded(GoogleApiClient googleApiClient, GeofencingRequest geofencingRequest, PendingIntent pendingIntent, Context context) {
+        //Check if Geofence has been added
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {return;}
         LocationServices.GeofencingApi.addGeofences(googleApiClient, geofencingRequest, pendingIntent)
                 .setResultCallback(new ResultCallback<Status>() {
@@ -93,5 +86,7 @@ public class MapsUtilities {
                     return false;
         return true;
     }
+
+
 }
 

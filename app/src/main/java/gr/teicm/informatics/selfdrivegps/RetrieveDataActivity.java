@@ -1,12 +1,16 @@
 package gr.teicm.informatics.selfdrivegps;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,20 +20,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class RetrieveDataActivity extends Activity {
-//    final String TAG = "RetrieveDataActivity";
+    final String TAG = "RetrieveDataActivity";
 
     private ArrayList<String> fList = new ArrayList<>();
+    private ArrayList<LatLng> points = new ArrayList<>();
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieve_data);
+        context = this.getApplicationContext();
 
 
         final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(final DataSnapshot dataSnapshot) {
 
                 //Get child names from FireBase to show it on ListView
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
@@ -47,13 +54,25 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
-                        new LatLngCollection(getApplicationContext()).execute(childName);
-                    }
-                });
-            }
+
+                        for (DataSnapshot childCount: dataSnapshot.child(childName).getChildren()) {
+                            Double latitude = childCount.child("latitude").getValue(Double.class);
+                            Double longitude = childCount.child("longitude").getValue(Double.class);
+                            if(latitude!=null && longitude!=null) {
+                                LatLng latLng = new LatLng(latitude, longitude);
+                                points.add(latLng);
+                            }
+                        }
+                        Intent strMaps = new Intent(context, MapsActivity.class);
+                        strMaps.putExtra("buttonStatus", "invisible");
+                        strMaps.putParcelableArrayListExtra("latLng", points);
+                        context.startActivity(strMaps);
+                        }
+                    });
+                }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+                Log.d(TAG, "DatabaseError"+databaseError.getCode());
             }
         });
     }

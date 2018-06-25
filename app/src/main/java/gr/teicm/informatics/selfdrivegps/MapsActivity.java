@@ -192,9 +192,8 @@ public class MapsActivity extends FragmentActivity
             for(int i=0; i<mArray.size(); i++){
                 //Use it on connected because need to initialize googleApiClient which created on connected`
                 geofenceInitialize(""+i, mArray.get(i));
-                Log.d("Center of polygon: ", String.valueOf(MapsUtilities.getPolygonCenterPoint(mArray)));
             }
-
+            Log.d("Center of polygon: ", String.valueOf(MapsUtilities.getPolygonCenterPoint(mArray)));
         }
     }
 
@@ -243,7 +242,7 @@ public class MapsActivity extends FragmentActivity
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
-    //TODO: Remove showAlertDialog to MapsUtilities
+    //TODO: Change showAlertDialog to improve the code
     public void showAlertDialog(){
         //Create mView to interAct with activity_pop
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);

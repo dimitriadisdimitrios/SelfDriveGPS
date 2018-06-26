@@ -38,8 +38,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
-{
+        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
@@ -63,7 +63,6 @@ public class MapsActivity extends FragmentActivity
         createGoogleApiClient();
         context = getApplicationContext();
 
-
         //Set Button from layout_maps
         final ToggleButton mainStartBtn = (ToggleButton) findViewById(R.id.start_calculations);
         final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
@@ -83,11 +82,9 @@ public class MapsActivity extends FragmentActivity
                     btn_haveBeenClicked = false;
                     mapsUtilities.setPoints(points);
                     Log.d(TAG+"!!", String.valueOf(mapsUtilities.getPoints()));
-
                 }
             }
         });
-
         //Set listener on button to transfer data to database
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class MapsUtilities {
     private static String TAG = "MapsUtilities";
-    private ArrayList<LatLng> points;
+    private static ArrayList<LatLng> arrayList;
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -89,11 +89,11 @@ public class MapsUtilities {
     }
 
     public void setPoints(ArrayList<LatLng> points){
-        this.points = points;
+        arrayList = points;
     }
 
-    public ArrayList<LatLng> getPoints() {
-        return points;
+    public ArrayList<LatLng> getPoints(){
+        return arrayList;
     }
 }
 

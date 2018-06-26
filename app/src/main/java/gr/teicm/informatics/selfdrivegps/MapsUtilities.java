@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class MapsUtilities {
     private static String TAG = "MapsUtilities";
+    private ArrayList<LatLng> points;
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -36,7 +37,7 @@ public class MapsUtilities {
     }
 
     //Create Geo fence objects
-    public static void geofenceInitialize(String id, LatLng latLng, GoogleApiClient googleApiClient,PendingIntent pendingIntent, Context context) {
+    public static void geofence(String id, LatLng latLng, GoogleApiClient googleApiClient,PendingIntent pendingIntent, Context context) {
 
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(id)
@@ -87,6 +88,12 @@ public class MapsUtilities {
         return true;
     }
 
+    public void setPoints(ArrayList<LatLng> points){
+        this.points = points;
+    }
 
+    public ArrayList<LatLng> getPoints() {
+        return points;
+    }
 }
 

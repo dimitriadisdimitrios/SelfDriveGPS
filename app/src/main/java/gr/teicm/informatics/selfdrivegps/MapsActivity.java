@@ -1,6 +1,5 @@
 package gr.teicm.informatics.selfdrivegps;
 
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -20,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -37,19 +34,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final String TAG = "MapsActivity";
     public static final long MIN_TIME = 100;
     public static final long MIN_DISTANCE = 2;
-    public String nameOfDataBaseKey;
 
     boolean btn_haveBeenClicked = false;
     GoogleApiClient googleApiClient = null;
@@ -58,6 +51,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> points = new ArrayList<>();
     private Context context = null;
+    private MapsUtilities mapsUtilities = new MapsUtilities();
 
 
     @Override
@@ -87,6 +81,9 @@ public class MapsActivity extends FragmentActivity
                 } else {
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = false;
+                    mapsUtilities.setPoints(points);
+                    Log.d(TAG+"!!", String.valueOf(mapsUtilities.getPoints()));
+
                 }
             }
         });
@@ -109,7 +106,6 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
@@ -218,7 +214,7 @@ public class MapsActivity extends FragmentActivity
     public void checkLocationPermission() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+                Log.d(TAG, "Check passed");
             }
         }
     }
@@ -242,58 +238,14 @@ public class MapsActivity extends FragmentActivity
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
-    //TODO: Change showAlertDialog to improve the code
     public void showAlertDialog(){
-        //Create mView to interAct with activity_pop
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MapsActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.activity_pop,null);
-        mBuilder.setView(mView);
-
-        //Set Button from layout_pop
-        final EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET);
-        Button cancelPopUpWindow = (Button) mView.findViewById(R.id.cancel_sending_pop_btn);
-        Button sendToFireBaseDataFromPop = (Button) mView.findViewById(R.id.send_data_to_fireBase_Btn);
-
-        final AlertDialog dialog = mBuilder.create(); // Create dialog
-        dialog.show(); // Show the dialog
-        dialog.setCancelable(false); //prevent dialog box from getting dismissed on back key
-
-        //Cancel Button listener
-        cancelPopUpWindow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Toast.makeText(context,"Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //Send Button listener
-        sendToFireBaseDataFromPop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Get text from editBox
-                nameOfDataBaseKey = collectionOfLatLng.getText().toString();
-
-                //Connect FireBase Database so I will able to use it
-                final DatabaseReference myRef1 = FirebaseDatabase.getInstance().getReference();
-
-
-                //Check if ET is empty or not and if it isn't send data to fireBase with specific name key
-                if(!nameOfDataBaseKey.matches("")) {
-                    myRef1.child(nameOfDataBaseKey).setValue(points); //Create child with specific name which include LatLng
-                    Toast.makeText(context, "LatLng have been added", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-                else {
-                    Toast.makeText(context, "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        DialogFragmentUtility dialogFragmentUtility = new DialogFragmentUtility();
+        dialogFragmentUtility.show(getFragmentManager(), "PopToSend");
+        dialogFragmentUtility.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn, Button openPopUp){
-        //Fill mArray with Lat\Lng
-        mArray = getIntent().getParcelableArrayListExtra("latLng");
+        mArray = getIntent().getParcelableArrayListExtra("latLng"); //Fill mArray with Lat\Lng
 
         //Make buttons invisible
         if(getIntent().getExtras()!=null) {
@@ -307,9 +259,7 @@ public class MapsActivity extends FragmentActivity
 
     public void getSpeedOfUser(float speed){
         TextView mSpeed = (TextView) findViewById(R.id.tv_speed_of_user);
-
-        //Convert m/s to km/h
-        float kmH = (float) (speed *3.6);
+        float kmH = (float) (speed *3.6); //Convert m/s to km/h
         mSpeed.setText(getString(R.string.speed_counter, kmH));
     }
 
@@ -323,6 +273,6 @@ public class MapsActivity extends FragmentActivity
         Intent intent = new Intent(this, GeofenceService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        MapsUtilities.geofenceInitialize(id, latLng, googleApiClient,pendingIntent,this);
+        MapsUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
     }
 }

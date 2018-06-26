@@ -2,19 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/common_google_signin_btn_text_light_default"
     android:orientation="vertical"
     android:padding="5dp">
-
-    <TextView
-        android:id="@+id/label_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:text="@string/give_a_suitable_name_to_be_stored_in_the_base"
-        android:textSize="16sp"
-        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/pop_name_DB_ET"
@@ -24,27 +13,4 @@
         android:ems="10"
         android:hint="@string/field_name" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:padding="5dp">
-
-            <Button
-                android:id="@+id/send_data_to_fireBase_Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/send"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/cancel_sending_pop_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel"
-                android:layout_marginTop="5dp"
-                android:textAllCaps="false" />
-    </LinearLayout>
 </LinearLayout>

@@ -40,12 +40,12 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    public static final String TAG = "MapsActivity";
-    public static final long MIN_TIME = 100;
-    public static final long MIN_DISTANCE = 2;
+    private static final String TAG = "MapsActivity";
+    private static final long MIN_TIME = 100;
+    private static final long MIN_DISTANCE = 2;
 
-    boolean btn_haveBeenClicked = false;
-    GoogleApiClient googleApiClient = null;
+    private boolean btn_haveBeenClicked = false;
+    private GoogleApiClient googleApiClient = null;
 
     private ArrayList<LatLng> mArray;
     private GoogleMap mMap;
@@ -181,12 +181,12 @@ public class MapsActivity extends FragmentActivity
         Log.i(TAG, "Connected to Google Api Client");
         //Check if app start from Start or from load field
         if(getIntent().getExtras()!=null){
+            //TODO: Find a way to get id
+            LatLng centerOfField = MapsUtilities.getPolygonCenterPoint(mArray);
+            geofenceInitialize("Serres", centerOfField);
+            //TODO: Create a function to calculate an adaptive range
+            mMap.addCircle(MapsUtilities.createCircleOptions(centerOfField,50));
             placePolygonForRoute(mArray);
-            for(int i=0; i<mArray.size(); i++){
-                //Use it on connected because need to initialize googleApiClient which created on connected`
-                geofenceInitialize(""+i, mArray.get(i));
-            }
-            Log.d("Center of polygon: ", String.valueOf(MapsUtilities.getPolygonCenterPoint(mArray)));
         }
     }
 
@@ -271,5 +271,6 @@ public class MapsActivity extends FragmentActivity
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         MapsUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
+
     }
 }

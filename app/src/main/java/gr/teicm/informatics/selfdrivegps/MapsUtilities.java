@@ -3,6 +3,7 @@ package gr.teicm.informatics.selfdrivegps;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +15,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -68,6 +70,14 @@ public class MapsUtilities {
                 });
     }
 
+    public static CircleOptions createCircleOptions(LatLng centerOfPolygon, double coverFieldRange){
+        CircleOptions circleOptions = new CircleOptions();
+        return circleOptions.strokeColor(Color.BLACK)
+                .fillColor(Color.TRANSPARENT)
+                .center(centerOfPolygon)
+                .radius(coverFieldRange);
+    }
+
     public static boolean checkIfLatLngExist(LatLng latLng, ArrayList<LatLng> points){
         boolean latLngExist = false;
         for(int i=0; i<points.size(); i++){
@@ -77,9 +87,8 @@ public class MapsUtilities {
         }
         return latLngExist;
     }
-
-    public static boolean hasPermissions(Context context, String... allPermissionNeeded)
-    {
+    //TODO: See when function used
+    public static boolean hasPermissions(Context context, String... allPermissionNeeded) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && context != null && allPermissionNeeded != null)
             for (String permission : allPermissionNeeded)
@@ -87,11 +96,11 @@ public class MapsUtilities {
                     return false;
         return true;
     }
-
+    //Setter for ArrayList<LatLng>
     public void setPoints(ArrayList<LatLng> points){
         arrayList = points;
     }
-
+    //Getter for ArrayList<LatLng>
     public ArrayList<LatLng> getPoints(){
         return arrayList;
     }

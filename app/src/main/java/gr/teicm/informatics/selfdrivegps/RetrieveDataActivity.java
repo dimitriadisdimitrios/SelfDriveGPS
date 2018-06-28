@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,7 +37,7 @@ public class RetrieveDataActivity extends Activity {
         final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
                 //Get child names from FireBase to show it on ListView
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
@@ -45,7 +46,7 @@ public class RetrieveDataActivity extends Activity {
                 }
 
                 //Create ListView to show data from FireBase
-                ListView listView = (ListView) findViewById(R.id.list_view_main_frame);
+                ListView listView =  findViewById(R.id.list_view_main_frame);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
 
@@ -71,7 +72,7 @@ public class RetrieveDataActivity extends Activity {
                     });
                 }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "DatabaseError"+databaseError.getCode());
             }
         });

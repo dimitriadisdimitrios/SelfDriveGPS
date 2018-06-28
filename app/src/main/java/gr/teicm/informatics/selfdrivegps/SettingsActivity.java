@@ -2,7 +2,9 @@ package gr.teicm.informatics.selfdrivegps;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.CompoundButton;
@@ -15,8 +17,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        ToggleButton tBtnWifi = (ToggleButton) findViewById(R.id.tBtn_wifi);
-        ToggleButton tBtnBluetooth = (ToggleButton) findViewById(R.id.tBtn_bluetooth);
+        ToggleButton tBtnWifi =  findViewById(R.id.tBtn_wifi);
+        ToggleButton tBtnBluetooth =  findViewById(R.id.tBtn_bluetooth);
+        ToggleButton tBtnLocation =  findViewById(R.id.tBtn_gps);
 
         tBtnWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -38,6 +41,15 @@ public class SettingsActivity extends AppCompatActivity {
                     bluetoothAdapter.enable();
                 }else if(!isChecked && bluetoothAdapter!=null){
                     bluetoothAdapter.disable();
+                }
+            }
+        });
+
+        tBtnLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             }
         });

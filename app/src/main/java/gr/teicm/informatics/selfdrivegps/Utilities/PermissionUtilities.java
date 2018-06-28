@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps;
+package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import gr.teicm.informatics.selfdrivegps.MainActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 

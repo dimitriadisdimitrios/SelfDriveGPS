@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps;
+package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,13 +15,16 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import gr.teicm.informatics.selfdrivegps.R;
+
 
 public class DialogFragmentUtility extends DialogFragment {
     private MapsUtilities mapsUtilities = new MapsUtilities();
-    private String TAG = "DialogFragmentUtility";
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //TODO: Find a way to remove this IF statement
+        String TAG = "DialogFragmentUtility";
         Log.d(TAG, String.valueOf(mapsUtilities.getPoints()));
 
         // Use the Builder class for convenient dialog construction

@@ -37,6 +37,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.Utilities.DialogFragmentUtility;
+import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
+
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -64,8 +67,8 @@ public class MapsActivity extends FragmentActivity
         context = getApplicationContext();
 
         //Set Button from layout_maps
-        final ToggleButton mainStartBtn = (ToggleButton) findViewById(R.id.start_calculations);
-        final Button openPopUpWindow = (Button) findViewById(R.id.start_pop_btn);
+        final ToggleButton mainStartBtn =  findViewById(R.id.start_calculations);
+        final Button openPopUpWindow =  findViewById(R.id.start_pop_btn);
 
         checkToGetDataFromAnotherActivity(mainStartBtn, openPopUpWindow);
 
@@ -255,13 +258,13 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void getSpeedOfUser(float speed){
-        TextView mSpeed = (TextView) findViewById(R.id.tv_speed_of_user);
+        TextView mSpeed =  findViewById(R.id.tv_speed_of_user);
         float kmH = (float) (speed *3.6); //Convert m/s to km/h
         mSpeed.setText(getString(R.string.speed_counter, kmH));
     }
 
     public void getGpsAccuracy(float accuracy){
-        TextView mAccuracy = (TextView) findViewById(R.id.tv_accuracy_of_gps);
+        TextView mAccuracy =  findViewById(R.id.tv_accuracy_of_gps);
         mAccuracy.setText(getString(R.string.accuracy_of_gps, accuracy));
     }
 

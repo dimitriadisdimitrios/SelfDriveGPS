@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps;
+package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import android.app.PendingIntent;
 import android.content.Context;

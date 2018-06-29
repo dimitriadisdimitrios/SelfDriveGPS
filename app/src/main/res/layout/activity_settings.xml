@@ -30,16 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tBtn_bluetooth"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/location"
-            android:layout_gravity="center"
-            android:textStyle="bold|italic"/>
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tBtn_gps"/>
     </LinearLayout>
 
 </RelativeLayout>

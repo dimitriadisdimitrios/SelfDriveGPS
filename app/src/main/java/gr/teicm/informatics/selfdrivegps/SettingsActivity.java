@@ -19,7 +19,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         ToggleButton tBtnWifi =  findViewById(R.id.tBtn_wifi);
         ToggleButton tBtnBluetooth =  findViewById(R.id.tBtn_bluetooth);
-        ToggleButton tBtnLocation =  findViewById(R.id.tBtn_gps);
 
         tBtnWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -41,15 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
                     bluetoothAdapter.enable();
                 }else if(!isChecked && bluetoothAdapter!=null){
                     bluetoothAdapter.disable();
-                }
-            }
-        });
-
-        tBtnLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked) {
-                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             }
         });

@@ -42,7 +42,7 @@ public class DialogFragmentUtility extends DialogFragment {
                 })
                 .setNegativeButton(R.string.send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        EditText collectionOfLatLng = (EditText) mView.findViewById(R.id.pop_name_DB_ET); //Set Button from layout_pop
+                        EditText collectionOfLatLng =  mView.findViewById(R.id.pop_name_DB_ET); //Set Button from layout_pop
                         String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
                         if(!nameOfDataBaseKey.matches("")) {

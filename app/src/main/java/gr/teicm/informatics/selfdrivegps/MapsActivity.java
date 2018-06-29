@@ -39,6 +39,7 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogFragmentUtility;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
+import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -100,6 +101,8 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         checkLocationPermission();
+        PermissionUtilities.enableLoc(googleApiClient,this);
+//        PermissionUtilities.enableLoc(googleApiClient,context);
 
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
@@ -182,6 +185,8 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Connected to Google Api Client");
+        googleApiClient.connect();
+
         //Check if app start from Start or from load field
         if(getIntent().getExtras()!=null){
             //TODO: Find a way to get id
@@ -207,7 +212,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !
-//        super.onBackPressed();
+        super.onBackPressed();
     }
 
     //All Permissions i need for android 6.0 and above
@@ -258,13 +263,13 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void getSpeedOfUser(float speed){
-        TextView mSpeed =  findViewById(R.id.tv_speed_of_user);
+        TextView mSpeed = findViewById(R.id.tv_speed_of_user);
         float kmH = (float) (speed *3.6); //Convert m/s to km/h
         mSpeed.setText(getString(R.string.speed_counter, kmH));
     }
 
     public void getGpsAccuracy(float accuracy){
-        TextView mAccuracy =  findViewById(R.id.tv_accuracy_of_gps);
+        TextView mAccuracy = findViewById(R.id.tv_accuracy_of_gps);
         mAccuracy.setText(getString(R.string.accuracy_of_gps, accuracy));
     }
 
@@ -274,6 +279,37 @@ public class MapsActivity extends FragmentActivity
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         MapsUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
-
     }
+
+//    private void enableLoc(GoogleApiClient mGoogleApiClient) {
+//        LocationRequest locationRequest = LocationRequest.create();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest.setInterval(30 * 1000);
+//        locationRequest.setFastestInterval(5 * 1000);
+//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+//                .addLocationRequest(locationRequest);
+//        builder.setAlwaysShow(true);
+//
+//        PendingResult<LocationSettingsResult> result =
+//                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+//        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+//            @Override
+//            public void onResult(LocationSettingsResult result) {
+//                final Status status = result.getStatus();
+//                switch (status.getStatusCode()) {
+//                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+//                        try {
+//                            // Show the dialog by calling startResolutionForResult(),
+//                            // and check the result in onActivityResult().
+//                            status.startResolutionForResult(MapsActivity.this, REQUEST_LOCATION);
+//
+//                            finish();
+//                        } catch (IntentSender.SendIntentException e) {
+//                            // Ignore the error.
+//                        }
+//                        break;
+//                }
+//            }
+//        });
+//    }
 }

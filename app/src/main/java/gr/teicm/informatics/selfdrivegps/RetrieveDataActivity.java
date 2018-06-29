@@ -20,6 +20,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
+
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 
@@ -55,6 +58,7 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
+                        Controller.setIdOfListView(childName);
 
                         for (DataSnapshot childCount: dataSnapshot.child(childName).getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);

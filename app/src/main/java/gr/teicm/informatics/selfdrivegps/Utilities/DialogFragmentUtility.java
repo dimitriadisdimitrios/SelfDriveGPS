@@ -19,13 +19,13 @@ import gr.teicm.informatics.selfdrivegps.R;
 
 
 public class DialogFragmentUtility extends DialogFragment {
-    private MapsUtilities mapsUtilities = new MapsUtilities();
+    private Controller controller = new Controller();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //TODO: Find a way to remove this IF statement
         String TAG = "DialogFragmentUtility";
-        Log.d(TAG, String.valueOf(mapsUtilities.getPoints()));
+        Log.d(TAG, String.valueOf(controller.getPoints()));
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -46,7 +46,7 @@ public class DialogFragmentUtility extends DialogFragment {
                         String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
                         if(!nameOfDataBaseKey.matches("")) {
-                            databaseReference.child(nameOfDataBaseKey).setValue(mapsUtilities.getPoints()); //Create child with specific name which include LatLng
+                            databaseReference.child(nameOfDataBaseKey).setValue(controller.getPoints()); //Create child with specific name which include LatLng
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
                             }

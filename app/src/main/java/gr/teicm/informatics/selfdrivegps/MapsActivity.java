@@ -37,7 +37,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogFragmentUtility;
+import gr.teicm.informatics.selfdrivegps.Utilities.GeofenceUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
@@ -55,7 +57,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> points = new ArrayList<>();
     private Context context = null;
-    private MapsUtilities mapsUtilities = new MapsUtilities();
+    private Controller controller = new Controller();
 
 
     @Override
@@ -84,8 +86,8 @@ public class MapsActivity extends FragmentActivity
                 } else {
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = false;
-                    mapsUtilities.setPoints(points);
-                    Log.d(TAG+"!!", String.valueOf(mapsUtilities.getPoints()));
+                    controller.setPoints(points);
+                    Log.d(TAG+"!!", String.valueOf(controller.getPoints()));
                 }
             }
         });
@@ -137,7 +139,6 @@ public class MapsActivity extends FragmentActivity
         mMap.addPolygon(polygonOptions);
     }
 
-
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -162,10 +163,9 @@ public class MapsActivity extends FragmentActivity
         if(btn_haveBeenClicked) {
             if(!MapsUtilities.checkIfLatLngExist(latLng, points)){
                 points.add(latLng);
-                Log.d(TAG, String.valueOf(points));
+//                Log.d(TAG, String.valueOf(points));
             }
         }
-
         placePolylineForRoute(points);
     }
 
@@ -191,9 +191,10 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null){
             //TODO: Find a way to get id
             LatLng centerOfField = MapsUtilities.getPolygonCenterPoint(mArray);
+
             geofenceInitialize("Serres", centerOfField);
             //TODO: Create a function to calculate an adaptive range
-            mMap.addCircle(MapsUtilities.createCircleOptions(centerOfField,50));
+            mMap.addCircle(GeofenceUtilities.createCircleOptions(centerOfField,50));
             placePolygonForRoute(mArray);
         }
     }
@@ -251,7 +252,6 @@ public class MapsActivity extends FragmentActivity
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn, Button openPopUp){
         mArray = getIntent().getParcelableArrayListExtra("latLng"); //Fill mArray with Lat\Lng
-
         //Make buttons invisible
         if(getIntent().getExtras()!=null) {
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
@@ -278,38 +278,6 @@ public class MapsActivity extends FragmentActivity
         Intent intent = new Intent(this, GeofenceService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        MapsUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
+        GeofenceUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
     }
-
-//    private void enableLoc(GoogleApiClient mGoogleApiClient) {
-//        LocationRequest locationRequest = LocationRequest.create();
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        locationRequest.setInterval(30 * 1000);
-//        locationRequest.setFastestInterval(5 * 1000);
-//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-//                .addLocationRequest(locationRequest);
-//        builder.setAlwaysShow(true);
-//
-//        PendingResult<LocationSettingsResult> result =
-//                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
-//        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-//            @Override
-//            public void onResult(LocationSettingsResult result) {
-//                final Status status = result.getStatus();
-//                switch (status.getStatusCode()) {
-//                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-//                        try {
-//                            // Show the dialog by calling startResolutionForResult(),
-//                            // and check the result in onActivityResult().
-//                            status.startResolutionForResult(MapsActivity.this, REQUEST_LOCATION);
-//
-//                            finish();
-//                        } catch (IntentSender.SendIntentException e) {
-//                            // Ignore the error.
-//                        }
-//                        break;
-//                }
-//            }
-//        });
-//    }
 }

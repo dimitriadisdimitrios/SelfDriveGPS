@@ -19,8 +19,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class GeofenceUtilities {
     private static String TAG = "GeofenceUtilities";
+    private static Controller controller = new Controller();
     //Create Geo fence objects
-    public static void geofence(String id, LatLng latLng, GoogleApiClient googleApiClient, PendingIntent pendingIntent, Context context) {
+    public static void geofence(String id, LatLng latLng, GoogleApiClient googleApiClient, PendingIntent pendingIntent, final Context context) {
 
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(id)
@@ -42,7 +43,7 @@ public class GeofenceUtilities {
                     @Override
                     public void onResult(@NonNull Status status) {
                         if (status.isSuccess()) {
-                            Log.d(TAG, "Successfully added to geofence: " + Controller.getIdOfListView());
+                            Log.d(TAG, "Successfully added to geofence: "+ controller.getIdOfListView());
                         } else {
                             Log.d(TAG, "Failed to add geofence");
                             Log.d(TAG, "Called... FAILURE: " + status.getStatusMessage() + " code: " + status.getStatusCode());

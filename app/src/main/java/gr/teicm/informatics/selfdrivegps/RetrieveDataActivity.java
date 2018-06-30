@@ -21,13 +21,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
-import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 
     private ArrayList<String> fList = new ArrayList<>();
     private ArrayList<LatLng> points = new ArrayList<>();
+    private Controller controller = new Controller();
     private Context context;
 
     @Override
@@ -58,7 +58,7 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
-                        Controller.setIdOfListView(childName);
+                        controller.setIdOfListView(childName);
 
                         for (DataSnapshot childCount: dataSnapshot.child(childName).getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
@@ -71,6 +71,7 @@ public class RetrieveDataActivity extends Activity {
                         Intent strMaps = new Intent(context, MapsActivity.class);
                         strMaps.putExtra("buttonStatus", "invisible");
                         strMaps.putParcelableArrayListExtra("latLng", points);
+                        strMaps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(strMaps);
                         }
                     });

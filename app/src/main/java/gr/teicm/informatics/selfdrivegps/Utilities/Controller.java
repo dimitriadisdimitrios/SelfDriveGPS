@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Controller {
     private static ArrayList<LatLng> arrayList;
     private static String idOfList;
+    private static LatLng mLatLng;
 
     //Setter for ArrayList<LatLng>
     public void setPoints(ArrayList<LatLng> points){
@@ -17,11 +18,19 @@ public class Controller {
         return arrayList;
     }
 
-    public static void setIdOfListView(String id){
+    public void setIdOfListView(String id){
         idOfList = id;
     }
 
-    public static String getIdOfListView(){
+    public String getIdOfListView(){
         return idOfList;
+    }
+
+    public void setLocationOfUser(LatLng latLng){
+        mLatLng = latLng;
+    }
+
+    public LatLng getLocationOfUser() {
+        return mLatLng;
     }
 }

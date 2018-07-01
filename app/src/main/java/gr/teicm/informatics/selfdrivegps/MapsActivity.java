@@ -49,6 +49,8 @@ public class MapsActivity extends FragmentActivity
     private static final String TAG = "MapsActivity";
     private static final long MIN_TIME = 100;
     private static final long MIN_DISTANCE = 2;
+    private static final int RADIUS_OF_GEOFENCE = 100;
+
 
     private boolean btn_haveBeenClicked = false;
     private GoogleApiClient googleApiClient = null;
@@ -86,7 +88,6 @@ public class MapsActivity extends FragmentActivity
                 } else {
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = false;
-                    controller.setPoints(points);
                     Log.d(TAG+"!!", String.valueOf(controller.getPoints()));
                 }
             }
@@ -128,7 +129,7 @@ public class MapsActivity extends FragmentActivity
     }
     public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
         PolygonOptions polygonOptions = new PolygonOptions()
-                .fillColor(Color.GREEN)
+                .fillColor(Color.TRANSPARENT)
                 .strokeColor(Color.GREEN)
                 .strokeWidth(2);
         if(directionPoints!=null){
@@ -159,6 +160,7 @@ public class MapsActivity extends FragmentActivity
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
+        controller.setLocationOfUser(latLng);
 
         if(btn_haveBeenClicked) {
             if(!MapsUtilities.checkIfLatLngExist(latLng, points)){
@@ -167,6 +169,8 @@ public class MapsActivity extends FragmentActivity
             }
         }
         placePolylineForRoute(points);
+
+        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
     }
 
     @Override
@@ -191,10 +195,11 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null){
             //TODO: Find a way to get id
             LatLng centerOfField = MapsUtilities.getPolygonCenterPoint(mArray);
+            controller.setPoints(mArray);
 
             geofenceInitialize("Serres", centerOfField);
             //TODO: Create a function to calculate an adaptive range
-            mMap.addCircle(GeofenceUtilities.createCircleOptions(centerOfField,50));
+            mMap.addCircle(GeofenceUtilities.createCircleOptions(centerOfField,RADIUS_OF_GEOFENCE));
             placePolygonForRoute(mArray);
         }
     }

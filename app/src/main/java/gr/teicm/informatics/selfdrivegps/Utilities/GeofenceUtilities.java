@@ -19,13 +19,14 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class GeofenceUtilities {
     private static String TAG = "GeofenceUtilities";
+    private static final int RADIUS_OF_GEOFENCE = 100;
     private static Controller controller = new Controller();
     //Create Geo fence objects
     public static void geofence(String id, LatLng latLng, GoogleApiClient googleApiClient, PendingIntent pendingIntent, final Context context) {
 
         Geofence geofence = new Geofence.Builder()
                 .setRequestId(id)
-                .setCircularRegion(latLng.latitude, latLng.longitude, 50)
+                .setCircularRegion(latLng.latitude, latLng.longitude, RADIUS_OF_GEOFENCE)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setNotificationResponsiveness(1000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)

@@ -145,8 +145,7 @@ public class MapsActivity extends FragmentActivity
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
         float accuracyOfGps = location.getAccuracy();
-        getSpeedOfUser(speedOfUser);
-        getGpsAccuracy(accuracyOfGps);
+        getSpecsForStatusBar(speedOfUser, accuracyOfGps); // Show speed and accuracy of GPS up-right on map
 
         //Get bearing so i can use it to follow the user with the right direction
         float mBearing = location.getBearing();
@@ -266,15 +265,13 @@ public class MapsActivity extends FragmentActivity
         }
     }
 
-    public void getSpeedOfUser(float speed){
+    public void getSpecsForStatusBar(float speed, float accuracy){
         TextView mSpeed = findViewById(R.id.tv_speed_of_user);
-        float kmH = (float) (speed *3.6); //Convert m/s to km/h
-        Log.d("GetSpeedOfUser", String.valueOf(kmH));
-        mSpeed.setText(getString(R.string.speed_counter, kmH));
-    }
-
-    public void getGpsAccuracy(float accuracy){
         TextView mAccuracy = findViewById(R.id.tv_accuracy_of_gps);
+
+        float kmH = (float) (speed *3.6); //Convert m/s to km/h
+
+        mSpeed.setText(getString(R.string.speed_counter, kmH));
         mAccuracy.setText(getString(R.string.accuracy_of_gps, accuracy));
     }
 

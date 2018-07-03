@@ -91,6 +91,7 @@ public class MapsActivity extends FragmentActivity
                 }
             }
         });
+
         //Set listener on button to transfer data to database
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +105,6 @@ public class MapsActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         checkLocationPermission();
         PermissionUtilities.enableLoc(googleApiClient,this);
-//        PermissionUtilities.enableLoc(googleApiClient,context);
 
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
@@ -189,10 +189,9 @@ public class MapsActivity extends FragmentActivity
 
         //Check if app start from Start or from load field
         if(getIntent().getExtras()!=null){
-            //TODO: Find a way to get id
             LatLng centerOfField = MapsUtilities.getPolygonCenterPoint(mArray);
 
-            geofenceInitialize("Serres", centerOfField);
+            geofenceInitialize(controller.getIdOfListView(), centerOfField);
             //TODO: Create a function to calculate an adaptive range
             mMap.addCircle(GeofenceUtilities.createCircleOptions(centerOfField,50));
             placePolygonForRoute(mArray);
@@ -265,6 +264,7 @@ public class MapsActivity extends FragmentActivity
     public void getSpeedOfUser(float speed){
         TextView mSpeed = findViewById(R.id.tv_speed_of_user);
         float kmH = (float) (speed *3.6); //Convert m/s to km/h
+        Log.d("GetSpeedOfUser", String.valueOf(kmH));
         mSpeed.setText(getString(R.string.speed_counter, kmH));
     }
 

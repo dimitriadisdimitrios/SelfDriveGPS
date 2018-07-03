@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -60,7 +61,8 @@ public class MapsActivity extends FragmentActivity
     private ArrayList<LatLng> points = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
-
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +94,6 @@ public class MapsActivity extends FragmentActivity
                 }
             }
         });
-
         //Set listener on button to transfer data to database
         openPopUpWindow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,35 +114,9 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
-
-    //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
-    public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
-        PolylineOptions rectLine = new PolylineOptions()
-                .width(5)
-                .color(Color.GREEN);
-
-        if(directionPoints!=null){
-            for (int i = 0; i < directionPoints.size(); i++) {
-                rectLine.add(directionPoints.get(i));
-            }
-        }
-        mMap.addPolyline(rectLine);
-    }
-    public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
-        PolygonOptions polygonOptions = new PolygonOptions()
-                .fillColor(Color.TRANSPARENT)
-                .strokeColor(Color.GREEN)
-                .strokeWidth(2);
-        if(directionPoints!=null){
-            for (int i = 0; i < directionPoints.size(); i++) {
-                polygonOptions.add(directionPoints.get(i));
-            }
-        }
-        mMap.addPolygon(polygonOptions);
-    }
-
     @Override
     public void onLocationChanged(Location location) {
+        checkIfUserStandStill();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
         float accuracyOfGps = location.getAccuracy();
@@ -172,17 +147,50 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
     }
 
+    //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
+    public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
+        PolylineOptions rectLine = new PolylineOptions()
+                .width(5)
+                .color(Color.GREEN);
+
+        if(directionPoints!=null){
+            for (int i = 0; i < directionPoints.size(); i++) {
+                rectLine.add(directionPoints.get(i));
+            }
+        }
+        mMap.addPolyline(rectLine);
+    }
+    public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
+        PolygonOptions polygonOptions = new PolygonOptions()
+                .fillColor(Color.TRANSPARENT)
+                .strokeColor(Color.GREEN)
+                .strokeWidth(2);
+        if(directionPoints!=null){
+            for (int i = 0; i < directionPoints.size(); i++) {
+                polygonOptions.add(directionPoints.get(i));
+            }
+        }
+        mMap.addPolygon(polygonOptions);
+    }
+
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {}
-
     @Override
     public void onProviderEnabled(String s) {
         Log.i(TAG, "Provider has been enabled");
     }
-
     @Override
     public void onProviderDisabled(String s) {
         Log.i(TAG, "Provider has been disabled");
+    }
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Suspended connection to Google Api Client");
+    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
+        googleApiClient.reconnect();
     }
 
     @Override
@@ -201,18 +209,6 @@ public class MapsActivity extends FragmentActivity
             placePolygonForRoute(mArray);
         }
     }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Suspended connection to Google Api Client");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
-        googleApiClient.reconnect();
-    }
-
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !
@@ -281,5 +277,16 @@ public class MapsActivity extends FragmentActivity
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         GeofenceUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
+    }
+
+    public void checkIfUserStandStill(){
+        handler.removeCallbacks(runnable);
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                getSpecsForStatusBar(0,0);
+            }
+        };
+        handler.postDelayed(runnable, 1500);
     }
 }

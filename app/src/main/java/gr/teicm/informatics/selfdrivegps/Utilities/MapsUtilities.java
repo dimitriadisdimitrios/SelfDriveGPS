@@ -3,12 +3,15 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
+
+import gr.teicm.informatics.selfdrivegps.MapsActivity;
 
 import static java.lang.Float.MAX_VALUE;
 
@@ -69,8 +72,7 @@ public class MapsUtilities {
         return (crossings % 2 == 1);
     }
 
-    private static boolean RayCrossesSegment(LatLng point, LatLng a, LatLng b)
-    {
+    private static boolean RayCrossesSegment(LatLng point, LatLng a, LatLng b) {
         double px = point.longitude;
         double py = point.latitude;
         double ax = a.longitude;

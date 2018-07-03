@@ -20,5 +20,7 @@
     <string name="gps_not_found">GPS Not Found</string>
     <string name="speed_counter"> %.1f km/h </string>
     <string name="accuracy_of_gps"> %.1f m </string>
+    <string name="speed_counter_default"> 0 km/h </string>
+    <string name="accuracy_of_gps_default"> 0 m </string>
     <string name="location">Location</string>
 </resources>

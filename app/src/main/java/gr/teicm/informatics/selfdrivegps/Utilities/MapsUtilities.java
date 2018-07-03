@@ -54,8 +54,7 @@ public class MapsUtilities {
         int count = thePath.size();
         LatLng a,b;
         // for each edge
-        for (int i=0; i < count; i++)
-        {
+        for (int i=0; i < count; i++) {
             a = thePath.get(i);
             int j = i + 1;
             if (j >= count) {

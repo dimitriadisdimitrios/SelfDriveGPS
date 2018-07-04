@@ -3,15 +3,12 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
-
-import gr.teicm.informatics.selfdrivegps.MapsActivity;
 
 import static java.lang.Float.MAX_VALUE;
 
@@ -51,6 +48,7 @@ public class MapsUtilities {
         return true;
     }
 
+    //Function to know if user is in polygon or not
     public static boolean PointIsInRegion(LatLng mlatLng, ArrayList<LatLng> thePath)
     {
         int crossings = 0;
@@ -71,7 +69,7 @@ public class MapsUtilities {
         // odd number of crossings?
         return (crossings % 2 == 1);
     }
-
+    //Ray algorithm to calculate area of polygon
     private static boolean RayCrossesSegment(LatLng point, LatLng a, LatLng b) {
         double px = point.longitude;
         double py = point.latitude;

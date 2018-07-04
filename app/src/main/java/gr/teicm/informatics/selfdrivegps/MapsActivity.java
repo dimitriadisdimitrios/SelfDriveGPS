@@ -279,6 +279,7 @@ public class MapsActivity extends FragmentActivity
         GeofenceUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
     }
 
+    //Check if user moving. If it stay still the counter start to reset speed and accuracy
     public void checkIfUserStandStill(){
         handler.removeCallbacks(runnable);
         runnable = new Runnable() {

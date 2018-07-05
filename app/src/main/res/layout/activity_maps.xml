@@ -8,22 +8,22 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:orientation="vertical">
         <TextView
             android:id="@+id/tv_speed_of_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:textColor="@color/colorAccent"
-            android:text="@string/_0_km_h" />
+            android:text="@string/speed_counter_default" />
         <TextView
             android:id="@+id/tv_accuracy_of_gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textColor="@color/colorAccent"
-            android:text="@string/gps_not_found" />
+            android:text="@string/accuracy_of_gps_default" />
     </LinearLayout>
     <ToggleButton
         android:id="@+id/start_calculations"

@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,9 +69,8 @@ public class MapsActivity extends FragmentActivity
 
         //Set Button from layout_maps
         final ToggleButton mainStartBtn =  findViewById(R.id.start_calculations);
-        final Button openPopUpWindow =  findViewById(R.id.start_pop_btn);
 
-        checkToGetDataFromAnotherActivity(mainStartBtn, openPopUpWindow);
+        checkToGetDataFromAnotherActivity(mainStartBtn);
 
         //Set listener on button to start store LatLng on array
         mainStartBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -86,14 +84,8 @@ public class MapsActivity extends FragmentActivity
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = false;
                     Log.d(TAG+"!!", String.valueOf(controller.getPoints()));
+                    showAlertDialog();//Set listener on button to transfer data to database
                 }
-            }
-        });
-        //Set listener on button to transfer data to database
-        openPopUpWindow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAlertDialog();
             }
         });
     }
@@ -131,16 +123,15 @@ public class MapsActivity extends FragmentActivity
         mMap.animateCamera(cameraUpdate);
         controller.setLocationOfUser(latLng);
 
-        if(btn_haveBeenClicked) {
-            if(!MapsUtilities.checkIfLatLngExist(latLng, points)){
-                points.add(latLng);
-                controller.setPoints(points);
+        if(btn_haveBeenClicked && !MapsUtilities.checkIfLatLngExist(latLng, points)) {
+            points.add(latLng);
+            controller.setPoints(points);
 //                Log.d(TAG, String.valueOf(points));
-            }
         }
         placePolylineForRoute(points);
 
-        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
+        //TODO: Fix the error when app starts in the Region
+//        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
     }
 
     //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
@@ -148,7 +139,6 @@ public class MapsActivity extends FragmentActivity
         PolylineOptions rectLine = new PolylineOptions()
                 .width(5)
                 .color(Color.GREEN);
-
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
                 rectLine.add(directionPoints.get(i));
@@ -160,7 +150,7 @@ public class MapsActivity extends FragmentActivity
         PolygonOptions polygonOptions = new PolygonOptions()
                 .fillColor(Color.TRANSPARENT)
                 .strokeColor(Color.GREEN)
-                .strokeWidth(2);
+                .strokeWidth(5);
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
                 polygonOptions.add(directionPoints.get(i));
@@ -194,8 +184,7 @@ public class MapsActivity extends FragmentActivity
         Log.i(TAG, "Connected to Google Api Client");
         googleApiClient.connect();
 
-        //Check if app start from Start or from load field
-        if(getIntent().getExtras()!=null){
+        if(getIntent().getExtras()!=null){ //Check if app start from Start or from load field
             placePolygonForRoute(mArray);
         }
     }
@@ -239,14 +228,13 @@ public class MapsActivity extends FragmentActivity
         dialogFragmentUtility.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
 
-    public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn, Button openPopUp){
+    public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
         mArray = getIntent().getParcelableArrayListExtra("latLng"); //Fill mArray with Lat\Lng
         //Make buttons invisible
         if(getIntent().getExtras()!=null) {
             String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
             if (valueFromRetrieveDataActivityClass!=null&& valueFromRetrieveDataActivityClass.equals("invisible")) {
                 mainBtn.setVisibility(View.INVISIBLE);
-                openPopUp.setVisibility(View.INVISIBLE);
             }
         }
     }

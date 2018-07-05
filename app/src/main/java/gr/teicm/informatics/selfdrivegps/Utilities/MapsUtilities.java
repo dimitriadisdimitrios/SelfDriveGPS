@@ -54,8 +54,8 @@ public class MapsUtilities {
         int crossings = 0;
         int count = thePath.size();
         LatLng a,b;
-        // for each edge
-        for (int i=0; i < count; i++) {
+
+        for (int i=0; i < count; i++) { // for each edge
             a = thePath.get(i);
             int j = i + 1;
             if (j >= count) {
@@ -66,9 +66,9 @@ public class MapsUtilities {
                 crossings++;
             }
         }
-        // odd number of crossings?
-        return (crossings % 2 == 1);
+        return (crossings % 2 == 1); // odd number of crossings?
     }
+
     //Ray algorithm to calculate area of polygon
     private static boolean RayCrossesSegment(LatLng point, LatLng a, LatLng b) {
         double px = point.longitude;

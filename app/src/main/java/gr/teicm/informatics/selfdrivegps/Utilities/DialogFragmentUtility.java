@@ -12,8 +12,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.R;
 
@@ -46,10 +49,12 @@ public class DialogFragmentUtility extends DialogFragment {
                         String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
                         if(!nameOfDataBaseKey.matches("")) {
-                            databaseReference.child(nameOfDataBaseKey).setValue(controller.getPoints()); //Create child with specific name which include LatLng
+                            ArrayList<LatLng> mPoints = controller.getPoints();
+                            databaseReference.child(nameOfDataBaseKey).setValue(mPoints); //Create child with specific name which include LatLng
                             Log.d("dialog", String.valueOf(controller.getPoints()));
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
+                                mPoints.clear();
                             }
                         }else {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

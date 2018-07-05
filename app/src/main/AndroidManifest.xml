@@ -50,7 +50,6 @@
 
         <activity android:name=".SettingsActivity" />
 
-        <service android:name=".GeofenceService"/>
     </application>
 
 </manifest>

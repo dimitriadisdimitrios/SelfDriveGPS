@@ -1,8 +1,6 @@
 package gr.teicm.informatics.selfdrivegps;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -40,7 +38,6 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogFragmentUtility;
-import gr.teicm.informatics.selfdrivegps.Utilities.GeofenceUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
@@ -50,8 +47,6 @@ public class MapsActivity extends FragmentActivity
     private static final String TAG = "MapsActivity";
     private static final long MIN_TIME = 100;
     private static final long MIN_DISTANCE = 2;
-    private static final int RADIUS_OF_GEOFENCE = 100;
-
 
     private boolean btn_haveBeenClicked = false;
     private GoogleApiClient googleApiClient = null;
@@ -139,6 +134,7 @@ public class MapsActivity extends FragmentActivity
         if(btn_haveBeenClicked) {
             if(!MapsUtilities.checkIfLatLngExist(latLng, points)){
                 points.add(latLng);
+                controller.setPoints(points);
 //                Log.d(TAG, String.valueOf(points));
             }
         }
@@ -200,12 +196,6 @@ public class MapsActivity extends FragmentActivity
 
         //Check if app start from Start or from load field
         if(getIntent().getExtras()!=null){
-            LatLng centerOfField = MapsUtilities.getPolygonCenterPoint(mArray);
-            controller.setPoints(mArray);
-
-            geofenceInitialize(controller.getIdOfListView(), centerOfField);
-            //TODO: Create a function to calculate an adaptive range
-            mMap.addCircle(GeofenceUtilities.createCircleOptions(centerOfField,RADIUS_OF_GEOFENCE));
             placePolygonForRoute(mArray);
         }
     }
@@ -269,14 +259,6 @@ public class MapsActivity extends FragmentActivity
 
         mSpeed.setText(getString(R.string.speed_counter, kmH));
         mAccuracy.setText(getString(R.string.accuracy_of_gps, accuracy));
-    }
-
-    //Create Geo fence object on map through MapsUtilities
-    public void geofenceInitialize(String id, LatLng latLng){
-        Intent intent = new Intent(this, GeofenceService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        GeofenceUtilities.geofence(id, latLng, googleApiClient,pendingIntent,this);
     }
 
     //Check if user moving. If it stay still the counter start to reset speed and accuracy

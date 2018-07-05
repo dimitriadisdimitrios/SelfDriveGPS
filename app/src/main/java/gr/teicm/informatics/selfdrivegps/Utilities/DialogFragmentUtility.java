@@ -47,6 +47,7 @@ public class DialogFragmentUtility extends DialogFragment {
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
                         if(!nameOfDataBaseKey.matches("")) {
                             databaseReference.child(nameOfDataBaseKey).setValue(controller.getPoints()); //Create child with specific name which include LatLng
+                            Log.d("dialog", String.valueOf(controller.getPoints()));
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
                             }

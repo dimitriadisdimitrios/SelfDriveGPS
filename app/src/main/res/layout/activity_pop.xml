@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:inputType="text"
         android:ems="10"
-        android:hint="@string/field_name" />
+        android:hint="@string/et_give_name_of_field_you_saved_popActivity" />
 
 </LinearLayout>

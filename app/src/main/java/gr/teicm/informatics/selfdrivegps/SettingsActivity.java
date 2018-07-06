@@ -19,7 +19,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         final ToggleButton tBtnWifi =  findViewById(R.id.tBtn_wifi);
         final ToggleButton tBtnBluetooth =  findViewById(R.id.tBtn_bluetooth);
-        TextView tvBluetooth = findViewById(R.id.tv_bluetooth);
+        TextView tvBluetooth = findViewById(R.id.tBtn_bluetooth);
 
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

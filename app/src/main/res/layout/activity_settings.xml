@@ -1,36 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsActivity"
+    android:orientation="vertical"
     android:gravity="center">
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_wifi_switch_settingsActivity"
+        android:layout_gravity="center"
+        android:textStyle="bold|italic"/>
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tBtn_wifi"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_bluetooth_switch_settingsActivity"
+        android:layout_gravity="center"
+        android:textStyle="bold|italic"/>
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tBtn_bluetooth"/>
+    <Space
+        android:layout_width="32dp"
+        android:layout_height="25dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_rangeOfSet_settingsActivity"
+        android:layout_gravity="center"
+        android:textStyle="bold|italic"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:text="-"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wi_fi"
-            android:layout_gravity="center"
-            android:textStyle="bold|italic"/>
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tBtn_wifi"/>
+            android:text="\t322.2"/>
         <TextView
-            android:id="@+id/tv_bluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bluetooth"
-            android:layout_gravity="center"
-            android:textStyle="bold|italic"/>
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tBtn_bluetooth"/>
+            android:text="\t\tm"/>
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:text="+"/>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

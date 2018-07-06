@@ -35,15 +35,15 @@ public class DialogFragmentUtility extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View mView = inflater.inflate(R.layout.activity_pop,null);
         builder.setView(mView);
-        builder.setMessage(R.string.pop_to_send_latLng)
-                .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.label_on_dialog)
+                .setPositiveButton(R.string.bt_on_dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             Toast.makeText(getContext(),"Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
-                .setNegativeButton(R.string.send, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         EditText collectionOfLatLng =  mView.findViewById(R.id.pop_name_DB_ET); //Set Button from layout_pop
                         String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox

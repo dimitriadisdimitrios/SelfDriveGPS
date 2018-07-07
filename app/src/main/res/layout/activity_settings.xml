@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tv_bluetooth_switch_settingsActivity"
+        android:id="@+id/tv_bluetooth"
         android:layout_gravity="center"
         android:textStyle="bold|italic"/>
     <ToggleButton
@@ -42,19 +43,31 @@
         <Button
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:text="-"/>
+            android:id="@+id/btn_sub"
+            android:text="@string/sub_btn_settingsActivity"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="\t322.2"/>
+            android:id="@+id/tv_range_of_field_meter"
+            android:text="@string/tv_default_range_field"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="\t\tm"/>
+            android:text="@string/tv_meter_of_range_for_field_default"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
         <Button
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:text="+"/>
+            android:id="@+id/btn_plus"
+            android:text="@string/plus_btn_settingsActivity"/>
     </LinearLayout>
 
 </LinearLayout>

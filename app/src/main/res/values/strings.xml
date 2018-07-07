@@ -5,6 +5,7 @@
     <string name="start">Start</string>
     <string name="speed_counter"> %.1f km/h </string>
     <string name="accuracy_of_gps"> %.1f m </string>
+    <string name="tv_meter_of_range_for_field"> %.1f</string>
     <string name="speed_counter_default"> 0 km/h </string>
     <string name="accuracy_of_gps_default"> 0 m </string>
     <string name="tv_bluetooth_switch_settingsActivity">bluetooth</string>
@@ -17,4 +18,8 @@
     <string name="bt_on_dialog_cancel">Cancel</string>
     <string name="bt_on_dialog_send">Send</string>
     <string name="label_on_dialog">Save field to the database</string>
+    <string name="plus_btn_settingsActivity">+</string>
+    <string name="sub_btn_settingsActivity">-</string>
+    <string name="tv_meter_of_range_for_field_default">m</string>
+    <string name="tv_default_range_field">5.1</string>
 </resources>

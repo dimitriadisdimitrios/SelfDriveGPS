@@ -44,7 +44,7 @@ public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MapsActivity";
-    private static final long MIN_TIME = 10;
+    private static final long MIN_TIME = 5;
     private static final long MIN_DISTANCE = 1;
 
     private boolean btn_haveBeenClicked = false;
@@ -96,7 +96,9 @@ public class MapsActivity extends FragmentActivity
         PermissionUtilities.enableLoc(googleApiClient,this);
 
         mMap = googleMap;
-        mMap.setMyLocationEnabled(false); //TODO: Google : android studio map change blue dot
+        mMap.setMyLocationEnabled(false);
+//        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
+//        mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);

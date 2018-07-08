@@ -25,7 +25,7 @@
             android:textColor="@color/colorAccent"
             android:text="@string/accuracy_of_gps_default" />
     </LinearLayout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -34,9 +34,15 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/arrow_vector"
-            android:rotation="270"
-            />
-    </LinearLayout>
+            android:contentDescription="@string/arrow_imageView"
+            android:rotation="270" />
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/black_line_range"
+            android:contentDescription="@string/line_rage_imageView"
+            android:rotation="45"/>
+    </RelativeLayout>
     <ToggleButton
         android:id="@+id/start_calculations"
         android:layout_width="wrap_content"

@@ -22,4 +22,6 @@
     <string name="sub_btn_settingsActivity">-</string>
     <string name="tv_meter_of_range_for_field_default">m</string>
     <string name="tv_default_range_field">5.1</string>
+    <string name="arrow_imageView">arrow</string>
+    <string name="line_rage_imageView">line rage</string>
 </resources>

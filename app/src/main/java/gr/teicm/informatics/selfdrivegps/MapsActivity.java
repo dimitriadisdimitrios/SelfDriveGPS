@@ -83,8 +83,9 @@ public class MapsActivity extends FragmentActivity
                 } else {
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = false;
-                    Log.d(TAG+"!!", String.valueOf(controller.getPoints()));
                     showAlertDialog();//Set listener on button to transfer data to database
+                    mMap.clear(); //Remove polyline from the record mode
+                    placePolygonForRoute(controller.getPoints()); //Get ArrayList<LatLng> to transfer polyline to polygon
                 }
             }
         });
@@ -136,11 +137,10 @@ public class MapsActivity extends FragmentActivity
 //        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
     }
 
-    //TODO: Fix polyLine not to attach with previous LatLng when DemoBTN pushed again
     public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
         PolylineOptions rectLine = new PolylineOptions()
                 .width(5)
-                .color(Color.GREEN);
+                .color(Color.RED);
         if(directionPoints!=null){
             for (int i = 0; i < directionPoints.size(); i++) {
                 rectLine.add(directionPoints.get(i));

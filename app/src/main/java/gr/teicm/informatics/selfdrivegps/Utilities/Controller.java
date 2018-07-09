@@ -1,7 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
 public class Controller {

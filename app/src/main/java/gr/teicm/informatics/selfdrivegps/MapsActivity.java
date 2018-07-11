@@ -30,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -103,6 +104,14 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        if(getIntent().getExtras()!=null) {
+            LatLng center = MapsUtilities.getPolygonCenterPoint(mArray);
+            mMap.addMarker(new MarkerOptions().position(center));
+            LatLng mCester = MapsUtilities.calculateLocationFewMetersAhead(center);
+            mMap.addMarker(new MarkerOptions().position(mCester));
+        }
+
     }
     @Override
     public void onLocationChanged(Location location) {

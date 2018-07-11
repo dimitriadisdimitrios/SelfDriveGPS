@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 
 import static java.lang.Float.MAX_VALUE;
+import static java.lang.Math.cos;
 
 public class MapsUtilities {
 //    private static String TAG = "MapsUtilities";
@@ -96,6 +97,13 @@ public class MapsUtilities {
         double red = (ax != bx) ? ((by - ay) / (bx - ax)) : MAX_VALUE;
         double blue = (ax != px) ? ((py - ay) / (px - ax)) : MAX_VALUE;
         return (blue >= red);
+    }
+
+    public static LatLng calculateLocationFewMetersAhead(LatLng latLng){ //TODO: Must find the right algorithm
+        double nLat = latLng.latitude + (50000/6378)*(180/3.14);
+        double nLon = latLng.longitude + (50000/6378)*(180/3.14) /cos(latLng.latitude*3.14/180);
+        LatLng nLatLng = new LatLng(nLat, nLon);
+        return nLatLng;
     }
 }
 

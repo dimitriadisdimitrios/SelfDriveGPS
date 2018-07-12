@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 
 import static java.lang.Float.MAX_VALUE;
-import static java.lang.Math.cos;
+import static java.lang.Math.*;
 
 public class MapsUtilities {
 //    private static String TAG = "MapsUtilities";
@@ -99,17 +99,18 @@ public class MapsUtilities {
         return (blue >= red);
     }
 
-    public static LatLng calculateLocationFewMetersAhead(LatLng latLng){ //TODO: Must find the right algorithm
-        double meters = 5;
-        // number of km per degree = ~111km (111.32 in google maps, but range varies
-        // between 110.567km at the equator and 111.699km at the poles)
-        // 1km in degree = 1 / 111.32km = 0.0089
-        // 1m in degree = 0.0089 / 1000 = 0.0000089
-        double coef = meters * 0.0000089;
+    public static LatLng calculateLocationFewMetersAhead(LatLng latLng, int moires){ //TODO: Must find the right algorithm
+        double meters = 50;
+        double distRadians = meters / (6372797.6); // earth radius in meters
 
-        double nLat = latLng.latitude + coef;
-        double nLon = latLng.longitude + coef / Math.cos(latLng.latitude * 0.018); // pi/180 = 0.018
+        double lat1 = latLng.latitude * PI / 180;
+        double lon1 = latLng.longitude * PI / 180;
 
+        double lat2 = asin(sin(lat1) * cos(distRadians) + cos(lat1) * sin(distRadians) * cos(Math.toRadians(moires)));
+        double lon2 = lon1 + atan2(sin(Math.toRadians(moires)) * sin(distRadians) * cos(lat1), cos(distRadians) - sin(lat1) * sin(lat2));
+
+        double nLat = lat2 * 180 / PI;
+        double nLon = lon2 * 180 / PI;
         return new LatLng(nLat, nLon);
     }
 }

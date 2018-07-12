@@ -108,9 +108,19 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null) {
             LatLng center = MapsUtilities.getPolygonCenterPoint(mArray);
             mMap.addMarker(new MarkerOptions().position(center));
-            LatLng mCester = MapsUtilities.calculateLocationFewMetersAhead(center);
-            mMap.addMarker(new MarkerOptions().position(mCester));
-            Log.d("mLocation", "\ns\n"+ center + "\n" +mCester );
+//            for(int i=0;i<360;i++){
+//                LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,i);
+//                mMap.addMarker(new MarkerOptions().position(aCester).title("a"));
+//            }
+            LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,0);
+            LatLng bCester = MapsUtilities.calculateLocationFewMetersAhead(center,90);
+            LatLng cCester = MapsUtilities.calculateLocationFewMetersAhead(center,180);
+            LatLng dCester = MapsUtilities.calculateLocationFewMetersAhead(center,270);
+            mMap.addMarker(new MarkerOptions().position(aCester).title("a0"));
+            mMap.addMarker(new MarkerOptions().position(bCester).title("b90"));
+            mMap.addMarker(new MarkerOptions().position(cCester).title("c180"));
+            mMap.addMarker(new MarkerOptions().position(dCester).title("d270"));
+            Log.d("mLocation", "\ns\nCenter: "+ center + "\naCester: " +aCester +"\nbCester: " +bCester+"\ncCester: " +cCester +"\ndCester: " +dCester  );
         }
 
     }
@@ -128,7 +138,7 @@ public class MapsActivity extends FragmentActivity
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)             // Sets the center of the map to Mountain View
                 .zoom(17)                   // Sets the zoom
-                .bearing(mBearing)          // Sets the orientation of the camera to east
+                .bearing(0)          // Sets the orientation of the camera to east
                 .tilt(90)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
 

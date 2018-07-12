@@ -100,10 +100,17 @@ public class MapsUtilities {
     }
 
     public static LatLng calculateLocationFewMetersAhead(LatLng latLng){ //TODO: Must find the right algorithm
-        double nLat = latLng.latitude + (50000/6378)*(180/3.14);
-        double nLon = latLng.longitude + (50000/6378)*(180/3.14) /cos(latLng.latitude*3.14/180);
-        LatLng nLatLng = new LatLng(nLat, nLon);
-        return nLatLng;
+        double meters = 5;
+        // number of km per degree = ~111km (111.32 in google maps, but range varies
+        // between 110.567km at the equator and 111.699km at the poles)
+        // 1km in degree = 1 / 111.32km = 0.0089
+        // 1m in degree = 0.0089 / 1000 = 0.0000089
+        double coef = meters * 0.0000089;
+
+        double nLat = latLng.latitude + coef;
+        double nLon = latLng.longitude + coef / Math.cos(latLng.latitude * 0.018); // pi/180 = 0.018
+
+        return new LatLng(nLat, nLon);
     }
 }
 

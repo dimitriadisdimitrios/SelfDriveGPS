@@ -110,6 +110,7 @@ public class MapsActivity extends FragmentActivity
             mMap.addMarker(new MarkerOptions().position(center));
             LatLng mCester = MapsUtilities.calculateLocationFewMetersAhead(center);
             mMap.addMarker(new MarkerOptions().position(mCester));
+            Log.d("mLocation", "\ns\n"+ center + "\n" +mCester );
         }
 
     }

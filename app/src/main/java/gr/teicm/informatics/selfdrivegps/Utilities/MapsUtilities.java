@@ -99,15 +99,15 @@ public class MapsUtilities {
         return (blue >= red);
     }
 
-    public static LatLng calculateLocationFewMetersAhead(LatLng latLng, int moires){ //TODO: Must find the right algorithm
-        double meters = 50;
-        double distRadians = meters / (6372797.6); // earth radius in meters
+    public static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, int mBearing, double mMeter){
+//        double meters = 50;
+        double distRadians = mMeter / (6372797.6); // earth radius in meters
 
-        double lat1 = latLng.latitude * PI / 180;
-        double lon1 = latLng.longitude * PI / 180;
+        double lat1 = sourceLatLng.latitude * PI / 180;
+        double lon1 = sourceLatLng.longitude * PI / 180;
 
-        double lat2 = asin(sin(lat1) * cos(distRadians) + cos(lat1) * sin(distRadians) * cos(Math.toRadians(moires)));
-        double lon2 = lon1 + atan2(sin(Math.toRadians(moires)) * sin(distRadians) * cos(lat1), cos(distRadians) - sin(lat1) * sin(lat2));
+        double lat2 = asin(sin(lat1) * cos(distRadians) + cos(lat1) * sin(distRadians) * cos(Math.toRadians(mBearing)));
+        double lon2 = lon1 + atan2(sin(Math.toRadians(mBearing)) * sin(distRadians) * cos(lat1), cos(distRadians) - sin(lat1) * sin(lat2));
 
         double nLat = lat2 * 180 / PI;
         double nLon = lon2 * 180 / PI;

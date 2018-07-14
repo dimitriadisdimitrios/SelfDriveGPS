@@ -86,7 +86,7 @@ public class MapsActivity extends FragmentActivity
                     btn_haveBeenClicked = false;
                     showAlertDialog();//Set listener on button to transfer data to database
                     mMap.clear(); //Remove polyline from the record mode
-                    placePolygonForRoute(controller.getPoints()); //Get ArrayList<LatLng> to transfer polyline to polygon
+                    placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
                 }
             }
         });
@@ -108,22 +108,24 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null) {
             LatLng center = MapsUtilities.getPolygonCenterPoint(mArray);
             mMap.addMarker(new MarkerOptions().position(center));
+            //TODO: Adapt function from MapsUtilities here or create a new one
 //            for(int i=0;i<360;i++){
 //                LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,i);
 //                mMap.addMarker(new MarkerOptions().position(aCester).title("a"));
 //            }
-            LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,0);
-            LatLng bCester = MapsUtilities.calculateLocationFewMetersAhead(center,90);
-            LatLng cCester = MapsUtilities.calculateLocationFewMetersAhead(center,180);
-            LatLng dCester = MapsUtilities.calculateLocationFewMetersAhead(center,270);
-            mMap.addMarker(new MarkerOptions().position(aCester).title("a0"));
-            mMap.addMarker(new MarkerOptions().position(bCester).title("b90"));
-            mMap.addMarker(new MarkerOptions().position(cCester).title("c180"));
-            mMap.addMarker(new MarkerOptions().position(dCester).title("d270"));
-            Log.d("mLocation", "\ns\nCenter: "+ center + "\naCester: " +aCester +"\nbCester: " +bCester+"\ncCester: " +cCester +"\ndCester: " +dCester  );
+//            LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,0);
+//            LatLng bCester = MapsUtilities.calculateLocationFewMetersAhead(center,90);
+//            LatLng cCester = MapsUtilities.calculateLocationFewMetersAhead(center,180);
+//            LatLng dCester = MapsUtilities.calculateLocationFewMetersAhead(center,270);
+//            mMap.addMarker(new MarkerOptions().position(aCester).title("a0"));
+//            mMap.addMarker(new MarkerOptions().position(bCester).title("b90"));
+//            mMap.addMarker(new MarkerOptions().position(cCester).title("c180"));
+//            mMap.addMarker(new MarkerOptions().position(dCester).title("d270"));
+//            Log.d("mLocation", "\ns\nCenter: "+ center + "\naCester: " +aCester +"\nbCester: " +bCester+"\ncCester: " +cCester +"\ndCester: " +dCester  );
         }
-
     }
+
+    //TODO: See if i can reduce addition on ArrayList<LatLng>
     @Override
     public void onLocationChanged(Location location) {
         checkIfUserStandStill();
@@ -138,7 +140,7 @@ public class MapsActivity extends FragmentActivity
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)             // Sets the center of the map to Mountain View
                 .zoom(17)                   // Sets the zoom
-                .bearing(0)          // Sets the orientation of the camera to east
+                .bearing(mBearing)          // Sets the orientation of the camera to east
                 .tilt(90)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
 
@@ -148,7 +150,7 @@ public class MapsActivity extends FragmentActivity
 
         if(btn_haveBeenClicked && !MapsUtilities.checkIfLatLngExist(latLng, points)) {
             points.add(latLng);
-            controller.setPoints(points);
+            controller.setArrayListForField(points);
 //                Log.d(TAG, String.valueOf(points));
         }
         placePolylineForRoute(points);

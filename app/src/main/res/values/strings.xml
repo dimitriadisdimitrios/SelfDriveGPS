@@ -17,7 +17,8 @@
     <string name="et_give_name_of_field_you_saved_popActivity">Give a suitable name</string>
     <string name="bt_on_dialog_cancel">Cancel</string>
     <string name="bt_on_dialog_send">Send</string>
-    <string name="label_on_dialog">Save field to the database</string>
+    <string name="label_on_dialog_create_field">Save field to the database</string>
+    <string name="label_on_dialog_create_line">Select the range between lines</string>
     <string name="plus_btn_settingsActivity">+</string>
     <string name="sub_btn_settingsActivity">-</string>
     <string name="tv_meter_of_range_for_field_default">m</string>

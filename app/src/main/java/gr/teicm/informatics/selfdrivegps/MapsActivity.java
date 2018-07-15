@@ -114,14 +114,10 @@ public class MapsActivity extends FragmentActivity
 //                mMap.addMarker(new MarkerOptions().position(aCester).title("a"));
 //            }
 //            LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,0);
-//            LatLng bCester = MapsUtilities.calculateLocationFewMetersAhead(center,90);
-//            LatLng cCester = MapsUtilities.calculateLocationFewMetersAhead(center,180);
-//            LatLng dCester = MapsUtilities.calculateLocationFewMetersAhead(center,270);
-//            mMap.addMarker(new MarkerOptions().position(aCester).title("a0"));
-//            mMap.addMarker(new MarkerOptions().position(bCester).title("b90"));
-//            mMap.addMarker(new MarkerOptions().position(cCester).title("c180"));
 //            mMap.addMarker(new MarkerOptions().position(dCester).title("d270"));
-//            Log.d("mLocation", "\ns\nCenter: "+ center + "\naCester: " +aCester +"\nbCester: " +bCester+"\ncCester: " +cCester +"\ndCester: " +dCester  );
+        }else{
+            controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
+            Log.d("modes",Controller.MODE_0_RECORD_FIELD);
         }
     }
 

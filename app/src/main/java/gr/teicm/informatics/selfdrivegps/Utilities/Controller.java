@@ -9,6 +9,10 @@ public class Controller {
     private static LatLng mLatLng;
     private static float mCounter;
 
+    public static final String MODE_0_RECORD_FIELD = "Record Field";
+    public static final String MODE_1_CREAT_LINE = "Create Line";
+    public static final String MODE_2_DRIVING = "Driving";
+
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
     public void setArrayListForField(ArrayList<LatLng> points){
         fieldArrayList = points;
@@ -50,6 +54,7 @@ public class Controller {
     }
 
     //Setter/Getter to change between "create field" and "create polyline"
+    // Modes: "Record field", "Create Line", "Driving"
     public void setProgramStatus(String programStatus){
         mStatus = programStatus;
     }

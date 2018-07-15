@@ -35,12 +35,14 @@ public class DialogFragmentUtility extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View mView = inflater.inflate(R.layout.activity_pop,null);
 
+        Log.d("dmode", controller.getProgramStatus());
         switch (controller.getProgramStatus()) {
-            case "Record field":
+            case "Record Field":
 
                 Log.d(TAG, "Record field selected");
 
-                builder.setView(mView).setMessage(R.string.label_on_dialog)
+                builder.setView(mView)
+                        .setMessage(R.string.label_on_dialog_create_field)
                         .setPositiveButton(R.string.bt_on_dialog_cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -59,6 +61,7 @@ public class DialogFragmentUtility extends DialogFragment {
                                     databaseReference.child(nameOfDataBaseKey).setValue(mPoints); //Create child with specific name which include LatLng
                                     Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
                                     mPoints.clear(); //Empty ArrayList<LatLng> from the controller
+                                    controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
@@ -68,8 +71,39 @@ public class DialogFragmentUtility extends DialogFragment {
                         });
                 break;
 
-            case "Create route line":
+            case "Create Line":
+
                 Log.d(TAG, "Create route line");
+
+                builder.setView(mView)
+                        .setMessage(R.string.label_on_dialog_create_line)
+                        .setPositiveButton(R.string.bt_on_dialog_cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
+                                    mPoints.clear(); //Empty ArrayList<LatLng> from the controller
+                                }
+                            }
+                        })
+
+                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+//                                EditText collectionOfLatLng = mView.findViewById(R.id.pop_name_DB_ET); //Set Button from layout_pop
+//                                String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
+//                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
+//
+//                                if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                                    databaseReference.child(nameOfDataBaseKey).setValue(mPoints); //Create child with specific name which include LatLng
+//                                    Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
+//                                    mPoints.clear(); //Empty ArrayList<LatLng> from the controller
+//                                } else {
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                                        Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+                            }
+                        });
+
                 break;
 
         }

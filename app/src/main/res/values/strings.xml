@@ -25,4 +25,6 @@
     <string name="tv_default_range_field">5.1</string>
     <string name="arrow_imageView">arrow</string>
     <string name="line_rage_imageView">line rage</string>
+    <string name="stop">stop</string>
+    <string name="mode_unknown">Mode: Unknown</string>
 </resources>

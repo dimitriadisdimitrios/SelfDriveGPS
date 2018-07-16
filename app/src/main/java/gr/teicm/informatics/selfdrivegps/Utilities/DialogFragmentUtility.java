@@ -84,26 +84,7 @@ public class DialogFragmentUtility extends DialogFragment {
                                     mPoints.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
-                        })
-
-                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-//                                EditText collectionOfLatLng = mView.findViewById(R.id.pop_name_DB_ET); //Set Button from layout_pop
-//                                String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
-//                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
-//
-//                                if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                                    databaseReference.child(nameOfDataBaseKey).setValue(mPoints); //Create child with specific name which include LatLng
-//                                    Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
-//                                    mPoints.clear(); //Empty ArrayList<LatLng> from the controller
-//                                } else {
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                                        Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-                            }
                         });
-
                 break;
 
         }

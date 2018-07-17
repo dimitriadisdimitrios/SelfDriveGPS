@@ -6,7 +6,7 @@
     android:padding="5dp">
 
     <EditText
-        android:id="@+id/pop_name_DB_ET"
+        android:id="@+id/et_pop_name_DB_ET"
         android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -53,7 +53,8 @@ public class MapsActivity extends FragmentActivity
 
     private ArrayList<LatLng> mArray;
     private GoogleMap mMap;
-    private ArrayList<LatLng> points = new ArrayList<>();
+    private ArrayList<LatLng> pointsForField = new ArrayList<>();
+    private ArrayList<LatLng> pointsForLine = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
     private Handler handler = new Handler();
@@ -87,6 +88,9 @@ public class MapsActivity extends FragmentActivity
                     showAlertDialog();//Set listener on button to transfer data to database
                     mMap.clear(); //Remove polyline from the record mode
                     placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
+//                    if(controller.getArrayListForField()!=null){
+//                        placePolygonForRoute(controller.getArrayListForLine());
+//                    }
                 }
             }
         });
@@ -143,13 +147,26 @@ public class MapsActivity extends FragmentActivity
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
         controller.setLocationOfUser(latLng);
+        Log.d(TAG, String.valueOf(pointsForLine));
 
-        if(btn_haveBeenClicked && !MapsUtilities.checkIfLatLngExist(latLng, points)) {
-            points.add(latLng);
-            controller.setArrayListForField(points);
+        //TODO: create function on MapUtilities to make auto
+        //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
+        if(controller.getProgramStatus().equals(Controller.MODE_0_RECORD_FIELD)
+                && btn_haveBeenClicked
+                && !MapsUtilities.checkIfLatLngExist(latLng, pointsForField)) {
+            pointsForField.add(latLng);
+            controller.setArrayListForField(pointsForField);
 //                Log.d(TAG, String.valueOf(points));
+            placePolylineForRoute(pointsForField);
         }
-        placePolylineForRoute(points);
+        if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
+                && btn_haveBeenClicked
+                && !MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)){
+            pointsForLine.add(latLng);
+            controller.setArrayListForLine(pointsForLine);
+//                Log.d(TAG, String.valueOf(points));
+            placePolylineForRoute(pointsForLine);
+        }
 
         //TODO: Fix the error when app starts in the Region
 //        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}

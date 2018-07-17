@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -28,18 +29,23 @@ public class DialogFragmentUtility extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final ArrayList<LatLng> mPoints = controller.getArrayListForField();
+        final ArrayList<LatLng> pointsForField = controller.getArrayListForField();
+        final ArrayList<LatLng> pointsForLine = controller.getArrayListForLine();
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View mView = inflater.inflate(R.layout.activity_pop,null);
 
-        Log.d("dmode", controller.getProgramStatus());
+        EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
+        LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
+
         switch (controller.getProgramStatus()) {
             case "Record Field":
 
                 Log.d(TAG, "Record field selected");
+                editTextToSaveNameOfField.setVisibility(View.VISIBLE);
+                linearLayoutIncludeRangeMeter.setVisibility(View.INVISIBLE);
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_field)
@@ -47,20 +53,20 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
-                                    mPoints.clear(); //Empty ArrayList<LatLng> from the controller
+//                                    pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
                         })
                         .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                EditText collectionOfLatLng = mView.findViewById(R.id.pop_name_DB_ET); //Set Button from layout_pop
+                                EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
                                 String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
                                 if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    databaseReference.child(nameOfDataBaseKey).setValue(mPoints); //Create child with specific name which include LatLng
+//                                    databaseReference.child(nameOfDataBaseKey).setValue(pointsForField); //Create child with specific name which include LatLng
                                     Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
-                                    mPoints.clear(); //Empty ArrayList<LatLng> from the controller
+//                                    pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                     controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -74,6 +80,8 @@ public class DialogFragmentUtility extends DialogFragment {
             case "Create Line":
 
                 Log.d(TAG, "Create route line");
+                editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
+                linearLayoutIncludeRangeMeter.setVisibility(View.VISIBLE);
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_line)
@@ -81,8 +89,17 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
-                                    mPoints.clear(); //Empty ArrayList<LatLng> from the controller
+                                    pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
+                            }
+                        })
+                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Toast.makeText(getContext(), "Preparation for line YES!!! !", Toast.LENGTH_SHORT).show();
+                                }
+
                             }
                         });
                 break;

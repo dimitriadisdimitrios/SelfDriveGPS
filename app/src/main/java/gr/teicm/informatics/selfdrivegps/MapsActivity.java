@@ -88,9 +88,9 @@ public class MapsActivity extends FragmentActivity
                     showAlertDialog();//Set listener on button to transfer data to database
                     mMap.clear(); //Remove polyline from the record mode
                     placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
-//                    if(controller.getArrayListForField()!=null){
-//                        placePolygonForRoute(controller.getArrayListForLine());
-//                    }
+                    if(!controller.getArrayListForField().isEmpty()){
+                        placePolygonForRoute(controller.getArrayListForLine());
+                    }
                 }
             }
         });

@@ -88,8 +88,8 @@ public class MapsActivity extends FragmentActivity
                     showAlertDialog();//Set listener on button to transfer data to database
                     mMap.clear(); //Remove polyline from the record mode
                     placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
-                    if(!controller.getArrayListForField().isEmpty()){
-                        placePolygonForRoute(controller.getArrayListForLine());
+                    if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
+                        placePolylineForRoute(controller.getArrayListForLine());
                     }
                 }
             }
@@ -129,6 +129,9 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onLocationChanged(Location location) {
         checkIfUserStandStill();
+
+        TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
+        MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
         float accuracyOfGps = location.getAccuracy();

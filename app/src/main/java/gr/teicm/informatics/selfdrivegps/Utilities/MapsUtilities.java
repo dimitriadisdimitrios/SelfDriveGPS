@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -15,6 +16,7 @@ import static java.lang.Math.*;
 
 public class MapsUtilities {
 //    private static String TAG = "MapsUtilities";
+    static Controller controller = new Controller();
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -47,6 +49,21 @@ public class MapsUtilities {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED)
                     return false;
         return true;
+    }
+
+    public static void changeLabelAboutMode(TextView label){
+        String modeOfApp = controller.getProgramStatus();
+        switch (modeOfApp){
+            case Controller.MODE_0_RECORD_FIELD:
+                label.setText(Controller.MODE_0_RECORD_FIELD);
+                break;
+            case Controller.MODE_1_CREAT_LINE:
+                label.setText(Controller.MODE_1_CREAT_LINE);
+                break;
+            case Controller.MODE_2_DRIVING:
+                label.setText(Controller.MODE_2_DRIVING);
+                break;
+        }
     }
 
     //Function to know if user is in polygon or not

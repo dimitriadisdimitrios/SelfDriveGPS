@@ -53,7 +53,7 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
-//                                    pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
+                                    pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
                         })
@@ -64,9 +64,9 @@ public class DialogFragmentUtility extends DialogFragment {
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
                                 if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    //TODO: Disconnect function to save name for database
 //                                    databaseReference.child(nameOfDataBaseKey).setValue(pointsForField); //Create child with specific name which include LatLng
                                     Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
-//                                    pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                     controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -98,6 +98,7 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line YES!!! !", Toast.LENGTH_SHORT).show();
+                                    controller.setProgramStatus(Controller.MODE_2_DRIVING);
                                 }
 
                             }

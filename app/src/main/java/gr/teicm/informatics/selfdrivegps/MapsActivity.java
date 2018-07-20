@@ -58,22 +58,24 @@ public class MapsActivity extends FragmentActivity
     private Context context = null;
     private Controller controller = new Controller();
     private Handler handler = new Handler();
-    private Runnable runnable;
+    private Runnable runnableForSpeed, runnableForModes;
+    private ToggleButton mainStartBtn ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        checkIfModeChanged();
+
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         createGoogleApiClient();
         context = getApplicationContext();
 
         //Set Button from layout_maps
-        final ToggleButton mainStartBtn =  findViewById(R.id.start_calculations);
+         mainStartBtn =  findViewById(R.id.start_calculations);
 
         checkToGetDataFromAnotherActivity(mainStartBtn);
-
         //Set listener on button to start store LatLng on array
         mainStartBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -130,8 +132,7 @@ public class MapsActivity extends FragmentActivity
     public void onLocationChanged(Location location) {
         checkIfUserStandStill();
 
-        TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
-        MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn);
+//        MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainStartBtn);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
         float accuracyOfGps = location.getAccuracy();
@@ -156,7 +157,7 @@ public class MapsActivity extends FragmentActivity
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
         if(controller.getProgramStatus().equals(Controller.MODE_0_RECORD_FIELD)
                 && btn_haveBeenClicked
-                && !MapsUtilities.checkIfLatLngExist(latLng, pointsForField)) {
+                && MapsUtilities.checkIfLatLngExist(latLng, pointsForField)) {
             pointsForField.add(latLng);
             controller.setArrayListForField(pointsForField);
 //                Log.d(TAG, String.valueOf(points));
@@ -164,7 +165,7 @@ public class MapsActivity extends FragmentActivity
         }
         if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
-                && !MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)){
+                && MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)){
             pointsForLine.add(latLng);
             controller.setArrayListForLine(pointsForLine);
 //                Log.d(TAG, String.valueOf(points));
@@ -289,15 +290,32 @@ public class MapsActivity extends FragmentActivity
         mAccuracy.setText(getString(R.string.accuracy_of_gps, accuracy));
     }
 
+    //TODO: Add it on MapsUtilities
     //Check if user moving. If it stay still the counter start to reset speed and accuracy
     public void checkIfUserStandStill(){
-        handler.removeCallbacks(runnable);
-        runnable = new Runnable() {
+        handler.removeCallbacks(runnableForSpeed);
+        runnableForSpeed = new Runnable() {
             @Override
             public void run() {
                 getSpecsForStatusBar(0,0);
             }
         };
-        handler.postDelayed(runnable, 1500);
+        handler.postDelayed(runnableForSpeed, 1500);
     }
+    //TODO: and simplify that code !
+    public void checkIfModeChanged(){
+        runnableForModes = new Runnable() {
+            @Override
+            public void run() {
+                TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
+                MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainStartBtn);
+                if(pointsForField.isEmpty()){
+                    mMap.clear();
+                }
+                handler.postDelayed(runnableForModes,1000);
+            }
+        };
+        handler.postDelayed(runnableForModes, 1000);
+    }
+
 }

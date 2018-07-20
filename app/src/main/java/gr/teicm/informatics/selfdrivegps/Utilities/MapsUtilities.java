@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -16,7 +18,7 @@ import static java.lang.Math.*;
 
 public class MapsUtilities {
 //    private static String TAG = "MapsUtilities";
-    static Controller controller = new Controller();
+    private static Controller controller = new Controller();
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -32,10 +34,10 @@ public class MapsUtilities {
     }
 
     public static boolean checkIfLatLngExist(LatLng latLng, ArrayList<LatLng> points){
-        boolean latLngExist = false;
+        boolean latLngExist = true;
         for(int i=0; i<points.size(); i++){
             if(points.get(i)==latLng){
-                latLngExist=true;
+                latLngExist=false;
             }
         }
         return latLngExist;
@@ -51,17 +53,18 @@ public class MapsUtilities {
         return true;
     }
 
-    public static void changeLabelAboutMode(TextView label){
+    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn){
         String modeOfApp = controller.getProgramStatus();
         switch (modeOfApp){
             case Controller.MODE_0_RECORD_FIELD:
-                label.setText(Controller.MODE_0_RECORD_FIELD);
+                label.setText(String.format("Mode: %s", Controller.MODE_0_RECORD_FIELD));
                 break;
             case Controller.MODE_1_CREAT_LINE:
-                label.setText(Controller.MODE_1_CREAT_LINE);
+                label.setText(String.format("Mode: %s", Controller.MODE_1_CREAT_LINE));
                 break;
             case Controller.MODE_2_DRIVING:
-                label.setText(Controller.MODE_2_DRIVING);
+                label.setText(String.format("Mode: %s", Controller.MODE_2_DRIVING));
+                startStopTBtn.setVisibility(View.INVISIBLE);
                 break;
         }
     }

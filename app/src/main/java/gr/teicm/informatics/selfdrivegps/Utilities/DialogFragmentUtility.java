@@ -42,6 +42,8 @@ public class DialogFragmentUtility extends DialogFragment {
 
         switch (controller.getProgramStatus()) {
             case "Record Field":
+                controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+
 
                 Log.d(TAG, "Record field selected");
                 editTextToSaveNameOfField.setVisibility(View.VISIBLE);
@@ -53,6 +55,7 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
+                                    controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
@@ -67,10 +70,12 @@ public class DialogFragmentUtility extends DialogFragment {
                                     //TODO: Disconnect function to save name for database
 //                                    databaseReference.child(nameOfDataBaseKey).setValue(pointsForField); //Create child with specific name which include LatLng
                                     Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+                                    dialog.dismiss();
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+                                        controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
+                                        dialog.cancel();
                                     }
                                 }
                             }
@@ -78,6 +83,7 @@ public class DialogFragmentUtility extends DialogFragment {
                 break;
 
             case "Create Line":
+                controller.setProgramStatus(Controller.MODE_2_DRIVING);
 
                 Log.d(TAG, "Create route line");
                 editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
@@ -89,6 +95,7 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
+                                    controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
                                     pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
@@ -98,7 +105,6 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line YES!!! !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_2_DRIVING);
                                 }
 
                             }

@@ -114,7 +114,6 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null) {
             LatLng center = MapsUtilities.getPolygonCenterPoint(mArray);
             mMap.addMarker(new MarkerOptions().position(center));
-            placePolylineForRoute(mArray);
             //TODO: Adapt function from MapsUtilities here or create a new one
 //            for(int i=0;i<360;i++){
 //                LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,i);
@@ -311,9 +310,9 @@ public class MapsActivity extends FragmentActivity
             public void run() {
                 TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
                 MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainStartBtn);
-                if(pointsForField.isEmpty()){
-                    mMap.clear();
-                }
+//                if(pointsForField.isEmpty()){ //TODO: Not know why i put this
+//                    mMap.clear();
+//                }
                 handler.postDelayed(runnableForModes,1000);
             }
         };

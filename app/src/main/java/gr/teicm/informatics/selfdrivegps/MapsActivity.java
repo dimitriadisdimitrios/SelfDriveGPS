@@ -114,6 +114,7 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null) {
             LatLng center = MapsUtilities.getPolygonCenterPoint(mArray);
             mMap.addMarker(new MarkerOptions().position(center));
+            placePolylineForRoute(mArray);
             //TODO: Adapt function from MapsUtilities here or create a new one
 //            for(int i=0;i<360;i++){
 //                LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,i);
@@ -165,10 +166,11 @@ public class MapsActivity extends FragmentActivity
         }
         if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
-                && MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)){
+                && MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)
+                && MapsUtilities.PointIsInRegion(latLng, pointsForField)){
             pointsForLine.add(latLng);
             controller.setArrayListForLine(pointsForLine);
-//                Log.d(TAG, String.valueOf(points));
+                Log.d(TAG, String.valueOf(pointsForLine));
             placePolylineForRoute(pointsForLine);
         }
 

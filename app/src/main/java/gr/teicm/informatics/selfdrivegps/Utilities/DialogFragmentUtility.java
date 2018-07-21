@@ -68,7 +68,7 @@ public class DialogFragmentUtility extends DialogFragment {
 
                                 if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     //TODO: Disconnect function to save name for database
-//                                    databaseReference.child(nameOfDataBaseKey).setValue(pointsForField); //Create child with specific name which include LatLng
+                                    databaseReference.child(nameOfDataBaseKey).setValue(pointsForField); //Create child with specific name which include LatLng
                                     Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
                                 } else {

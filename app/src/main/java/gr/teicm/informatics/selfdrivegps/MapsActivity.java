@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +50,7 @@ public class MapsActivity extends FragmentActivity
     private boolean btn_haveBeenClicked = false;
     private GoogleApiClient googleApiClient = null;
 
-    private ArrayList<LatLng> mArray;
+    private ArrayList<LatLng> pointsForFieldFromBase;
     private GoogleMap mMap;
     private ArrayList<LatLng> pointsForField = new ArrayList<>();
     private ArrayList<LatLng> pointsForLine = new ArrayList<>();
@@ -89,7 +88,9 @@ public class MapsActivity extends FragmentActivity
                     btn_haveBeenClicked = false;
                     showAlertDialog();//Set listener on button to transfer data to database
                     mMap.clear(); //Remove polyline from the record mode
-                    placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
+//                    if(getIntent().getExtras()==null) {
+                        placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
+//                    }
                     if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
                         placePolylineForRoute(controller.getArrayListForLine());
                     }
@@ -112,7 +113,7 @@ public class MapsActivity extends FragmentActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if(getIntent().getExtras()!=null) {
-            LatLng center = MapsUtilities.getPolygonCenterPoint(mArray);
+            LatLng center = MapsUtilities.getPolygonCenterPoint(pointsForFieldFromBase);
             mMap.addMarker(new MarkerOptions().position(center));
             //TODO: Adapt function from MapsUtilities here or create a new one
 //            for(int i=0;i<360;i++){
@@ -166,7 +167,7 @@ public class MapsActivity extends FragmentActivity
         if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
                 && MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)
-                && MapsUtilities.PointIsInRegion(latLng, pointsForField)){
+                && MapsUtilities.PointIsInRegion(latLng, pointsForFieldFromBase)){ //TODO: After finish with creation of lines replace point..FromBase with pointForField because is start new plan create error!!!
             pointsForLine.add(latLng);
             controller.setArrayListForLine(pointsForLine);
                 Log.d(TAG, String.valueOf(pointsForLine));
@@ -227,7 +228,7 @@ public class MapsActivity extends FragmentActivity
         googleApiClient.connect();
 
         if(getIntent().getExtras()!=null){ //Check if app start from Start or from load field
-            placePolygonForRoute(mArray);
+            placePolygonForRoute(pointsForFieldFromBase);
         }
     }
     @Override
@@ -271,13 +272,18 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
-        mArray = getIntent().getParcelableArrayListExtra("latLng"); //Fill mArray with Lat\Lng
+        pointsForFieldFromBase = getIntent().getParcelableArrayListExtra("latLng"); //Fill pointsForFieldFromBase with Lat\Lng
+        controller.setArrayListForField(pointsForFieldFromBase);
+
+        controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+        TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
+        MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
         //Make buttons invisible
         if(getIntent().getExtras()!=null) {
-            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
-            if (valueFromRetrieveDataActivityClass!=null&& valueFromRetrieveDataActivityClass.equals("invisible")) {
-                mainBtn.setVisibility(View.INVISIBLE);
-            }
+//            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
+//            if (valueFromRetrieveDataActivityClass!=null&& valueFromRetrieveDataActivityClass.equals("invisible")) {
+//                mainBtn.setVisibility(View.INVISIBLE);
+//            }
         }
     }
 

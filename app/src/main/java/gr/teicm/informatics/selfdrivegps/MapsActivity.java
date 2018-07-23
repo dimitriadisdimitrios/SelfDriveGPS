@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,8 +29,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -50,29 +47,28 @@ public class MapsActivity extends FragmentActivity
     private boolean btn_haveBeenClicked = false;
     private GoogleApiClient googleApiClient = null;
 
-    private ArrayList<LatLng> pointsForFieldFromBase;
     private GoogleMap mMap;
     private ArrayList<LatLng> pointsForField = new ArrayList<>();
     private ArrayList<LatLng> pointsForLine = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
     private Handler handler = new Handler();
-    private Runnable runnableForSpeed, runnableForModes;
-    private ToggleButton mainStartBtn ;
+    private Runnable runnableForSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        checkIfModeChanged();
+        TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
+        ToggleButton mainStartBtn = findViewById(R.id.start_calculations);
+        MapsUtilities.checkIfModeChanged(labelAboveToggleBtn, mainStartBtn);
 
         //Checking if it needs different permission access And create googleApiClient plus locationManager
         createGoogleApiClient();
         context = getApplicationContext();
 
         //Set Button from layout_maps
-         mainStartBtn =  findViewById(R.id.start_calculations);
 
         checkToGetDataFromAnotherActivity(mainStartBtn);
         //Set listener on button to start store LatLng on array
@@ -89,10 +85,10 @@ public class MapsActivity extends FragmentActivity
                     showAlertDialog();//Set listener on button to transfer data to database
                     mMap.clear(); //Remove polyline from the record mode
 //                    if(getIntent().getExtras()==null) {
-                        placePolygonForRoute(controller.getArrayListForField()); //Get ArrayList<LatLng> to transfer polyline to polygon
+                        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Get ArrayList<LatLng> to transfer polyline to polygon
 //                    }
                     if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
-                        placePolylineForRoute(controller.getArrayListForLine());
+                        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
                     }
                 }
             }
@@ -113,7 +109,7 @@ public class MapsActivity extends FragmentActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if(getIntent().getExtras()!=null) {
-            LatLng center = MapsUtilities.getPolygonCenterPoint(pointsForFieldFromBase);
+            LatLng center = MapsUtilities.getPolygonCenterPoint(pointsForField);
             mMap.addMarker(new MarkerOptions().position(center));
             //TODO: Adapt function from MapsUtilities here or create a new one
 //            for(int i=0;i<360;i++){
@@ -157,49 +153,24 @@ public class MapsActivity extends FragmentActivity
         //TODO: create function on MapUtilities to make auto
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
         if(controller.getProgramStatus().equals(Controller.MODE_0_RECORD_FIELD)
-                && btn_haveBeenClicked
-                && MapsUtilities.checkIfLatLngExist(latLng, pointsForField)) {
+                && btn_haveBeenClicked) {
             pointsForField.add(latLng);
             controller.setArrayListForField(pointsForField);
 //                Log.d(TAG, String.valueOf(points));
-            placePolylineForRoute(pointsForField);
+            MapsUtilities.placePolylineForRoute(pointsForField, mMap);
         }
         if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
                 && MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)
-                && MapsUtilities.PointIsInRegion(latLng, pointsForFieldFromBase)){ //TODO: After finish with creation of lines replace point..FromBase with pointForField because is start new plan create error!!!
+                && MapsUtilities.PointIsInRegion(latLng, controller.getArrayListForField())){ //TODO: After finish with creation of lines replace point..FromBase with pointForField because is start new plan create error!!!
             pointsForLine.add(latLng);
             controller.setArrayListForLine(pointsForLine);
                 Log.d(TAG, String.valueOf(pointsForLine));
-            placePolylineForRoute(pointsForLine);
+            MapsUtilities.placePolylineForRoute(pointsForLine, mMap);
         }
 
         //TODO: Fix the error when app starts in the Region
 //        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
-    }
-
-    public void placePolylineForRoute(ArrayList<LatLng> directionPoints) {
-        PolylineOptions rectLine = new PolylineOptions()
-                .width(5)
-                .color(Color.RED);
-        if(directionPoints!=null){
-            for (int i = 0; i < directionPoints.size(); i++) {
-                rectLine.add(directionPoints.get(i));
-            }
-        }
-        mMap.addPolyline(rectLine);
-    }
-    public void placePolygonForRoute(ArrayList<LatLng> directionPoints){
-        PolygonOptions polygonOptions = new PolygonOptions()
-                .fillColor(Color.TRANSPARENT)
-                .strokeColor(Color.GREEN)
-                .strokeWidth(5);
-        if(directionPoints!=null){
-            for (int i = 0; i < directionPoints.size(); i++) {
-                polygonOptions.add(directionPoints.get(i));
-            }
-        }
-        mMap.addPolygon(polygonOptions);
     }
 
     @Override
@@ -228,7 +199,7 @@ public class MapsActivity extends FragmentActivity
         googleApiClient.connect();
 
         if(getIntent().getExtras()!=null){ //Check if app start from Start or from load field
-            placePolygonForRoute(pointsForFieldFromBase);
+            MapsUtilities.placePolygonForRoute(pointsForField,mMap);
         }
     }
     @Override
@@ -272,18 +243,20 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
-        pointsForFieldFromBase = getIntent().getParcelableArrayListExtra("latLng"); //Fill pointsForFieldFromBase with Lat\Lng
-        controller.setArrayListForField(pointsForFieldFromBase);
-
-        controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
-        TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
-        MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
-        //Make buttons invisible
         if(getIntent().getExtras()!=null) {
+            pointsForField = getIntent().getParcelableArrayListExtra("latLng"); //Fill pointsForFieldFromBase with Lat\Lng
+            controller.setArrayListForField(pointsForField);
+
+            controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+            TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
+            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
+            //Make buttons invisible
+//        if(getIntent().getExtras()!=null) {
 //            String valueFromRetrieveDataActivityClass = getIntent().getExtras().getString("buttonStatus");
 //            if (valueFromRetrieveDataActivityClass!=null&& valueFromRetrieveDataActivityClass.equals("invisible")) {
 //                mainBtn.setVisibility(View.INVISIBLE);
 //            }
+//        }
         }
     }
 
@@ -309,20 +282,4 @@ public class MapsActivity extends FragmentActivity
         };
         handler.postDelayed(runnableForSpeed, 1500);
     }
-    //TODO: and simplify that code !
-    public void checkIfModeChanged(){
-        runnableForModes = new Runnable() {
-            @Override
-            public void run() {
-                TextView labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button);
-                MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainStartBtn);
-//                if(pointsForField.isEmpty()){ //TODO: Not know why i put this
-//                    mMap.clear();
-//                }
-                handler.postDelayed(runnableForModes,1000);
-            }
-        };
-        handler.postDelayed(runnableForModes, 1000);
-    }
-
 }

@@ -1,16 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp">
 
     <EditText
-        android:id="@+id/pop_name_DB_ET"
+        android:id="@+id/et_pop_name_DB_ET"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:inputType="text"
         android:ems="10"
-        android:hint="@string/field_name" />
+        android:hint="@string/et_give_name_of_field_you_saved_popActivity">
+    </EditText>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linear_layout_with_range_meter"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/btn_sub"
+            android:text="@string/sub_btn_settingsActivity"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_range_of_field_meter"
+            android:text="@string/tv_default_range_field"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_meter_of_range_for_field_default"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/btn_plus"
+            android:text="@string/plus_btn_settingsActivity"/>
+    </LinearLayout>
+
+</RelativeLayout>

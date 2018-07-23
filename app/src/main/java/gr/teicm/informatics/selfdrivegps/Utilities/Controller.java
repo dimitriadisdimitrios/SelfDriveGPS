@@ -1,36 +1,64 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
 public class Controller {
-    private static ArrayList<LatLng> arrayList;
-    private static String idOfList;
+    private static ArrayList<LatLng> fieldArrayList, lineArrayList;
+    private static String idOfList, mStatus ="Record field selected";
     private static LatLng mLatLng;
+    private static float mCounter;
 
-    //Setter for ArrayList<LatLng>
-    public void setPoints(ArrayList<LatLng> points){
-        arrayList = points;
+    public static final String MODE_0_RECORD_FIELD = "Record Field";
+    public static final String MODE_1_CREAT_LINE = "Create Line";
+    public static final String MODE_2_DRIVING = "Driving";
+
+    //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
+    public void setArrayListForField(ArrayList<LatLng> points){
+        fieldArrayList = points;
     }
-    //Getter for ArrayList<LatLng>
-    public ArrayList<LatLng> getPoints(){
-        return arrayList;
+    public ArrayList<LatLng> getArrayListForField(){
+        return fieldArrayList;
     }
 
+    //Setter/Getter for ArrayList<LatLng> which refer to Line inside of polygon
+    public void setArrayListForLine(ArrayList<LatLng> linePoints){
+        lineArrayList = linePoints;
+    }
+    public ArrayList<LatLng> getArrayListForLine(){
+        return lineArrayList;
+    }
+
+    //Setter/Getter for get id from list of FireBase
     public void setIdOfListView(String id){
         idOfList = id;
     }
-
     public String getIdOfListView(){
         return idOfList;
     }
 
+    //Setter/Getter to get current LatLng of user
     public void setLocationOfUser(LatLng latLng){
         mLatLng = latLng;
     }
-
     public LatLng getLocationOfUser() {
         return mLatLng;
+    }
+
+    //Setter/Getter to interact with range meter of settingActivity
+    public void setMeterOfRange(float counter){
+        mCounter = counter;
+    }
+    public float getMeterOfRange(){
+        return mCounter;
+    }
+
+    //Setter/Getter to change between "create field" and "create polyline"
+    // Modes: "Record field", "Create Line", "Driving"
+    public void setProgramStatus(String programStatus){
+        mStatus = programStatus;
+    }
+    public String getProgramStatus(){
+        return mStatus;
     }
 }

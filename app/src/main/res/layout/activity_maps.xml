@@ -25,21 +25,43 @@
             android:textColor="@color/colorAccent"
             android:text="@string/accuracy_of_gps_default" />
     </LinearLayout>
-    <ToggleButton
-        android:id="@+id/start_calculations"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/arrow_vector"
+            android:contentDescription="@string/arrow_imageView"
+            android:rotation="270" />
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/black_line_range"
+            android:contentDescription="@string/line_rage_imageView"
+            android:rotation="45"/>
+    </RelativeLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:textOn="@string/stop"
-        android:textOff="@string/start"
-        android:padding="10dp"
-        android:layout_marginTop="20dp" />
-    <Button
-        android:id="@+id/start_pop_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
-        android:text="@string/sendData"
-        android:padding="10dp"
-        android:layout_marginTop="20dp" />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_label_for_toggle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="@string/mode_unknown" />
+        <ToggleButton
+            android:id="@+id/start_calculations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textOn="@string/stop"
+            android:textOff="@string/start"
+            android:padding="10dp" />
+    </LinearLayout>
 </fragment>

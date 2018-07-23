@@ -2,14 +2,19 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -19,6 +24,8 @@ import static java.lang.Math.*;
 public class MapsUtilities {
 //    private static String TAG = "MapsUtilities";
     private static Controller controller = new Controller();
+    private static Handler handler = new Handler();
+    private static Runnable runnableForModes;
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -67,6 +74,42 @@ public class MapsUtilities {
                 startStopTBtn.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+
+    public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+        PolylineOptions rectLine = new PolylineOptions()
+                .width(5)
+                .color(Color.RED);
+        if(directionPoints!=null){
+            for (int i = 0; i < directionPoints.size(); i++) {
+                rectLine.add(directionPoints.get(i));
+            }
+        }
+        googleMap.addPolyline(rectLine);
+    }
+    public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
+        PolygonOptions polygonOptions = new PolygonOptions()
+                .fillColor(Color.TRANSPARENT)
+                .strokeColor(Color.GREEN)
+                .strokeWidth(5);
+        if(directionPoints!=null){
+            for (int i = 0; i < directionPoints.size(); i++) {
+                polygonOptions.add(directionPoints.get(i));
+            }
+        }
+        googleMap.addPolygon(polygonOptions);
+    }
+
+    //TODO: and simplify that code !
+    public static void checkIfModeChanged(final TextView textView, final ToggleButton toggleButton){
+        runnableForModes = new Runnable() {
+            @Override
+            public void run() {
+                changeLabelAboutMode(textView, toggleButton);
+                handler.postDelayed(runnableForModes,1000);
+            }
+        };
+        handler.postDelayed(runnableForModes, 1000);
     }
 
     //Function to know if user is in polygon or not

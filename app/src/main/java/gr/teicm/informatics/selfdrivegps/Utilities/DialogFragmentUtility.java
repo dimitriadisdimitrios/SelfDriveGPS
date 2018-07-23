@@ -110,9 +110,7 @@ public class DialogFragmentUtility extends DialogFragment {
                             }
                         });
                 break;
-
         }
         return builder.create(); // Create the AlertDialog object and return it
     }
-
 }

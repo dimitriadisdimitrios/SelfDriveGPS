@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -18,14 +20,16 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.R;
+
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.Math.*;
 
 public class MapsUtilities {
-//    private static String TAG = "MapsUtilities";
+    private static String TAG = "MapsUtilities";
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
-    private static Runnable runnableForModes;
+    private static Runnable runnableForModes, runnableForSpeed;
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -50,6 +54,12 @@ public class MapsUtilities {
         return latLngExist;
     }
 
+    public static void showAlertDialog(android.app.FragmentManager fragmentManager){
+        DialogFragmentUtility dialogFragmentUtility = new DialogFragmentUtility();
+        dialogFragmentUtility.show(fragmentManager, "PopToSend");
+        dialogFragmentUtility.setCancelable(false); //prevent dialog box from getting dismissed on back key
+    }
+
     //TODO: See when function used
     public static boolean hasPermissions(Context context, String... allPermissionNeeded) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
@@ -58,6 +68,15 @@ public class MapsUtilities {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED)
                     return false;
         return true;
+    }
+
+    //All Permissions i need for android 6.0 and above
+    public static void checkLocationPermission(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "Check passed");
+            }
+        }
     }
 
     public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn){
@@ -100,7 +119,24 @@ public class MapsUtilities {
         googleMap.addPolygon(polygonOptions);
     }
 
-    //TODO: and simplify that code !
+    public static void getSpecsForStatusBar(float speed, float accuracy, TextView mSpeed, TextView mAccuracy, Context context){
+        float kmH = (float) (speed *3.6); //Convert m/s to km/h
+
+        mSpeed.setText(context.getString(R.string.speed_counter, kmH));
+        mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
+    }
+
+    //Check if user moving. If it stay still the counter start to reset speed and accuracy
+    public static void checkIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){
+        handler.removeCallbacks(runnableForSpeed);
+        runnableForSpeed = new Runnable() {
+            @Override
+            public void run() {
+                MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
+            }
+        };
+        handler.postDelayed(runnableForSpeed, 1500);
+    }
     public static void checkIfModeChanged(final TextView textView, final ToggleButton toggleButton){
         runnableForModes = new Runnable() {
             @Override
@@ -159,6 +195,7 @@ public class MapsUtilities {
 
         double red = (ax != bx) ? ((by - ay) / (bx - ax)) : MAX_VALUE;
         double blue = (ax != px) ? ((py - ay) / (px - ax)) : MAX_VALUE;
+        Log.d(TAG, "blue >= red: " + (blue >= red));
         return (blue >= red);
     }
 

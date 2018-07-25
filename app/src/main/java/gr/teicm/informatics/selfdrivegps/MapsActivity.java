@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Utilities.FieldMathUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
@@ -105,15 +106,15 @@ public class MapsActivity extends FragmentActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if(getIntent().getExtras()!=null) {
-            LatLng center = MapsUtilities.getPolygonCenterPoint(pointsForField);
+            LatLng center = FieldMathUtilities.getPolygonCenterPoint(pointsForField);
             mMap.addMarker(new MarkerOptions().position(center));
             //TODO: Adapt function from MapsUtilities here or create a new one
 //            for(int i=0;i<360;i++){
 //                LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,i);
 //                mMap.addMarker(new MarkerOptions().position(aCester).title("a"));
 //            }
-//            LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,0);
-//            mMap.addMarker(new MarkerOptions().position(dCester).title("d270"));
+            LatLng aCester = FieldMathUtilities.calculateLocationFewMetersAhead(center,270,100);
+            mMap.addMarker(new MarkerOptions().position(aCester).title("d270"));
         }else{
             controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
             Log.d("modes",Controller.MODE_0_RECORD_FIELD);
@@ -154,8 +155,8 @@ public class MapsActivity extends FragmentActivity
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
-                && MapsUtilities.checkIfLatLngExist(latLng,pointsForLine)
-                && MapsUtilities.PointIsInRegion(latLng, controller.getArrayListForField())){
+                && FieldMathUtilities.checkIfLatLngExist(latLng,pointsForLine)
+                && FieldMathUtilities.PointIsInRegion(latLng, controller.getArrayListForField())){
 
             pointsForLine.add(latLng);
             controller.setArrayListForLine(pointsForLine);
@@ -199,7 +200,10 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !
-        super.onBackPressed();
+//        super.onBackPressed();
+        int counter = pointsForLine.size()-1;
+        Log.d("Bearing", String.valueOf(calculateBearing(pointsForLine.get(0), pointsForLine.get(counter))));
+
     }
 
     public void createGoogleApiClient(){
@@ -229,5 +233,22 @@ public class MapsActivity extends FragmentActivity
             controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
             MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
         }
+    }
+
+    public double calculateBearing(LatLng startLatLng, LatLng endLatLng){
+        Double startLat = startLatLng.latitude;
+        Double startLng = startLatLng.longitude;
+        Double endLat = endLatLng.latitude;
+        Double endLng = endLatLng.longitude;
+
+        double longitude1 = startLng;
+        double longitude2 = endLng;
+        double latitude1 = Math.toRadians(startLat);
+        double latitude2 = Math.toRadians(endLat);
+        double longDiff= Math.toRadians(longitude2-longitude1);
+        double y= Math.sin(longDiff)*Math.cos(latitude2);
+        double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
+
+        return (Math.toDegrees(Math.atan2(y, x))+360)%360;
     }
 }

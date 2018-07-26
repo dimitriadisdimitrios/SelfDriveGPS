@@ -31,6 +31,7 @@ public class FieldMathUtilities {
         return centerLatLng;
     }
 
+    //Check if given point already exist inside on Array
     public static boolean checkIfLatLngExist(LatLng latLng, ArrayList<LatLng> points){
         boolean latLngExist = true;
         for(int i=0; i<points.size(); i++){
@@ -42,8 +43,7 @@ public class FieldMathUtilities {
     }
 
     //Function to know if user is in polygon or not
-    public static boolean PointIsInRegion(LatLng mlatLng, ArrayList<LatLng> thePath)
-    {
+    public static boolean PointIsInRegion(LatLng mlatLng, ArrayList<LatLng> thePath) {
         int crossings = 0;
         int count = thePath.size();
         LatLng a,b;
@@ -92,8 +92,8 @@ public class FieldMathUtilities {
         return (blue >= red);
     }
 
-    public static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, int mBearing, double mMeter){
-//        double meters = 50;
+    //Algorithm which find the point (x meter away with accordingly bearing)
+    public static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, double mBearing, double mMeter){
         double distRadians = mMeter / (6372797.6); // earth radius in meters
 
         double lat1 = sourceLatLng.latitude * PI / 180;
@@ -105,5 +105,57 @@ public class FieldMathUtilities {
         double nLat = lat2 * 180 / PI;
         double nLon = lon2 * 180 / PI;
         return new LatLng(nLat, nLon);
+    }
+
+    //Function which calculate throuth algorithm how many polyline fits left and right of given polyline inside of field
+    public static void algorithmForCreatingPolylineInField(ArrayList<LatLng> mArray/*, double distanceBetweenLines*/){
+
+        double distanceBetweenLines=10; // Get distance between lines
+
+        int sizeOfArray = mArray.size()-1;
+        double bearingOfPolyline = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing
+
+        ArrayList<ArrayList<LatLng>> virtualListForMultiPolyline = new ArrayList<>();
+        ArrayList<LatLng> innerVirtualListForMultiPolyline = new ArrayList<>();
+
+        while(checkIfNextPolylineIsInsideOfField(mArray, bearingOfPolyline, distanceBetweenLines)){
+            for(int i=0; i<sizeOfArray; i++){
+                innerVirtualListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i),bearingOfPolyline, distanceBetweenLines));
+            }
+            virtualListForMultiPolyline.add(innerVirtualListForMultiPolyline);
+//            innerVirtualListForMultiPolyline.clear();
+
+            distanceBetweenLines+=10;
+//            Log.d("pizza", "@@ "+ virtualListForMultiPolyline.get(0) + "%%");
+//            Log.d("pizza", "@@ "+ virtualListForMultiPolyline.get(2) + "%%");
+        }
+        controller.setArrayListForLineTest(virtualListForMultiPolyline);
+    }
+
+    //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field
+    private static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){
+
+        int locationOfMidInArrayList = givenArrayListToCheck.size()/2; // get the mid point of arrayList
+        LatLng pointToCheck = calculateLocationFewMetersAhead(givenArrayListToCheck.get(locationOfMidInArrayList), mBearing, mMeter); //get point to check
+
+        return PointIsInRegion(pointToCheck, controller.getArrayListForField());
+    }
+
+    //Take 2 points and find their bearing
+    private static double calculateBearing(LatLng startLatLng, LatLng endLatLng){
+        Double startLat = startLatLng.latitude;
+        Double startLng = startLatLng.longitude;
+        Double endLat = endLatLng.latitude;
+        Double endLng = endLatLng.longitude;
+
+        double longitude1 = startLng;
+        double longitude2 = endLng;
+        double latitude1 = Math.toRadians(startLat);
+        double latitude2 = Math.toRadians(endLat);
+        double longDiff= Math.toRadians(longitude2-longitude1);
+        double y= Math.sin(longDiff)*Math.cos(latitude2);
+        double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
+
+        return (Math.toDegrees(Math.atan2(y, x))+360)%360;
     }
 }

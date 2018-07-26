@@ -25,6 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -199,11 +200,18 @@ public class MapsActivity extends FragmentActivity
     }
     @Override
     public void onBackPressed() {
+        //TODO: Add code on back btn to test it... When finished remove it all
+        FieldMathUtilities.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
+
+        int j=0;
+        for(int i=0; i<controller.getArrayListForLineTest().size()-1; i++){
+            MapsUtilities.placeMultiPolyline(controller.getArrayListForLineTest().get(i), mMap, j);
+            j++;
+        }
+//        Log.d("pizza", "!!!" + controller.getArrayListForLineTest().get(0));
+//        Log.d(TAG, "pizza" + controller.getArrayListForLineTest().get(5));
         //Back Btn do nothing !
 //        super.onBackPressed();
-        int counter = pointsForLine.size()-1;
-        Log.d("Bearing", String.valueOf(calculateBearing(pointsForLine.get(0), pointsForLine.get(counter))));
-
     }
 
     public void createGoogleApiClient(){
@@ -233,22 +241,5 @@ public class MapsActivity extends FragmentActivity
             controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
             MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
         }
-    }
-
-    public double calculateBearing(LatLng startLatLng, LatLng endLatLng){
-        Double startLat = startLatLng.latitude;
-        Double startLng = startLatLng.longitude;
-        Double endLat = endLatLng.latitude;
-        Double endLng = endLatLng.longitude;
-
-        double longitude1 = startLng;
-        double longitude2 = endLng;
-        double latitude1 = Math.toRadians(startLat);
-        double latitude2 = Math.toRadians(endLat);
-        double longDiff= Math.toRadians(longitude2-longitude1);
-        double y= Math.sin(longDiff)*Math.cos(latitude2);
-        double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
-
-        return (Math.toDegrees(Math.atan2(y, x))+360)%360;
     }
 }

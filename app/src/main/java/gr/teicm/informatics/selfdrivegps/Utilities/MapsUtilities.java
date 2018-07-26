@@ -72,24 +72,34 @@ public class MapsUtilities {
     public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions rectLine = new PolylineOptions()
                 .width(5)
-                .color(Color.RED);
-        if(directionPoints!=null){
-            for (int i = 0; i < directionPoints.size(); i++) {
-                rectLine.add(directionPoints.get(i));
-            }
-        }
+                .color(Color.RED)
+                .addAll(directionPoints);
         googleMap.addPolyline(rectLine);
+    }
+    public static void placeMultiPolyline(ArrayList<LatLng> directionPoints, GoogleMap googleMap, int counter) {
+//        int locationOfLastPoint = directionPoints.size()-1;
+//        if(counter%2==0){
+            PolylineOptions polylineOptions =  new PolylineOptions()
+                    .width(5)
+                    .color(Color.RED)
+                    .addAll(directionPoints);
+            googleMap.addPolyline(polylineOptions);
+//        }else{
+//            PolylineOptions pol =  new PolylineOptions()
+//                    .width(5)
+//                    .color(Color.GREEN)
+//                    .addAll(directionPoints);
+//            googleMap.addPolyline(pol);
+//
+//        }
+
     }
     public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolygonOptions polygonOptions = new PolygonOptions()
                 .fillColor(Color.TRANSPARENT)
                 .strokeColor(Color.GREEN)
-                .strokeWidth(5);
-        if(directionPoints!=null){
-            for (int i = 0; i < directionPoints.size(); i++) {
-                polygonOptions.add(directionPoints.get(i));
-            }
-        }
+                .strokeWidth(5)
+                .addAll(directionPoints);
         googleMap.addPolygon(polygonOptions);
     }
 

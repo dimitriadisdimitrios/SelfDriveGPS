@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList;
+    private static ArrayList<ArrayList<LatLng>> lineTest;
     private static String idOfList, mStatus ="Record field selected";
     private static LatLng mLatLng;
     private static float mCounter;
@@ -60,5 +61,13 @@ public class Controller {
     }
     public String getProgramStatus(){
         return mStatus;
+    }
+    //TODO: Only for test purpose
+    //Setter/Getter for ArrayList<LatLng> which refer to Line inside of polygon
+    public void setArrayListForLineTest(ArrayList<ArrayList<LatLng>> linePoints){
+        lineTest = linePoints;
+    }
+    public ArrayList<ArrayList<LatLng>> getArrayListForLineTest(){
+        return lineTest;
     }
 }

@@ -115,22 +115,22 @@ public class FieldMathUtilities {
         int sizeOfArray = mArray.size()-1;
         double bearingOfPolyline = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing
 
-        ArrayList<ArrayList<LatLng>> virtualListForMultiPolyline = new ArrayList<>();
-        ArrayList<LatLng> innerVirtualListForMultiPolyline = new ArrayList<>();
+        ArrayList<ArrayList<LatLng>> outterArrayListForMultiPolyline = new ArrayList<>();
+        ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
 
         while(checkIfNextPolylineIsInsideOfField(mArray, bearingOfPolyline, distanceBetweenLines)){
             for(int i=0; i<=sizeOfArray; i++){
-                innerVirtualListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingOfPolyline, distanceBetweenLines));
-                Log.d(TAG, "@@ " + innerVirtualListForMultiPolyline + "%%");
+                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingOfPolyline, distanceBetweenLines));
+                Log.d(TAG, "@@ " + innerArrayListForMultiPolyline + "%%");
             }
-            ArrayList<LatLng> myTemp = new ArrayList<>(innerVirtualListForMultiPolyline);
-            virtualListForMultiPolyline.add(myTemp);
-            innerVirtualListForMultiPolyline.clear();
+            ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
+            outterArrayListForMultiPolyline.add(myTemp);
+            innerArrayListForMultiPolyline.clear();
 
             distanceBetweenLines+=10;
-            Log.d(TAG, "@@ "+ myTemp+ "%%");
+            Log.d(TAG, "## "+ myTemp+ "&&");
         }
-        controller.setArrayListForLineTest(virtualListForMultiPolyline);
+        controller.setArrayListForLineTest(outterArrayListForMultiPolyline);
     }
 
     //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field

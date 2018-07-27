@@ -70,29 +70,11 @@ public class MapsUtilities {
     }
 
     public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
-        PolylineOptions rectLine = new PolylineOptions()
+        PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
                 .color(Color.RED)
                 .addAll(directionPoints);
-        googleMap.addPolyline(rectLine);
-    }
-    public static void placeMultiPolyline(ArrayList<LatLng> directionPoints, GoogleMap googleMap, int counter) {
-//        int locationOfLastPoint = directionPoints.size()-1;
-//        if(counter%2==0){
-            PolylineOptions polylineOptions =  new PolylineOptions()
-                    .width(5)
-                    .color(Color.RED)
-                    .addAll(directionPoints);
-            googleMap.addPolyline(polylineOptions);
-//        }else{
-//            PolylineOptions pol =  new PolylineOptions()
-//                    .width(5)
-//                    .color(Color.GREEN)
-//                    .addAll(directionPoints);
-//            googleMap.addPolyline(pol);
-//
-//        }
-
+        googleMap.addPolyline(polylineOptions);
     }
     public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolygonOptions polygonOptions = new PolygonOptions()

@@ -119,15 +119,16 @@ public class FieldMathUtilities {
         ArrayList<LatLng> innerVirtualListForMultiPolyline = new ArrayList<>();
 
         while(checkIfNextPolylineIsInsideOfField(mArray, bearingOfPolyline, distanceBetweenLines)){
-            for(int i=0; i<sizeOfArray; i++){
-                innerVirtualListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i),bearingOfPolyline, distanceBetweenLines));
+            for(int i=0; i<=sizeOfArray; i++){
+                innerVirtualListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingOfPolyline, distanceBetweenLines));
+                Log.d(TAG, "@@ " + innerVirtualListForMultiPolyline + "%%");
             }
-            virtualListForMultiPolyline.add(innerVirtualListForMultiPolyline);
-//            innerVirtualListForMultiPolyline.clear();
+            ArrayList<LatLng> myTemp = new ArrayList<>(innerVirtualListForMultiPolyline);
+            virtualListForMultiPolyline.add(myTemp);
+            innerVirtualListForMultiPolyline.clear();
 
             distanceBetweenLines+=10;
-//            Log.d("pizza", "@@ "+ virtualListForMultiPolyline.get(0) + "%%");
-//            Log.d("pizza", "@@ "+ virtualListForMultiPolyline.get(2) + "%%");
+            Log.d(TAG, "@@ "+ myTemp+ "%%");
         }
         controller.setArrayListForLineTest(virtualListForMultiPolyline);
     }

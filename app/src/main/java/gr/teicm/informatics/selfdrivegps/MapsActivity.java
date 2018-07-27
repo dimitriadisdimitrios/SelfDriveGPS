@@ -204,12 +204,10 @@ public class MapsActivity extends FragmentActivity
         FieldMathUtilities.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
 
         int j=0;
-        for(int i=0; i<controller.getArrayListForLineTest().size()-1; i++){
-            MapsUtilities.placeMultiPolyline(controller.getArrayListForLineTest().get(i), mMap, j);
+        for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
+            MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
             j++;
         }
-//        Log.d("pizza", "!!!" + controller.getArrayListForLineTest().get(0));
-//        Log.d(TAG, "pizza" + controller.getArrayListForLineTest().get(5));
         //Back Btn do nothing !
 //        super.onBackPressed();
     }

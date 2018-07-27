@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -39,11 +40,11 @@ public class DialogFragmentUtility extends DialogFragment {
 
         EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
         LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
         switch (controller.getProgramStatus()) {
             case "Record Field":
                 controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
-
 
                 Log.d(TAG, "Record field selected");
                 editTextToSaveNameOfField.setVisibility(View.VISIBLE);
@@ -64,13 +65,12 @@ public class DialogFragmentUtility extends DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
                                 String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
                                 if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    //TODO: Disconnect function to save name for database
-//                                    databaseReference.child(nameOfDataBaseKey).setValue(pointsForField); //Create child with specific name which include LatLng
-                                    Toast.makeText(getContext(), "LatLng have been added", Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
+                                    //Create child with specific name which include LatLng for field
+                                    databaseReference.child(nameOfDataBaseKey).child("Polygon").setValue(pointsForField);
+                                    Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
+                                    controller.setIdOfListView(nameOfDataBaseKey);
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
@@ -91,6 +91,19 @@ public class DialogFragmentUtility extends DialogFragment {
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_line)
+                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+                            TextView textViewToSetMeterBetweenLines = mView.findViewById(R.id.tv_range_of_field_meter); //Get number from meter to save it on FB
+                            int meterBetweenPolyLines = Integer.valueOf(textViewToSetMeterBetweenLines.getText().toString()); //Convert it to Integer
+
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    //Add ArrayList for PolyLine on same child
+                                    databaseReference.child(controller.getIdOfListView()).child("Polyline").setValue(pointsForLine);
+                                    databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(meterBetweenPolyLines);
+                                    Toast.makeText(getContext(), "LatLng for Polyline: Have been added", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
                         .setPositiveButton(R.string.bt_on_dialog_cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -98,15 +111,6 @@ public class DialogFragmentUtility extends DialogFragment {
                                     controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
                                     pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
-                            }
-                        })
-                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    Toast.makeText(getContext(), "Preparation for line YES!!! !", Toast.LENGTH_SHORT).show();
-                                }
-
                             }
                         });
                 break;

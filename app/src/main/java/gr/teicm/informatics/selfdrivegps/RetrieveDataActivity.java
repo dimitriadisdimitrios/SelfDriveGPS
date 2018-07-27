@@ -36,7 +36,6 @@ public class RetrieveDataActivity extends Activity {
         setContentView(R.layout.activity_retrieve_data);
         context = this.getApplicationContext();
 
-
         final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -58,7 +57,7 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
-                        controller.setIdOfListView(childName);
+//                        controller.setIdOfListView(childName);
 
                         for (DataSnapshot childCount: dataSnapshot.child(childName).getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
@@ -85,6 +84,6 @@ public class RetrieveDataActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        super.onBackPressed();
     }
 }

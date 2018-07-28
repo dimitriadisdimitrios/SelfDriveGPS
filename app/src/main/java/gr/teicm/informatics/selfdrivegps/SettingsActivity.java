@@ -81,14 +81,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void counterForRangeOfField(String function){
         TextView tvRangeOfField = findViewById(R.id.tv_range_of_field_meter);
-        float counter = Float.parseFloat(tvRangeOfField.getText().toString());
+        int counter = Integer.parseInt(tvRangeOfField.getText().toString());
         if(function.equals("plus")) {
-            counter= (float) (counter+0.1); //Increase the meter
+            counter = counter + 1; //Increase the meter
         }else if(function.equals("sub")){
-            counter= (float) (counter-0.1); //Decrease the meter
+            counter = counter - 1; //Decrease the meter
         }
         controller.setMeterOfRange(counter); //Set counter to Controller
         tvRangeOfField.setText(getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
-
     }
 }

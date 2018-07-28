@@ -93,7 +93,7 @@ public class FieldMathUtilities {
     }
 
     //Algorithm which find the point (x meter away with accordingly bearing)
-    public static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, double mBearing, double mMeter){
+    private static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, double mBearing, double mMeter){
         double distRadians = mMeter / (6372797.6); // earth radius in meters
 
         double lat1 = sourceLatLng.latitude * PI / 180;
@@ -110,24 +110,37 @@ public class FieldMathUtilities {
     //Function which calculate throuth algorithm how many polyline fits left and right of given polyline inside of field
     public static void algorithmForCreatingPolylineInField(ArrayList<LatLng> mArray/*, double distanceBetweenLines*/){
 
-        double distanceBetweenLines=10; // Get distance between lines
+        double distanceBetweenLines; // Distance between lines
 
         int sizeOfArray = mArray.size()-1;
-        double bearingOfPolyline = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing
+        double bearingForRightSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing for right side
+        double bearingForLeftSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 270; // Get Bearing for left side
 
         ArrayList<ArrayList<LatLng>> outterArrayListForMultiPolyline = new ArrayList<>();
         ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
 
-        while(checkIfNextPolylineIsInsideOfField(mArray, bearingOfPolyline, distanceBetweenLines)){
+        distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm
+        while(checkIfNextPolylineIsInsideOfField(mArray, bearingForRightSide, distanceBetweenLines)){
             for(int i=0; i<=sizeOfArray; i++){
-                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingOfPolyline, distanceBetweenLines));
-                Log.d(TAG, "@@ " + innerArrayListForMultiPolyline + "%%");
+                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingForRightSide, distanceBetweenLines));
             }
             ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
             outterArrayListForMultiPolyline.add(myTemp);
             innerArrayListForMultiPolyline.clear();
 
-            distanceBetweenLines+=10;
+            distanceBetweenLines+=controller.getMeterOfRange();
+            Log.d(TAG, "## "+ myTemp+ "&&");
+        }
+        distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm
+        while(checkIfNextPolylineIsInsideOfField(mArray, bearingForLeftSide, distanceBetweenLines)){
+            for(int i=0; i<=sizeOfArray; i++){
+                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingForLeftSide, distanceBetweenLines));
+            }
+            ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
+            outterArrayListForMultiPolyline.add(myTemp);
+            innerArrayListForMultiPolyline.clear();
+
+            distanceBetweenLines+=controller.getMeterOfRange();
             Log.d(TAG, "## "+ myTemp+ "&&");
         }
         controller.setArrayListForLineTest(outterArrayListForMultiPolyline);

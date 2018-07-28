@@ -26,7 +26,8 @@ public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
 
     private ArrayList<String> fList = new ArrayList<>();
-    private ArrayList<LatLng> points = new ArrayList<>();
+    private ArrayList<LatLng> mPointsForField = new ArrayList<>();
+    private ArrayList<LatLng> mPointsForLine = new ArrayList<>();
     private Controller controller = new Controller();
     private Context context;
 
@@ -57,19 +58,34 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
-//                        controller.setIdOfListView(childName);
 
-                        for (DataSnapshot childCount: dataSnapshot.child(childName).getChildren()) {
+                        for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polygon").getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
                             Double longitude = childCount.child("longitude").getValue(Double.class);
                             if(latitude!=null && longitude!=null) {
                                 LatLng latLng = new LatLng(latitude, longitude);
-                                points.add(latLng);
+                                mPointsForField.add(latLng);
+                                controller.setArrayListForField(mPointsForField);
                             }
                         }
+                        for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polyline").getChildren()) {
+                            Double latitude = childCount.child("latitude").getValue(Double.class);
+                            Double longitude = childCount.child("longitude").getValue(Double.class);
+                            if(latitude!=null && longitude!=null) {
+                                LatLng latLng = new LatLng(latitude, longitude);
+                                mPointsForLine.add(latLng);
+                                controller.setArrayListForLine(mPointsForLine);
+                            }
+                        }
+
+                        Integer rangeBetweenPolylines = dataSnapshot.child(childName).child("Meter").getValue(Integer.class);
+                        if (rangeBetweenPolylines != null){
+                            int rangeBetweenLines = rangeBetweenPolylines;
+                            controller.setMeterOfRange(rangeBetweenLines);
+                        }
+
                         Intent strMaps = new Intent(context, MapsActivity.class);
-                        strMaps.putExtra("buttonStatus", "invisible");
-                        strMaps.putParcelableArrayListExtra("latLng", points);
+                        strMaps.putParcelableArrayListExtra("Field", mPointsForField);
                         strMaps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(strMaps);
                         }

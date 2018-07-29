@@ -5,11 +5,11 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:id="@+id/list_view_sample"
-        android:gravity="center"
+        android:gravity="start"
         android:textAllCaps="true"
         android:textSize="28sp"/>
 

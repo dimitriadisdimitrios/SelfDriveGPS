@@ -114,4 +114,3 @@ public class MapsUtilities {
         handler.postDelayed(runnableForModes, 1000);
     }
 }
-

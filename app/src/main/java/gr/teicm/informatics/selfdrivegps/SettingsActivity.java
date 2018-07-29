@@ -89,5 +89,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
         controller.setMeterOfRange(counter); //Set counter to Controller
         tvRangeOfField.setText(getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
+
     }
 }

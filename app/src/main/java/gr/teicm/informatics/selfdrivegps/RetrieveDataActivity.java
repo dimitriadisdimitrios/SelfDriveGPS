@@ -50,6 +50,7 @@ public class RetrieveDataActivity extends Activity {
 
                 //Create ListView to show data from FireBase
                 ListView listView =  findViewById(R.id.list_view_main_frame);
+                listView.setClickable(true);
                 final ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
 
@@ -103,8 +104,7 @@ public class RetrieveDataActivity extends Activity {
                         return true;
                     }
                 });
-//                listView.notify();
-                //TODO: Finnish SetEmptyView - Refresh ListView if something change
+                //TODO: Finnish SetEmptyView
 //                listView.setEmptyView();
                 }
             @Override
@@ -116,6 +116,6 @@ public class RetrieveDataActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 }

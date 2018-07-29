@@ -50,7 +50,7 @@ public class RetrieveDataActivity extends Activity {
 
                 //Create ListView to show data from FireBase
                 ListView listView =  findViewById(R.id.list_view_main_frame);
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
+                final ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
 
                 //When you click Items on ListView it send you to maps Activity and make buttons there, invisible
@@ -90,6 +90,22 @@ public class RetrieveDataActivity extends Activity {
                         context.startActivity(strMaps);
                         }
                     });
+                listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        String childNameHoldClick = (String) adapterView.getItemAtPosition(i);
+                        dataSnapshot.child(childNameHoldClick).getRef().removeValue();
+
+                        //These two rows is to refresh when item removed
+                        adapter.clear();
+                        adapter.notifyDataSetChanged();
+
+                        return true;
+                    }
+                });
+//                listView.notify();
+                //TODO: Finnish SetEmptyView - Refresh ListView if something change
+//                listView.setEmptyView();
                 }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

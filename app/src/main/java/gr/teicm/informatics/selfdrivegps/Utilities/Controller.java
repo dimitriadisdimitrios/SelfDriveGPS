@@ -8,7 +8,7 @@ public class Controller {
     private static ArrayList<ArrayList<LatLng>> lineTest;
     private static String idOfList, mStatus ="Record field selected";
     private static LatLng mLatLng;
-    private static float mCounter;
+    private static int mRange;
 
     public static final String MODE_0_RECORD_FIELD = "Record Field";
     public static final String MODE_1_CREAT_LINE = "Create Line";
@@ -47,11 +47,11 @@ public class Controller {
     }
 
     //Setter/Getter to interact with range meter of settingActivity
-    public void setMeterOfRange(float counter){
-        mCounter = counter;
+    public void setMeterOfRange(int counter){
+        mRange = counter;
     }
-    public float getMeterOfRange(){
-        return mCounter;
+    public int getMeterOfRange(){
+        return mRange;
     }
 
     //Setter/Getter to change between "create field" and "create polyline"

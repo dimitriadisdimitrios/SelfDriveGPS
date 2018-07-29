@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
@@ -29,9 +30,9 @@ public class MapsUtilities {
 
 
     public static void showAlertDialog(android.app.FragmentManager fragmentManager){
-        DialogFragmentUtility dialogFragmentUtility = new DialogFragmentUtility();
-        dialogFragmentUtility.show(fragmentManager, "PopToSend");
-        dialogFragmentUtility.setCancelable(false); //prevent dialog box from getting dismissed on back key
+        DialogFragment dialogFragment = new DialogFragment();
+        dialogFragment.show(fragmentManager, "PopToSend");
+        dialogFragment.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
 
     public static boolean hasPermissions(Context context, String... allPermissionNeeded) {
@@ -113,5 +114,17 @@ public class MapsUtilities {
         };
         handler.postDelayed(runnableForModes, 1000);
     }
-}
 
+    //I use it on SettingsActivity.java and DialogFragment.java but it doesn't need new class only for 1 function
+    public static void counterForRangeOfField(String function, TextView tvRangeOfLines, Context context){
+        //TODO: More tests to sure it works right
+        int counter = Integer.parseInt(tvRangeOfLines.getText().toString());
+        if(function.equals("plus")) {
+            counter = counter + 1; //Increase the meter
+        }else if(function.equals("sub")){
+            counter = counter - 1; //Decrease the meter
+        }
+        controller.setMeterOfRange(counter); //Set counter to Controller
+        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
+    }
+}

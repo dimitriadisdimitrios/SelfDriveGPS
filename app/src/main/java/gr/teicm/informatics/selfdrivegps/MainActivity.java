@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    private final String VERSION_OF_APP = "v0.71";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
         Button startBtn =  findViewById(R.id.start_calculations_btn);
         Button loadPlanBtn =  findViewById(R.id.load_plans_btn);
         Button settingBtn =  findViewById(R.id.setting_btn);
+        TextView tvVersionOfApp = findViewById(R.id.tv_app_version);
+
+        tvVersionOfApp.setText(VERSION_OF_APP);
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override

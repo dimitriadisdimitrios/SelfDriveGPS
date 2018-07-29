@@ -25,7 +25,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -67,8 +66,6 @@ public class MapsActivity extends FragmentActivity
 
         MapsUtilities.checkIfModeChanged(labelAboveToggleBtn, mainStartBtn);
 
-        checkToGetDataFromAnotherActivity(mainStartBtn);
-
         //Set listener on button to start store LatLng on array
         mainStartBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -105,17 +102,14 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
+
+        checkToGetDataFromAnotherActivity(mainStartBtn);
 
         if(getIntent().getExtras()!=null) {
-            LatLng center = FieldMathUtilities.getPolygonCenterPoint(pointsForField);
+            LatLng center = FieldMathUtilities.getPolygonCenterPoint(controller.getArrayListForField());
             mMap.addMarker(new MarkerOptions().position(center));
-            //TODO: Adapt function from MapsUtilities here or create a new one
-//            for(int i=0;i<360;i++){
-//                LatLng aCester = MapsUtilities.calculateLocationFewMetersAhead(center,i);
-//                mMap.addMarker(new MarkerOptions().position(aCester).title("a"));
-//            }
-            LatLng aCester = FieldMathUtilities.calculateLocationFewMetersAhead(center,270,100);
-            mMap.addMarker(new MarkerOptions().position(aCester).title("d270"));
+
         }else{
             controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
             Log.d("modes",Controller.MODE_0_RECORD_FIELD);
@@ -193,20 +187,14 @@ public class MapsActivity extends FragmentActivity
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Connected to Google Api Client");
         googleApiClient.connect();
-
-        if(getIntent().getExtras()!=null){ //Check if app start from Start or from load field
-            MapsUtilities.placePolygonForRoute(pointsForField,mMap);
-        }
     }
     @Override
     public void onBackPressed() {
         //TODO: Add code on back btn to test it... When finished remove it all
         FieldMathUtilities.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
 
-        int j=0;
         for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
-            j++;
         }
         //Back Btn do nothing !
 //        super.onBackPressed();
@@ -232,11 +220,12 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
+        // When load field from "load btn" draw the necessary lines to show it and
         if(getIntent().getExtras()!=null) {
-            pointsForField = getIntent().getParcelableArrayListExtra("latLng"); //Fill pointsForFieldFromBase with Lat\Lng
-            controller.setArrayListForField(pointsForField);
+            MapsUtilities.placePolygonForRoute(controller.getArrayListForField(),mMap);
+            MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
 
-            controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+            controller.setProgramStatus(Controller.MODE_2_DRIVING);
             MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
         }
     }

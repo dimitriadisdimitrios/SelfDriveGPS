@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         final ToggleButton tBtnBluetooth =  findViewById(R.id.tBtn_bluetooth);
         Button btPlus = findViewById(R.id.btn_plus);
         Button btSub = findViewById(R.id.btn_sub);
+        final TextView tvRangeOfField = findViewById(R.id.tv_range_of_field_meter);
         TextView tvBluetooth = findViewById(R.id.tv_bluetooth);
 
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -68,27 +70,14 @@ public class SettingsActivity extends AppCompatActivity {
         btPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 counterForRangeOfField("plus");
+                 MapsUtilities.counterForRangeOfField("plus", tvRangeOfField, getApplicationContext());
             }
         }); //Set listener for plus btn to increase the number
         btSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                counterForRangeOfField("sub");
+                MapsUtilities.counterForRangeOfField("sub", tvRangeOfField, getApplicationContext());
             }
         });//Set listener for sub btn to increase the number
-    }
-
-    public void counterForRangeOfField(String function){
-        TextView tvRangeOfField = findViewById(R.id.tv_range_of_field_meter);
-        float counter = Float.parseFloat(tvRangeOfField.getText().toString());
-        if(function.equals("plus")) {
-            counter= (float) (counter+0.1); //Increase the meter
-        }else if(function.equals("sub")){
-            counter= (float) (counter-0.1); //Decrease the meter
-        }
-        controller.setMeterOfRange(counter); //Set counter to Controller
-        tvRangeOfField.setText(getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
-
     }
 }

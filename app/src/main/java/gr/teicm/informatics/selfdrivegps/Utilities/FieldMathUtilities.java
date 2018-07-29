@@ -43,7 +43,7 @@ public class FieldMathUtilities {
     }
 
     //Function to know if user is in polygon or not
-    public static boolean PointIsInRegion(LatLng mlatLng, ArrayList<LatLng> thePath) {
+    public static boolean PointIsInRegion(LatLng mLatLng, ArrayList<LatLng> thePath) {
         int crossings = 0;
         int count = thePath.size();
         LatLng a,b;
@@ -55,7 +55,7 @@ public class FieldMathUtilities {
                 j = 0;
             }
             b = thePath.get(j);
-            if (RayCrossesSegment(mlatLng, a, b)) {
+            if (RayCrossesSegment(mLatLng, a, b)) {
                 crossings++;
             }
         }
@@ -126,10 +126,17 @@ public class FieldMathUtilities {
     //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field
     private static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){
 
-        int locationOfMidInArrayList = givenArrayListToCheck.size()/2; // get the mid point of arrayList
-        LatLng pointToCheck = calculateLocationFewMetersAhead(givenArrayListToCheck.get(locationOfMidInArrayList), mBearing, mMeter); //get point to check
+        boolean resultForCheckingIfPointIsInsideOfField = false;
 
-        return PointIsInRegion(pointToCheck, controller.getArrayListForField());
+        //Check every spot (x meter away with specific bearing) and if found at least one inside (stops) and return true
+        for(int i=0; i<givenArrayListToCheck.size(); i++){
+            LatLng tempSpot = calculateLocationFewMetersAhead(givenArrayListToCheck.get(i), mBearing, mMeter);
+            if(PointIsInRegion(tempSpot, controller.getArrayListForField())){
+                resultForCheckingIfPointIsInsideOfField = true;
+                i = givenArrayListToCheck.size();
+            }
+        }
+        return resultForCheckingIfPointIsInsideOfField;
     }
 
     //Take 2 points and find their bearing

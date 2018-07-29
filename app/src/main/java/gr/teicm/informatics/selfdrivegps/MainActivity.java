@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private final String VERSION_OF_APP = "v0.71";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         Button settingBtn =  findViewById(R.id.setting_btn);
         TextView tvVersionOfApp = findViewById(R.id.tv_app_version);
 
+        //Set the version of App on this variable
+        String VERSION_OF_APP = "v0.71";
         tvVersionOfApp.setText(VERSION_OF_APP);
 
         startBtn.setOnClickListener(new View.OnClickListener() {

@@ -62,6 +62,22 @@ public class FieldMathUtilities {
         return (crossings % 2 == 1); // odd number of crossings?
     }
 
+    //Function which calculate through algorithm how many polyline fits left and right of given polyline inside of field
+    public static void algorithmForCreatingPolylineInField(ArrayList<LatLng> mArray/*, double distanceBetweenLines*/){
+
+        int sizeOfArray = mArray.size()-1;
+        double bearingForRightSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing for right side
+        double bearingForLeftSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 270; // Get Bearing for left side
+
+        ArrayList<ArrayList<LatLng>> outerArrayListForMultiPolyline = new ArrayList<>();
+        ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
+
+        loopToMultiPolyLines(mArray, bearingForRightSide, sizeOfArray, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline);
+        loopToMultiPolyLines(mArray, bearingForLeftSide, sizeOfArray, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline);
+
+        controller.setArrayListForLineTest(outerArrayListForMultiPolyline);
+    }
+
     //Ray algorithm to calculate area of polygon
     private static boolean RayCrossesSegment(LatLng point, LatLng a, LatLng b) {
         double px = point.longitude;
@@ -107,45 +123,6 @@ public class FieldMathUtilities {
         return new LatLng(nLat, nLon);
     }
 
-    //Function which calculate throuth algorithm how many polyline fits left and right of given polyline inside of field
-    public static void algorithmForCreatingPolylineInField(ArrayList<LatLng> mArray/*, double distanceBetweenLines*/){
-
-        double distanceBetweenLines; // Distance between lines
-
-        int sizeOfArray = mArray.size()-1;
-        double bearingForRightSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing for right side
-        double bearingForLeftSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 270; // Get Bearing for left side
-
-        ArrayList<ArrayList<LatLng>> outterArrayListForMultiPolyline = new ArrayList<>();
-        ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
-
-        distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm
-        while(checkIfNextPolylineIsInsideOfField(mArray, bearingForRightSide, distanceBetweenLines)){
-            for(int i=0; i<=sizeOfArray; i++){
-                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingForRightSide, distanceBetweenLines));
-            }
-            ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
-            outterArrayListForMultiPolyline.add(myTemp);
-            innerArrayListForMultiPolyline.clear();
-
-            distanceBetweenLines+=controller.getMeterOfRange();
-            Log.d(TAG, "## "+ myTemp+ "&&");
-        }
-        distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm
-        while(checkIfNextPolylineIsInsideOfField(mArray, bearingForLeftSide, distanceBetweenLines)){
-            for(int i=0; i<=sizeOfArray; i++){
-                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingForLeftSide, distanceBetweenLines));
-            }
-            ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
-            outterArrayListForMultiPolyline.add(myTemp);
-            innerArrayListForMultiPolyline.clear();
-
-            distanceBetweenLines+=controller.getMeterOfRange();
-            Log.d(TAG, "## "+ myTemp+ "&&");
-        }
-        controller.setArrayListForLineTest(outterArrayListForMultiPolyline);
-    }
-
     //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field
     private static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){
 
@@ -171,5 +148,21 @@ public class FieldMathUtilities {
         double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
 
         return (Math.toDegrees(Math.atan2(y, x))+360)%360;
+    }
+
+    //Loop for create LatLng for Multi-polyLines
+    private static void loopToMultiPolyLines(ArrayList<LatLng> array, double mBearing, int sizeOfArray, ArrayList<LatLng> inner, ArrayList<ArrayList<LatLng>> outer){
+        double distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm \ Distance between lines
+        while(checkIfNextPolylineIsInsideOfField(array, mBearing, distanceBetweenLines)){
+            for(int i=0; i<=sizeOfArray; i++){
+                inner.add(calculateLocationFewMetersAhead(array.get(i), mBearing, distanceBetweenLines));
+            }
+            ArrayList<LatLng> myTemp = new ArrayList<>(inner);
+            outer.add(myTemp);
+            inner.clear();
+
+            distanceBetweenLines+=controller.getMeterOfRange();
+            Log.d(TAG, "## "+ myTemp+ "&&");
+        }
     }
 }

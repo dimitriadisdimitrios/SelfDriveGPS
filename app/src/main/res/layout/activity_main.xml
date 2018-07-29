@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    tools:context="gr.teicm.informatics.selfdrivegps.MainActivity"
-    android:orientation="vertical"
-    android:gravity="center">
-    <Button
-        android:id="@+id/start_calculations_btn"
+    android:layout_width="match_parent">
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/bt_new_project_mainActivity"
-        android:textAllCaps="false"
-        android:gravity="center_vertical|center_horizontal"/>
-    <Button
-        android:id="@+id/load_plans_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/btn_load_projects_mainActivity"
-        android:layout_marginTop="14dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:textAllCaps="false" />
-    <Button
-        android:id="@+id/setting_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/btn_settings_mainActivity"
-        android:layout_marginTop="14dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:textAllCaps="false"/>
-</LinearLayout>
+        android:id="@+id/tv_app_version"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <Button
+            android:id="@+id/start_calculations_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_new_project_mainActivity"
+            android:textAllCaps="false"
+            android:gravity="center_vertical|center_horizontal"/>
+        <Button
+            android:id="@+id/load_plans_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/btn_load_projects_mainActivity"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAllCaps="false" />
+        <Button
+            android:id="@+id/setting_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/btn_settings_mainActivity"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,8 +1,7 @@
-package gr.teicm.informatics.selfdrivegps.Utilities;
+package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,11 +22,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.R;
+import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
 
-public class DialogFragmentUtility extends DialogFragment {
+public class DialogFragment extends android.app.DialogFragment {
     private Controller controller = new Controller();
-    private final static String TAG = "DialogFragmentUtility";
+    private final static String TAG = "DialogFragment";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -91,6 +93,23 @@ public class DialogFragmentUtility extends DialogFragment {
                 Log.d(TAG, "Create route line");
                 editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
                 linearLayoutIncludeRangeMeter.setVisibility(View.VISIBLE);
+
+                final Button btPlus = mView.findViewById(R.id.btn_plus);
+                final Button btSub = mView.findViewById(R.id.btn_sub);
+                final TextView tvRangeBetweenLines = mView.findViewById(R.id.tv_range_of_field_meter);
+
+                btPlus.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        MapsUtilities.counterForRangeOfField("plus", tvRangeBetweenLines, getActivity().getApplication().getBaseContext());
+                    }
+                });
+                btSub.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_line)

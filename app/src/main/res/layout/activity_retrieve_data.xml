@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    tools:context="gr.teicm.informatics.selfdrivegps.RetrieveDataActivity">
+    tools:context="gr.teicm.informatics.selfdrivegps.Activities.RetrieveDataActivity">
 
 
     <ListView

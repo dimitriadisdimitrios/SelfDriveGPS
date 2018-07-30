@@ -22,7 +22,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import java.util.HashMap;
 import java.util.Map;
 
-import gr.teicm.informatics.selfdrivegps.MainActivity;
+import gr.teicm.informatics.selfdrivegps.Activities.MainActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 

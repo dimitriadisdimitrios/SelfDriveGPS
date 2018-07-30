@@ -127,7 +127,6 @@ public class FieldMathUtilities {
     private static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){
 
         boolean resultForCheckingIfPointIsInsideOfField = false;
-
         //Check every spot (x meter away with specific bearing) and if found at least one inside (stops) and return true
         for(int i=0; i<givenArrayListToCheck.size(); i++){
             LatLng tempSpot = calculateLocationFewMetersAhead(givenArrayListToCheck.get(i), mBearing, mMeter);
@@ -162,7 +161,12 @@ public class FieldMathUtilities {
         double distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm \ Distance between lines
         while(checkIfNextPolylineIsInsideOfField(array, mBearing, distanceBetweenLines)){
             for(int i=0; i<=sizeOfArray; i++){
-                inner.add(calculateLocationFewMetersAhead(array.get(i), mBearing, distanceBetweenLines));
+                LatLng pointBeforeAddedToInner =calculateLocationFewMetersAhead(array.get(i), mBearing, distanceBetweenLines);
+
+                //Check if any point of Polyline is out of field
+                if(PointIsInRegion(pointBeforeAddedToInner, controller.getArrayListForField())){
+                    inner.add(calculateLocationFewMetersAhead(array.get(i), mBearing, distanceBetweenLines));
+                }
             }
             ArrayList<LatLng> myTemp = new ArrayList<>(inner);
             outer.add(myTemp);

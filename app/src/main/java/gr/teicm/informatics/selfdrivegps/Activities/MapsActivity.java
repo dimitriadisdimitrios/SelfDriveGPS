@@ -194,10 +194,11 @@ public class MapsActivity extends FragmentActivity
     public void onBackPressed() {
         //TODO: Add code on back btn to test it... When finished remove it all
         MultiPolyline.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
-
         for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
         }
+        //TODO: Clear map and recreate it
+//        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
         //Back Btn do nothing !
 //        super.onBackPressed();
     }

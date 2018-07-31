@@ -1,13 +1,9 @@
 package gr.teicm.informatics.selfdrivegps.FieldMath;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
-
-import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.Math.PI;
@@ -17,7 +13,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class FieldBorder {
-    private static String TAG = "FieldBorder";
+//    private static String TAG = "FieldBorder";
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -89,7 +85,7 @@ public class FieldBorder {
 
         double red = (ax != bx) ? ((by - ay) / (bx - ax)) : MAX_VALUE;
         double blue = (ax != px) ? ((py - ay) / (px - ax)) : MAX_VALUE;
-        Log.d(TAG, "blue >= red: " + (blue >= red));
+//        Log.d(TAG, "blue >= red: " + (blue >= red));
         return (blue >= red);
     }
 

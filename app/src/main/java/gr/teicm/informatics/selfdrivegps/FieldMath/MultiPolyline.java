@@ -23,10 +23,9 @@ public class MultiPolyline {
         loopToMultiPolyLines(mArray, bearingForRightSide, mBearing, mArray.size()-1, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline); //#1
         loopToMultiPolyLines(mArray, bearingForLeftSide, mBearing, mArray.size()-1, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline);  //#1
 
-        //TODO: Need work here
-        /*checkIfEveryPolylineMatchToTheEndOfBorder(mArray,mArray.get(0),mBearing,false);
-        checkIfEveryPolylineMatchToTheEndOfBorder(mArray,mArray.get(mArray.size()-1),mBearing,true);
-        controller.setArrayListForLine(mArray);*/
+        checkIfEveryPolylineMatchToTheEndOfBorder(mArray,mArray.get(0),mBearing,false);
+        checkIfEveryPolylineMatchToTheEndOfBorder(mArray,mArray.get(mArray.size()-1),mBearing+180,true);
+        controller.setArrayListForLine(mArray);
 
         controller.setArrayListForLineTest(outerArrayListForMultiPolyline);
     }

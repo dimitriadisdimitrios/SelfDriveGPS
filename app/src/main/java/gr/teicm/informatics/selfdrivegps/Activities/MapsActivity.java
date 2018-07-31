@@ -198,7 +198,7 @@ public class MapsActivity extends FragmentActivity
             MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
         }
         //TODO: Clear map and recreate it
-//        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
         //Back Btn do nothing !
 //        super.onBackPressed();
     }

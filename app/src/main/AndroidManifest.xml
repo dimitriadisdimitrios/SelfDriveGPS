@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity">
+            android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -39,16 +39,16 @@
         </activity>
 
         <activity
-            android:name=".MapsActivity">
+            android:name=".Activities.MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".RetrieveDataActivity" />
+        <activity android:name=".Activities.RetrieveDataActivity" />
 
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".Activities.SettingsActivity" />
 
     </application>
 

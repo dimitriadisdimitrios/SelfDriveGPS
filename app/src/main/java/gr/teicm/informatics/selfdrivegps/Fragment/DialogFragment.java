@@ -107,21 +107,18 @@ public class DialogFragment extends android.app.DialogFragment {
                 btSub.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        MapsUtilities.counterForRangeOfField("sub", tvRangeBetweenLines, getActivity().getApplication().getBaseContext());
                     }
                 });
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_line)
                         .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
-                            TextView textViewToSetMeterBetweenLines = mView.findViewById(R.id.tv_range_of_field_meter); //Get number from meter to save it on FB
-                            int meterBetweenPolyLines = Integer.valueOf(textViewToSetMeterBetweenLines.getText().toString()); //Convert it to Integer
-
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     //Add ArrayList for PolyLine on same child
                                     databaseReference.child(controller.getIdOfListView()).child("Polyline").setValue(pointsForLine);
-                                    databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(meterBetweenPolyLines);
+                                    databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
                                     Toast.makeText(getContext(), "LatLng for Polyline: Have been added", Toast.LENGTH_SHORT).show();
                                 }
                             }

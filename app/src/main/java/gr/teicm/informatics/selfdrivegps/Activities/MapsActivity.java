@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps;
+package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Context;
 import android.location.Location;
@@ -28,8 +28,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.FieldMath.FieldBorder;
+import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolyline;
+import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
-import gr.teicm.informatics.selfdrivegps.Utilities.FieldMathUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
@@ -107,7 +109,7 @@ public class MapsActivity extends FragmentActivity
         checkToGetDataFromAnotherActivity(mainStartBtn);
 
         if(getIntent().getExtras()!=null) {
-            LatLng center = FieldMathUtilities.getPolygonCenterPoint(controller.getArrayListForField());
+            LatLng center = FieldBorder.getPolygonCenterPoint(controller.getArrayListForField());
             mMap.addMarker(new MarkerOptions().position(center));
 
         }else{
@@ -150,17 +152,14 @@ public class MapsActivity extends FragmentActivity
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
-                && FieldMathUtilities.checkIfLatLngExist(latLng,pointsForLine)
-                && FieldMathUtilities.PointIsInRegion(latLng, controller.getArrayListForField())){
+                && FieldBorder.checkIfLatLngExist(latLng,pointsForLine)
+                && FieldBorder.PointIsInRegion(latLng, controller.getArrayListForField())){
 
             pointsForLine.add(latLng);
             controller.setArrayListForLine(pointsForLine);
             MapsUtilities.placePolylineForRoute(pointsForLine, mMap);
         }
 //        Log.d(TAG, String.valueOf(pointsForLine));
-
-        //TODO: Fix the error when app starts in the Region
-//        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
     }
 
     @Override
@@ -190,9 +189,11 @@ public class MapsActivity extends FragmentActivity
     }
     @Override
     public void onBackPressed() {
+        mMap.clear();
+        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
+        MultiPolyline.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
         //TODO: Add code on back btn to test it... When finished remove it all
-        FieldMathUtilities.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
-
         for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
         }

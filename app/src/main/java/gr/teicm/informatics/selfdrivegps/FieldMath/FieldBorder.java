@@ -1,6 +1,4 @@
-package gr.teicm.informatics.selfdrivegps.Utilities;
-
-import android.util.Log;
+package gr.teicm.informatics.selfdrivegps.FieldMath;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -14,9 +12,8 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class FieldMathUtilities {
-    private static String TAG = "FieldMathUtilities";
-    private static Controller controller = new Controller();
+public class FieldBorder {
+//    private static String TAG = "FieldBorder";
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -43,7 +40,7 @@ public class FieldMathUtilities {
     }
 
     //Function to know if user is in polygon or not
-    public static boolean PointIsInRegion(LatLng mlatLng, ArrayList<LatLng> thePath) {
+    public static boolean PointIsInRegion(LatLng mLatLng, ArrayList<LatLng> thePath) {
         int crossings = 0;
         int count = thePath.size();
         LatLng a,b;
@@ -55,7 +52,7 @@ public class FieldMathUtilities {
                 j = 0;
             }
             b = thePath.get(j);
-            if (RayCrossesSegment(mlatLng, a, b)) {
+            if (RayCrossesSegment(mLatLng, a, b)) {
                 crossings++;
             }
         }
@@ -88,12 +85,12 @@ public class FieldMathUtilities {
 
         double red = (ax != bx) ? ((by - ay) / (bx - ax)) : MAX_VALUE;
         double blue = (ax != px) ? ((py - ay) / (px - ax)) : MAX_VALUE;
-        Log.d(TAG, "blue >= red: " + (blue >= red));
+//        Log.d(TAG, "blue >= red: " + (blue >= red));
         return (blue >= red);
     }
 
     //Algorithm which find the point (x meter away with accordingly bearing)
-    private static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, double mBearing, double mMeter){
+    public static LatLng calculateLocationFewMetersAhead(LatLng sourceLatLng, double mBearing, double mMeter){
         double distRadians = mMeter / (6372797.6); // earth radius in meters
 
         double lat1 = sourceLatLng.latitude * PI / 180;
@@ -107,56 +104,8 @@ public class FieldMathUtilities {
         return new LatLng(nLat, nLon);
     }
 
-    //Function which calculate throuth algorithm how many polyline fits left and right of given polyline inside of field
-    public static void algorithmForCreatingPolylineInField(ArrayList<LatLng> mArray/*, double distanceBetweenLines*/){
-
-        double distanceBetweenLines; // Distance between lines
-
-        int sizeOfArray = mArray.size()-1;
-        double bearingForRightSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 90; // Get Bearing for right side
-        double bearingForLeftSide = (calculateBearing(mArray.get(0), mArray.get(sizeOfArray))) + 270; // Get Bearing for left side
-
-        ArrayList<ArrayList<LatLng>> outterArrayListForMultiPolyline = new ArrayList<>();
-        ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
-
-        distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm
-        while(checkIfNextPolylineIsInsideOfField(mArray, bearingForRightSide, distanceBetweenLines)){
-            for(int i=0; i<=sizeOfArray; i++){
-                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingForRightSide, distanceBetweenLines));
-            }
-            ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
-            outterArrayListForMultiPolyline.add(myTemp);
-            innerArrayListForMultiPolyline.clear();
-
-            distanceBetweenLines+=controller.getMeterOfRange();
-            Log.d(TAG, "## "+ myTemp+ "&&");
-        }
-        distanceBetweenLines = controller.getMeterOfRange(); //Reset distanceBetweenLines for algorithm
-        while(checkIfNextPolylineIsInsideOfField(mArray, bearingForLeftSide, distanceBetweenLines)){
-            for(int i=0; i<=sizeOfArray; i++){
-                innerArrayListForMultiPolyline.add(calculateLocationFewMetersAhead(mArray.get(i), bearingForLeftSide, distanceBetweenLines));
-            }
-            ArrayList<LatLng> myTemp = new ArrayList<>(innerArrayListForMultiPolyline);
-            outterArrayListForMultiPolyline.add(myTemp);
-            innerArrayListForMultiPolyline.clear();
-
-            distanceBetweenLines+=controller.getMeterOfRange();
-            Log.d(TAG, "## "+ myTemp+ "&&");
-        }
-        controller.setArrayListForLineTest(outterArrayListForMultiPolyline);
-    }
-
-    //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field
-    private static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){
-
-        int locationOfMidInArrayList = givenArrayListToCheck.size()/2; // get the mid point of arrayList
-        LatLng pointToCheck = calculateLocationFewMetersAhead(givenArrayListToCheck.get(locationOfMidInArrayList), mBearing, mMeter); //get point to check
-
-        return PointIsInRegion(pointToCheck, controller.getArrayListForField());
-    }
-
     //Take 2 points and find their bearing
-    private static double calculateBearing(LatLng startLatLng, LatLng endLatLng){
+    public static double calculateBearing(LatLng startLatLng, LatLng endLatLng){
         Double startLat = startLatLng.latitude;
         Double startLng = startLatLng.longitude;
         Double endLat = endLatLng.latitude;

@@ -23,7 +23,7 @@ import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
-    private static String TAG = "MapsUtilities";
+    private static final String TAG = "MapsUtilities";
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed;
@@ -55,7 +55,7 @@ public class MapsUtilities {
 
     public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn){
         String modeOfApp = controller.getProgramStatus();
-        Log.d(TAG, "Program status:" + modeOfApp);
+//        Log.d(TAG, "Program status:" + modeOfApp);
         switch (modeOfApp){
             case Controller.MODE_0_RECORD_FIELD:
                 label.setText(String.format("Mode: %s", Controller.MODE_0_RECORD_FIELD));

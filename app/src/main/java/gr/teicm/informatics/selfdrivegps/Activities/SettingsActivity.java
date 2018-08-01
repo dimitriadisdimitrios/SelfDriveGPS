@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps;
+package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 

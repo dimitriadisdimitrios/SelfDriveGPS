@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps;
+package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import gr.teicm.informatics.selfdrivegps.R;
+
 public class MainActivity extends AppCompatActivity {
-    private final String VERSION_OF_APP = "v0.71";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         Button settingBtn =  findViewById(R.id.setting_btn);
         TextView tvVersionOfApp = findViewById(R.id.tv_app_version);
 
+        //Set the version of App on this variable
+        String VERSION_OF_APP = "v0.72";
         tvVersionOfApp.setText(VERSION_OF_APP);
 
         startBtn.setOnClickListener(new View.OnClickListener() {

@@ -160,9 +160,6 @@ public class MapsActivity extends FragmentActivity
             MapsUtilities.placePolylineForRoute(pointsForLine, mMap);
         }
 //        Log.d(TAG, String.valueOf(pointsForLine));
-
-        //TODO: Fix the error when app starts in the Region
-//        if(getIntent().getExtras()!=null){ Log.d("Point in Region", String.valueOf(MapsUtilities.PointIsInRegion(latLng,controller.getPoints())));}
     }
 
     @Override
@@ -192,13 +189,14 @@ public class MapsActivity extends FragmentActivity
     }
     @Override
     public void onBackPressed() {
-        //TODO: Add code on back btn to test it... When finished remove it all
+        mMap.clear();
+        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
         MultiPolyline.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
+        //TODO: Add code on back btn to test it... When finished remove it all
         for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
         }
-        //TODO: Clear map and recreate it
-        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
         //Back Btn do nothing !
 //        super.onBackPressed();
     }

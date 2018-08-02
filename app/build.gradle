@@ -5,6 +5,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "gr.teicm.informatics.selfdrivegps"
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1

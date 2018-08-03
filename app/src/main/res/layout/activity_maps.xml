@@ -5,26 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="gr.teicm.informatics.selfdrivegps.Activities.MapsActivity" >
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/tv_speed_of_user"
+        android:orientation="horizontal"
+        android:layout_gravity="top">
+
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="25dp" />
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textColor="@color/colorAccent"
-            android:text="@string/speed_counter_default" />
-        <TextView
-            android:id="@+id/tv_accuracy_of_gps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textColor="@color/colorAccent"
-            android:text="@string/accuracy_of_gps_default" />
+            android:layout_gravity="top|center">
+            <ImageView
+                android:layout_width="270dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/nav_bar"
+                android:contentDescription="@string/desc_for_nav_bar"
+                android:id="@+id/iv_main_nav_bar"
+                android:layout_marginTop="4dp"/>
+        </RelativeLayout>
     </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="vertical"
+            android:layout_margin="10dp">
+            <TextView
+                android:id="@+id/tv_speed_of_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textColor="@color/colorAccent"
+                android:text="@string/speed_counter_default" />
+            <TextView
+                android:id="@+id/tv_accuracy_of_gps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textColor="@color/colorAccent"
+                android:text="@string/accuracy_of_gps_default" />
+        </LinearLayout>
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,6 +70,7 @@
             android:contentDescription="@string/line_rage_imageView"
             android:rotation="45"/>
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

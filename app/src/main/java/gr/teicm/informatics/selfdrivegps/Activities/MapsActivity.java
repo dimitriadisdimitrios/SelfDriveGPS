@@ -1,6 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -94,6 +96,15 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        try{
+            //Customise the styling of the base map using a JSON object defines in a raw resource file
+            boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
+            if(!success){
+                Log.e(TAG, "Style parsing failed.");
+            }
+        }catch (Resources.NotFoundException e){
+            Log.e(TAG, "Can't find styler. Error: ", e);
+        }
         MapsUtilities.checkLocationPermission(context);
         PermissionUtilities.enableLoc(googleApiClient,this);
 

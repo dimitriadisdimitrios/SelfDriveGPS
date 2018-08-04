@@ -27,5 +27,5 @@
     <string name="line_rage_imageView">line rage</string>
     <string name="stop">stop</string>
     <string name="mode_unknown">Mode: Unknown</string>
-    <string name="desc_for_nav_bar">Main bar to navigate user through the field</string>
+    <string name="main_description_for_nav_bar">All attributes for nav_bar</string>
 </resources>

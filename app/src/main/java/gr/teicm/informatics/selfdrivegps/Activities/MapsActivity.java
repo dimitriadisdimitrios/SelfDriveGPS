@@ -30,8 +30,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.FieldMath.ApproachPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.FieldMath.FieldBorder;
-import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolyline;
+import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
@@ -133,7 +134,7 @@ public class MapsActivity extends FragmentActivity
     public void onLocationChanged(Location location) {
         MapsUtilities.checkIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
         float accuracyOfGps = location.getAccuracy();
         MapsUtilities.getSpecsForStatusBar(speedOfUser, accuracyOfGps, mSpeed, mAccuracy, context); // Show speed and accuracy of GPS up-right on map
@@ -142,7 +143,7 @@ public class MapsActivity extends FragmentActivity
 
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)             // Sets the center of the map to Mountain View
+                .target(latLngOfCurrentTime)             // Sets the center of the map to Mountain View
                 .zoom(17)                   // Sets the zoom
                 .bearing(mBearing)          // Sets the orientation of the camera to east
                 .tilt(90)                   // Sets the tilt of the camera to 30 degrees
@@ -150,23 +151,29 @@ public class MapsActivity extends FragmentActivity
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
-        controller.setLocationOfUser(latLng);
+        controller.setLocationOfUser(latLngOfCurrentTime);
 //        Log.d(TAG, String.valueOf(pointsForLine));
+        if(getIntent().getExtras()!=null){
+            Boolean etc =ApproachPolylineAlgorithm.bdccGeoDistanceCheckWithRadius(controller.getArrayListForLine(), latLngOfCurrentTime,10);
+            if (etc){
+                Toast.makeText(this, "YEs YEs Test succed", Toast.LENGTH_LONG).show();
+            }
+        }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
         if(controller.getProgramStatus().equals(Controller.MODE_0_RECORD_FIELD)
                 && btn_haveBeenClicked) {
 
-            pointsForField.add(latLng);
+            pointsForField.add(latLngOfCurrentTime);
             controller.setArrayListForField(pointsForField);
             MapsUtilities.placePolylineForRoute(pointsForField, mMap);
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
                 && btn_haveBeenClicked
-                && FieldBorder.checkIfLatLngExist(latLng,pointsForLine)
-                && FieldBorder.PointIsInRegion(latLng, controller.getArrayListForField())){
+                && FieldBorder.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
+                && FieldBorder.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
 
-            pointsForLine.add(latLng);
+            pointsForLine.add(latLngOfCurrentTime);
             controller.setArrayListForLine(pointsForLine);
             MapsUtilities.placePolylineForRoute(pointsForLine, mMap);
         }
@@ -202,7 +209,7 @@ public class MapsActivity extends FragmentActivity
     public void onBackPressed() {
         mMap.clear();
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
-        MultiPolyline.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
+        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
         MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
         //TODO: Add code on back btn to test it... When finished remove it all
         for(int i=0; i<controller.getArrayListForLineTest().size(); i++){

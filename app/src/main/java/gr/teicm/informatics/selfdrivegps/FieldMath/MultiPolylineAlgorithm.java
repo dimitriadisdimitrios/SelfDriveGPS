@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 
-public class MultiPolyline {
-//    private static final String TAG = "MultiPolyline";
+public class MultiPolylineAlgorithm {
+//    private static final String TAG = "MultiPolylineAlgorithm";
     private static Controller controller = new Controller();
 
     //Function which calculate through algorithm how many polyline fits left and right of given polyline inside of field

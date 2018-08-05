@@ -24,6 +24,7 @@ import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
+    private static final int setTimeOnCounters = 1500; //1.5 sec
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed;
@@ -102,17 +103,17 @@ public class MapsUtilities {
                 MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
             }
         };
-        handler.postDelayed(runnableForSpeed, 1500);
+        handler.postDelayed(runnableForSpeed, setTimeOnCounters);
     }
     public static void checkIfModeChanged(final TextView textView, final ToggleButton toggleButton){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
                 changeLabelAboutMode(textView, toggleButton);
-                handler.postDelayed(runnableForModes,1000);
+                handler.postDelayed(runnableForModes,setTimeOnCounters);
             }
         };
-        handler.postDelayed(runnableForModes, 1000);
+        handler.postDelayed(runnableForModes, setTimeOnCounters);
     }
 
     //I use it on SettingsActivity.java and DialogFragment.java but it doesn't need new class only for 1 function

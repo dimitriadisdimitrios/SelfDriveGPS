@@ -30,10 +30,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-import gr.teicm.informatics.selfdrivegps.FieldMath.ApproachPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.FieldMath.FieldBorder;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.R;
+import gr.teicm.informatics.selfdrivegps.Utilities.ApproachPolylineUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
@@ -104,7 +104,7 @@ public class MapsActivity extends FragmentActivity
                 Log.e(TAG, "Style parsing failed.");
             }
         }catch (Resources.NotFoundException e){
-            Log.e(TAG, "Can't find styler. Error: ", e);
+            Log.e(TAG, "Can't find style. Error: ", e);
         }
         MapsUtilities.checkLocationPermission(context);
         PermissionUtilities.enableLoc(googleApiClient,this);
@@ -121,6 +121,8 @@ public class MapsActivity extends FragmentActivity
         checkToGetDataFromAnotherActivity(mainStartBtn);
 
         if(getIntent().getExtras()!=null) {
+            //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
+//            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
             LatLng center = FieldBorder.getPolygonCenterPoint(controller.getArrayListForField());
             mMap.addMarker(new MarkerOptions().position(center));
 
@@ -153,10 +155,11 @@ public class MapsActivity extends FragmentActivity
         mMap.animateCamera(cameraUpdate);
         controller.setLocationOfUser(latLngOfCurrentTime);
 //        Log.d(TAG, String.valueOf(pointsForLine));
+        //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
-            Boolean etc =ApproachPolylineAlgorithm.bdccGeoDistanceCheckWithRadius(controller.getArrayListForLine(), latLngOfCurrentTime,10);
+            Boolean etc = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(controller.getArrayListForLine(), latLngOfCurrentTime,Controller.MAIN_RADIUS_TO_RECOGNISE_POLYLINE);
             if (etc){
-                Toast.makeText(this, "YEs YEs Test succed", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "YEs YEs Test succeed", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -168,7 +171,7 @@ public class MapsActivity extends FragmentActivity
             controller.setArrayListForField(pointsForField);
             MapsUtilities.placePolylineForRoute(pointsForField, mMap);
         }
-        else if(controller.getProgramStatus().equals(Controller.MODE_1_CREAT_LINE)
+        else if(controller.getProgramStatus().equals(Controller.MODE_1_CREATE_LINE)
                 && btn_haveBeenClicked
                 && FieldBorder.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
                 && FieldBorder.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
@@ -207,11 +210,11 @@ public class MapsActivity extends FragmentActivity
     }
     @Override
     public void onBackPressed() {
+        //TODO: Add code on back btn to test it... When finished remove it all
         mMap.clear();
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
         MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
-        //TODO: Add code on back btn to test it... When finished remove it all
         for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
         }

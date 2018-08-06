@@ -11,8 +11,10 @@ public class Controller {
     private static int mRange;
 
     public static final String MODE_0_RECORD_FIELD = "Record Field";
-    public static final String MODE_1_CREAT_LINE = "Create Line";
+    public static final String MODE_1_CREATE_LINE = "Create Line";
     public static final String MODE_2_DRIVING = "Driving";
+
+    public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; //To metew
 
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
     public void setArrayListForField(ArrayList<LatLng> points){

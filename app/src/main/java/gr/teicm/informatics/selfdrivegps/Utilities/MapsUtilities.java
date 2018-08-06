@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
 import gr.teicm.informatics.selfdrivegps.R;
 
@@ -61,8 +62,8 @@ public class MapsUtilities {
             case Controller.MODE_0_RECORD_FIELD:
                 label.setText(String.format("Mode: %s", Controller.MODE_0_RECORD_FIELD));
                 break;
-            case Controller.MODE_1_CREAT_LINE:
-                label.setText(String.format("Mode: %s", Controller.MODE_1_CREAT_LINE));
+            case Controller.MODE_1_CREATE_LINE:
+                label.setText(String.format("Mode: %s", Controller.MODE_1_CREATE_LINE));
                 break;
             case Controller.MODE_2_DRIVING:
                 label.setText(String.format("Mode: %s", Controller.MODE_2_DRIVING));
@@ -114,6 +115,16 @@ public class MapsUtilities {
             }
         };
         handler.postDelayed(runnableForModes, setTimeOnCounters);
+    }
+    //TODO: After finish of navigationAlgorithm I can use it
+    public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
+        mMap.clear();
+        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
+        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
+        for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
+            MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
+        }
     }
 
     //I use it on SettingsActivity.java and DialogFragment.java but it doesn't need new class only for 1 function

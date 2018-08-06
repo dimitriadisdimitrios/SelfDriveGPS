@@ -49,7 +49,7 @@ public class DialogFragment extends android.app.DialogFragment {
 
         switch (controller.getProgramStatus()) {
             case "Record Field":
-                controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+                controller.setProgramStatus(Controller.MODE_1_CREATE_LINE);
 
                 Log.d(TAG, "Record field selected");
                 editTextToSaveNameOfField.setVisibility(View.VISIBLE);
@@ -127,7 +127,7 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+                                    controller.setProgramStatus(Controller.MODE_1_CREATE_LINE);
                                     pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }

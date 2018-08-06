@@ -1,47 +1,21 @@
-package gr.teicm.informatics.selfdrivegps.FieldMath;
+package gr.teicm.informatics.selfdrivegps.Objects;
 
-import com.google.android.gms.maps.model.LatLng;
+//http://www.bdcc.co.uk/Gmaps/BdccGeo.js
 
-import java.util.ArrayList;
-
-public class ApproachPolylineAlgorithm {
-    // distance in meters from GLatLng point to GPolyline or GPolygon poly
-    public static boolean bdccGeoDistanceCheckWithRadius(ArrayList<LatLng> poly, LatLng point, int radius)
-    {
-        int i;
-        bdccGeo p = new bdccGeo(point.latitude,point.longitude);
-
-        for(i=0; i < (poly.size()-1) ; i++)
-        {
-            LatLng p1 = poly.get(i);
-            bdccGeo l1 = new bdccGeo(p1.latitude,p1.longitude);
-
-            LatLng p2 = poly.get(i+1);
-            bdccGeo l2 = new bdccGeo(p2.latitude,p2.longitude);
-
-            double distance = p.function_distanceToLineSegMtrs(l1, l2);
-
-            if(distance < radius)
-                return true;
-        }
-        return false;
-    }
-
-
+public class bdccGeoObject {
 // object
-
     public static class bdccGeo {
-        public double lat;
-        public double lng;
+        double lat;
+//        double lng;
 
-        public double x;
-        public double y;
-        public double z;
+        double x;
+        double y;
+        double z;
 
 
         public bdccGeo(double lat, double lon) {
             this.lat = lat;
-            this.lng = lng;
+//            this.lng = lng;
 
             double theta = (lon * Math.PI / 180.0);
             double rlat = function_bdccGeoGeocentricLatitude(lat * Math.PI / 180.0);
@@ -53,7 +27,7 @@ public class ApproachPolylineAlgorithm {
 
         //returns in meters the minimum of the perpendicular distance of this point from the line segment geo1-geo2
         //and the distance from this point to the line segment ends in geo1 and geo2
-        public double function_distanceToLineSegMtrs(bdccGeo geo1, bdccGeo geo2) {
+        public double function_distanceToLineSegMeters(bdccGeo geo1, bdccGeo geo2) {
 
             //point on unit sphere above origin and normal to plane of geo1,geo2
             //could be either side of the plane
@@ -81,7 +55,7 @@ public class ApproachPolylineAlgorithm {
         }
 
         // More Maths
-        public bdccGeo function_crossNormalize(bdccGeo b) {
+        bdccGeo function_crossNormalize(bdccGeo b) {
             double x = (this.y * b.z) - (this.z * b.y);
             double y = (this.z * b.x) - (this.x * b.z);
             double z = (this.x * b.y) - (this.y * b.x);
@@ -97,18 +71,18 @@ public class ApproachPolylineAlgorithm {
         // Returns the two antipodal points of intersection of two great
         // circles defined by the arcs geo1 to geo2 and
         // geo3 to geo4. Returns a point as a Geo, use .antipode to get the other point
-        public bdccGeo function_bdccGeoGetIntersection(bdccGeo geo1, bdccGeo geo2, bdccGeo geo3, bdccGeo geo4) {
+        bdccGeo function_bdccGeoGetIntersection(bdccGeo geo1, bdccGeo geo2, bdccGeo geo3, bdccGeo geo4) {
             bdccGeo geoCross1 = geo1.function_crossNormalize(geo2);
             bdccGeo geoCross2 = geo3.function_crossNormalize(geo4);
             return geoCross1.function_crossNormalize(geoCross2);
         }
 
-        public double function_distance(bdccGeo v2) {
+        double function_distance(bdccGeo v2) {
             return Math.atan2(v2.function_crossLength(this), v2.function_dot(this));
         }
 
         //More Maths
-        public double function_crossLength(bdccGeo b) {
+        double function_crossLength(bdccGeo b) {
             double x = (this.y * b.z) - (this.z * b.y);
             double y = (this.z * b.x) - (this.x * b.z);
             double z = (this.x * b.y) - (this.y * b.x);
@@ -116,22 +90,22 @@ public class ApproachPolylineAlgorithm {
         }
 
         //Maths
-        public double function_dot(bdccGeo b) {
+        double function_dot(bdccGeo b) {
             return ((this.x * b.x) + (this.y * b.y) + (this.z * b.z));
         }
 
         //from Radians to Meters
-        public double function_bdccGeoRadiansToMeters(double rad) {
+        double function_bdccGeoRadiansToMeters(double rad) {
             return rad * 6378137.0; // WGS84 Equatorial Radius in Meters
         }
 
         // point on opposite side of the world to this point
-        public bdccGeo function_antipode() {
+        bdccGeo function_antipode() {
             return this.function_scale(-1.0);
         }
 
         //More Maths
-        public bdccGeo function_scale(double s) {
+        bdccGeo function_scale(double s) {
             bdccGeo r = new bdccGeo(0, 0);
             r.x = this.x * s;
             r.y = this.y * s;
@@ -140,7 +114,7 @@ public class ApproachPolylineAlgorithm {
         }
 
         // Convert from geographic to geocentric latitude (radians).
-        public double function_bdccGeoGeocentricLatitude(double geographicLatitude) {
+        double function_bdccGeoGeocentricLatitude(double geographicLatitude) {
             double flattening = 1.0 / 298.257223563;//WGS84
             double f = (1.0 - flattening) * (1.0 - flattening);
             return Math.atan((Math.tan(geographicLatitude) * f));

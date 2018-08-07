@@ -26,7 +26,8 @@ public class MultiPolylineAlgorithm {
         checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(0),mBearing+180,false);
         checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(mArray.size()-1),mBearing,true);
 
-        controller.setArrayListForLineTest(outerArrayListForMultiPolyline);
+        //Set on controller the value of outerArrayList for polyLines
+        controller.setArrayListOfMultipliedPolyLines(outerArrayListForMultiPolyline);
     }
 
     //Loop for create LatLng for Multi-polyLines (#1)

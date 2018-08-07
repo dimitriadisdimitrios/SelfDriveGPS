@@ -26,14 +26,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.FieldMath.FieldBorder;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.R;
-import gr.teicm.informatics.selfdrivegps.Utilities.ApproachPolylineUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
@@ -122,9 +120,9 @@ public class MapsActivity extends FragmentActivity
 
         if(getIntent().getExtras()!=null) {
             //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
-//            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-            LatLng center = FieldBorder.getPolygonCenterPoint(controller.getArrayListForField());
-            mMap.addMarker(new MarkerOptions().position(center));
+            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
+//            LatLng center = FieldBorder.getPolygonCenterPoint(controller.getArrayListForField());
+//            mMap.addMarker(new MarkerOptions().position(center));
 
         }else{
             controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
@@ -146,7 +144,7 @@ public class MapsActivity extends FragmentActivity
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLngOfCurrentTime)             // Sets the center of the map to Mountain View
-                .zoom(17)                   // Sets the zoom
+                .zoom(20)                   // Sets the zoom
                 .bearing(mBearing)          // Sets the orientation of the camera to east
                 .tilt(90)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
@@ -157,9 +155,9 @@ public class MapsActivity extends FragmentActivity
 //        Log.d(TAG, String.valueOf(pointsForLine));
         //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
-            Boolean etc = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(controller.getArrayListForLine(), latLngOfCurrentTime,Controller.MAIN_RADIUS_TO_RECOGNISE_POLYLINE);
-            if (etc){
-                Toast.makeText(this, "YEs YEs Test succeed", Toast.LENGTH_LONG).show();
+
+            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
+                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -215,8 +213,8 @@ public class MapsActivity extends FragmentActivity
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
         MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
-        for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
-            MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
+        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
+            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
         }
         //Back Btn do nothing !
 //        super.onBackPressed();

@@ -122,9 +122,23 @@ public class MapsUtilities {
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
         MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
-        for(int i=0; i<controller.getArrayListForLineTest().size(); i++){
-            MapsUtilities.placePolylineForRoute(controller.getArrayListForLineTest().get(i), mMap);
+        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
+            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
         }
+    }
+
+    public static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
+        Controller controller = new Controller();
+        Boolean focusOnSpecificPlace = false;
+
+        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){
+            focusOnSpecificPlace = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_POLYLINE);
+            if(focusOnSpecificPlace){
+                controller.setArrayListForLineToFocus(focusedPolyline);
+                break;
+            }
+        }
+        return focusOnSpecificPlace;
     }
 
     //I use it on SettingsActivity.java and DialogFragment.java but it doesn't need new class only for 1 function

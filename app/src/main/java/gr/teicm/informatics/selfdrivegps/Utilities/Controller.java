@@ -15,6 +15,7 @@ public class Controller {
     public static final String MODE_2_DRIVING = "Driving";
 
     public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; // To meters
+    public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2.5;
 
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
     public void setArrayListForField(ArrayList<LatLng> points){

@@ -29,8 +29,9 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.ArrayList;
 
-import gr.teicm.informatics.selfdrivegps.FieldMath.FieldBorder;
+import gr.teicm.informatics.selfdrivegps.FieldMath.AllFunctionAboutField;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
+import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
@@ -121,7 +122,7 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null) {
             //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
             MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-//            LatLng center = FieldBorder.getPolygonCenterPoint(controller.getArrayListForField());
+//            LatLng center = AllFunctionAboutField.getPolygonCenterPoint(controller.getArrayListForField());
 //            mMap.addMarker(new MarkerOptions().position(center));
 
         }else{
@@ -155,9 +156,8 @@ public class MapsActivity extends FragmentActivity
 //        Log.d(TAG, String.valueOf(pointsForLine));
         //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
-
             if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
-                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -171,8 +171,8 @@ public class MapsActivity extends FragmentActivity
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_1_CREATE_LINE)
                 && btn_haveBeenClicked
-                && FieldBorder.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
-                && FieldBorder.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
+                && AllFunctionAboutField.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
+                && AllFunctionAboutField.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
 
             pointsForLine.add(latLngOfCurrentTime);
             controller.setArrayListForLine(pointsForLine);
@@ -216,6 +216,10 @@ public class MapsActivity extends FragmentActivity
         for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
         }
+//        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
+//        for(ArrayList<LatLng> temp : parPolyline){
+//            MapsUtilities.placePolylineForRoute(temp, mMap);
+//        }
         //Back Btn do nothing !
 //        super.onBackPressed();
     }

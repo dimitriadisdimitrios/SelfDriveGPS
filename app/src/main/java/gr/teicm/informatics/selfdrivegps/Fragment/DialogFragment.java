@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,15 +46,17 @@ public class DialogFragment extends android.app.DialogFragment {
 
         EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
         LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
+        LinearLayout linearLayoutForTerrainChange = mView.findViewById(R.id.linear_layout_for_change_terrain);
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
         switch (controller.getProgramStatus()) {
-            case "Record Field":
-                controller.setProgramStatus(Controller.MODE_1_CREATE_LINE);
+            case Controller.MODE_1_RECORD_FIELD:
+                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
 
                 Log.d(TAG, "Record field selected");
                 editTextToSaveNameOfField.setVisibility(View.VISIBLE);
                 linearLayoutIncludeRangeMeter.setVisibility(View.INVISIBLE);
+                linearLayoutForTerrainChange.setVisibility(View.INVISIBLE);
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_field)
@@ -61,7 +64,7 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
+                                    controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
@@ -79,7 +82,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                                        controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
+                                        controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
                                         dialog.cancel();
                                     }
                                 }
@@ -87,12 +90,14 @@ public class DialogFragment extends android.app.DialogFragment {
                         });
                 break;
 
-            case "Create Line":
-                controller.setProgramStatus(Controller.MODE_2_DRIVING);
+            case Controller.MODE_2_CREATE_LINE:
+                controller.setProgramStatus(Controller.MODE_3_DRIVING);
 
                 Log.d(TAG, "Create route line");
                 editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
                 linearLayoutIncludeRangeMeter.setVisibility(View.VISIBLE);
+                linearLayoutForTerrainChange.setVisibility(View.INVISIBLE);
+
 
                 final Button btPlus = mView.findViewById(R.id.btn_plus);
                 final Button btSub = mView.findViewById(R.id.btn_sub);
@@ -127,8 +132,30 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_1_CREATE_LINE);
+                                    controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
                                     pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
+                                }
+                            }
+                        });
+                break;
+            case Controller.MODE_0_SET_TERRAIN:
+                controller.setProgramStatus(controller.getProgramLastStatus());
+
+                Log.d(TAG, "Terrain changing");
+                editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
+                linearLayoutIncludeRangeMeter.setVisibility(View.INVISIBLE);
+                linearLayoutForTerrainChange.setVisibility(View.VISIBLE);
+
+                final RadioGroup radioGroupAboutTerrain = mView.findViewById(R.id.rg_terrain_change);
+
+                builder.setView(mView)
+                        .setMessage("Change terrain of map")
+                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    int temp = radioGroupAboutTerrain.getCheckedRadioButtonId();
+                                    Log.d(TAG, String.valueOf(temp));
+                                    Toast.makeText(getContext(), "LatLng for Polyline: Have been added"+temp, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

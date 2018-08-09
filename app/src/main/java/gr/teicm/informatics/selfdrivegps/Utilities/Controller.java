@@ -10,9 +10,14 @@ public class Controller {
     private static LatLng mLatLng;
     private static int mRange;
 
-    public static final String MODE_0_RECORD_FIELD = "Record Field";
-    public static final String MODE_1_CREATE_LINE = "Create Line";
-    public static final String MODE_2_DRIVING = "Driving";
+    public static final String MODE_1_RECORD_FIELD = "Record Field";
+    public static final String MODE_2_CREATE_LINE = "Create Line";
+    public static final String MODE_3_DRIVING = "Driving";
+    public static final String MODE_0_SET_TERRAIN = "Set terrain mode";
+
+    public static final String NORMAL = "MAP_TYPE_NORMAL";
+    public static final String HYBRID = "MAP_TYPE_HYBRID";
+    public static final String SATELLITE= "MAP_TYPE_SATELLITE";
 
     public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; // To meters
     public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2.5;
@@ -53,6 +58,14 @@ public class Controller {
         mStatus = programStatus;
     }
     public String getProgramStatus(){
+        return mStatus;
+    }
+    //Setter/Getter to change between "create field" and "create polyline"
+    // Modes: "Record field", "Create Line", "Driving"
+    public void setProgramLastStatus(String lastStatus){
+        mStatus = lastStatus;
+    }
+    public String getProgramLastStatus(){
         return mStatus;
     }
     //Setter/Getter for get id from list of FireBase

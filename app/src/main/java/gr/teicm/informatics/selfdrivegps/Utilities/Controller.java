@@ -1,23 +1,20 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, lineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
-    private static String idOfList, mStatus ="Record field selected";
-    private static LatLng mLatLng;
-    private static int mRange;
+    private static String idOfList, mLastStatus, mStatus ="Record field selected";
+    private static int mRange, mIdOfField  = 1;
+    private static GoogleMap gMap;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
     public static final String MODE_3_DRIVING = "Driving";
     public static final String MODE_0_SET_TERRAIN = "Set terrain mode";
-
-    public static final String NORMAL = "MAP_TYPE_NORMAL";
-    public static final String HYBRID = "MAP_TYPE_HYBRID";
-    public static final String SATELLITE= "MAP_TYPE_SATELLITE";
 
     public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; // To meters
     public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2.5;
@@ -60,13 +57,12 @@ public class Controller {
     public String getProgramStatus(){
         return mStatus;
     }
-    //Setter/Getter to change between "create field" and "create polyline"
-    // Modes: "Record field", "Create Line", "Driving"
-    public void setProgramLastStatus(String lastStatus){
-        mStatus = lastStatus;
+    //Setter/Getter to save the mode so i can transfer to dialog "Change terrain"
+    public void setLastProgramStatus(String lastStatus){
+        mLastStatus = lastStatus;
     }
-    public String getProgramLastStatus(){
-        return mStatus;
+    public String getLastProgramStatus(){
+        return mLastStatus;
     }
     //Setter/Getter for get id from list of FireBase
     public void setIdOfListView(String id){
@@ -76,19 +72,19 @@ public class Controller {
         return idOfList;
     }
 
-    //Setter/Getter to get current LatLng of user
-    public void setLocationOfUser(LatLng latLng){
-        mLatLng = latLng;
-    }
-    public LatLng getLocationOfUser() {
-        return mLatLng;
-    }
-
     //Setter/Getter to interact with range meter of settingActivity
-    public void setMeterOfRange(int counter){
+    public void setMeterOfRange(Integer counter){
         mRange = counter;
     }
     public Integer getMeterOfRange(){
         return mRange;
+    }
+
+    //Setter/Getter to set GoogleMap to work on DialogFragment
+    public void setGoogleMap(GoogleMap map){
+        gMap = map;
+    }
+    public GoogleMap getGoogleMap(){
+        return gMap;
     }
 }

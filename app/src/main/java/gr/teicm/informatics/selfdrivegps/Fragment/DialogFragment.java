@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +47,7 @@ public class DialogFragment extends android.app.DialogFragment {
 
         EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
         LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
-        LinearLayout linearLayoutForTerrainChange = mView.findViewById(R.id.linear_layout_for_change_terrain);
+        RadioGroup linearLayoutForTerrainChange = mView.findViewById(R.id.rg_terrain_change);
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
         switch (controller.getProgramStatus()) {
@@ -139,7 +140,7 @@ public class DialogFragment extends android.app.DialogFragment {
                         });
                 break;
             case Controller.MODE_0_SET_TERRAIN:
-                controller.setProgramStatus(controller.getProgramLastStatus());
+                controller.setProgramStatus(controller.getLastProgramStatus());
 
                 Log.d(TAG, "Terrain changing");
                 editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
@@ -153,9 +154,20 @@ public class DialogFragment extends android.app.DialogFragment {
                         .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    int temp = radioGroupAboutTerrain.getCheckedRadioButtonId();
-                                    Log.d(TAG, String.valueOf(temp));
-                                    Toast.makeText(getContext(), "LatLng for Polyline: Have been added"+temp, Toast.LENGTH_SHORT).show();
+                                    int idOfCheckedRadioButton = radioGroupAboutTerrain.getCheckedRadioButtonId(); //Get id of radio button is checked
+                                    RadioButton radioButtonWithTerrain =  mView.findViewById(idOfCheckedRadioButton); //Find the radioButton on layout
+
+                                    switch (radioButtonWithTerrain.getText().toString()) {
+                                        case "Normal":
+                                            controller.getGoogleMap().setMapType(1); //To make it normal
+                                            break;
+                                        case "Satellite":
+                                            controller.getGoogleMap().setMapType(2); //To make it satellite
+                                            break;
+                                        case "Terrain":
+                                            controller.getGoogleMap().setMapType(3); //To make it terrain
+                                            break;
+                                    }
                                 }
                             }
                         });

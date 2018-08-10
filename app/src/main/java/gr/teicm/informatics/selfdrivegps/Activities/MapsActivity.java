@@ -75,7 +75,7 @@ public class MapsActivity extends FragmentActivity
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.setProgramLastStatus(controller.getProgramStatus());
+                controller.setLastProgramStatus(controller.getProgramStatus());
                 controller.setProgramStatus(Controller.MODE_0_SET_TERRAIN);
                 MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
             }
@@ -107,6 +107,8 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap; //App crash if it miss it
+        controller.setGoogleMap(mMap);
         try{
             //Customise the styling of the base map using a JSON object defines in a raw resource file
             boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
@@ -119,7 +121,6 @@ public class MapsActivity extends FragmentActivity
         MapsUtilities.checkLocationPermission(context);
         PermissionUtilities.enableLoc(googleApiClient,this);
 
-        mMap = googleMap;
         mMap.setMyLocationEnabled(false);
 //        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
 //        mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -133,7 +134,6 @@ public class MapsActivity extends FragmentActivity
         if(getIntent().getExtras()!=null) {
             //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
 //            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-
         }else{
             controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
             Log.d("modes",Controller.MODE_1_RECORD_FIELD);
@@ -161,8 +161,7 @@ public class MapsActivity extends FragmentActivity
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
-        controller.setLocationOfUser(latLngOfCurrentTime);
-//        Log.d(TAG, String.valueOf(pointsForLine));
+
         //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
 //            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){

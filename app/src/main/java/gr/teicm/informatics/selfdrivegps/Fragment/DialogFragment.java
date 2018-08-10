@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
-import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
 
@@ -32,7 +31,6 @@ public class DialogFragment extends android.app.DialogFragment {
     private Controller controller = new Controller();
     private final static String TAG = "DialogFragment";
     private AlertDialog mDialog;
-    private int i=0;
 
     @Override
     public AlertDialog onCreateDialog(Bundle savedInstanceState) {
@@ -70,6 +68,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                     controller.setArrayListForField(pointsForField); //Set the cleared arrayList to Controller.java
                                     Toast.makeText(getContext(), "Preparation for sending Canceled, try again!", Toast.LENGTH_SHORT).show();
+                                    controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
                                 }
                             }
                         })
@@ -89,7 +88,7 @@ public class DialogFragment extends android.app.DialogFragment {
                         EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
                         String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
 
-                        DialogUtilities.checkNameIfExistInBase(nameOfDataBaseKey);
+//                        DialogUtilities.checkNameIfExistInBase(nameOfDataBaseKey);
 
                         if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             //Create child with specific name which include LatLng for field
@@ -99,6 +98,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                 databaseReference.child(nameOfDataBaseKey).child("Polygon").setValue(pointsForField);
                                 Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
                                 controller.setIdOfListView(nameOfDataBaseKey);
+                                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
                                 isNameBeenAccepted = true;
 //                            }else{
 //                                controller.setIfFoundMatchOnFireBase(false);
@@ -115,13 +115,11 @@ public class DialogFragment extends android.app.DialogFragment {
             break;
 
             case Controller.MODE_2_CREATE_LINE:
-                controller.setProgramStatus(Controller.MODE_3_DRIVING);
-
                 Log.d(TAG, "Create route line");
+
                 editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
                 linearLayoutIncludeRangeMeter.setVisibility(View.VISIBLE);
                 linearLayoutForTerrainChange.setVisibility(View.INVISIBLE);
-
 
                 final Button btPlus = mView.findViewById(R.id.btn_plus);
                 final Button btSub = mView.findViewById(R.id.btn_sub);
@@ -148,6 +146,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                     //Add ArrayList for PolyLine on same child
                                     databaseReference.child(controller.getIdOfListView()).child("Polyline").setValue(pointsForLine);
                                     databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
+                                    controller.setProgramStatus(Controller.MODE_3_DRIVING);
                                     Toast.makeText(getContext(), "LatLng for Polyline: Have been added", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -156,8 +155,10 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
                                     pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
+                                    controller.setArrayListForLine(pointsForLine);
+                                    controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
+                                    MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), controller.getGoogleMap());
                                 }
                             }
                         });

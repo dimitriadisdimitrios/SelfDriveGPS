@@ -1,7 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,14 +30,15 @@ import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 public class DialogFragment extends android.app.DialogFragment {
     private Controller controller = new Controller();
     private final static String TAG = "DialogFragment";
+    private AlertDialog mDialog;
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(Bundle savedInstanceState) {
 
         final ArrayList<LatLng> pointsForField = controller.getArrayListForField();
         final ArrayList<LatLng> pointsForLine = controller.getArrayListForLine();
 
-        // Use the Builder class for convenient dialog construction
+        // Use the Builder class for convenient mDialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -45,15 +47,17 @@ public class DialogFragment extends android.app.DialogFragment {
 
         EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
         LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
+        RadioGroup linearLayoutForTerrainChange = mView.findViewById(R.id.rg_terrain_change);
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 
         switch (controller.getProgramStatus()) {
-            case "Record Field":
-                controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+            case Controller.MODE_1_RECORD_FIELD:
+                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
 
                 Log.d(TAG, "Record field selected");
                 editTextToSaveNameOfField.setVisibility(View.VISIBLE);
                 linearLayoutIncludeRangeMeter.setVisibility(View.INVISIBLE);
+                linearLayoutForTerrainChange.setVisibility(View.INVISIBLE);
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_field)
@@ -61,7 +65,7 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
+                                    controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
@@ -79,20 +83,22 @@ public class DialogFragment extends android.app.DialogFragment {
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                                        controller.setProgramStatus(Controller.MODE_0_RECORD_FIELD);
-                                        dialog.cancel();
+                                        controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
                                     }
                                 }
                             }
                         });
-                break;
+                mDialog = builder.create(); // Create the AlertDialog object and return it
+            break;
 
-            case "Create Line":
-                controller.setProgramStatus(Controller.MODE_2_DRIVING);
+            case Controller.MODE_2_CREATE_LINE:
+                controller.setProgramStatus(Controller.MODE_3_DRIVING);
 
                 Log.d(TAG, "Create route line");
                 editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
                 linearLayoutIncludeRangeMeter.setVisibility(View.VISIBLE);
+                linearLayoutForTerrainChange.setVisibility(View.INVISIBLE);
+
 
                 final Button btPlus = mView.findViewById(R.id.btn_plus);
                 final Button btSub = mView.findViewById(R.id.btn_sub);
@@ -127,13 +133,49 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_1_CREAT_LINE);
+                                    controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
                                     pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
                                 }
                             }
                         });
-                break;
+                mDialog = builder.create(); // Create the AlertDialog object and return it
+            break;
+
+                case Controller.MODE_0_SET_TERRAIN:
+                controller.setProgramStatus(controller.getLastProgramStatus());
+
+                Log.d(TAG, "Terrain changing");
+                editTextToSaveNameOfField.setVisibility(View.INVISIBLE);
+                linearLayoutIncludeRangeMeter.setVisibility(View.INVISIBLE);
+                linearLayoutForTerrainChange.setVisibility(View.VISIBLE);
+
+                final RadioGroup radioGroupAboutTerrain = mView.findViewById(R.id.rg_terrain_change);
+
+                builder.setView(mView)
+                        .setMessage("Change terrain of map")
+                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    int idOfCheckedRadioButton = radioGroupAboutTerrain.getCheckedRadioButtonId(); //Get id of radio button is checked
+                                    RadioButton radioButtonWithTerrain =  mView.findViewById(idOfCheckedRadioButton); //Find the radioButton on layout
+
+                                    switch (radioButtonWithTerrain.getText().toString()) {
+                                        case "Normal":
+                                            controller.getGoogleMap().setMapType(1); //To make it normal
+                                            break;
+                                        case "Satellite":
+                                            controller.getGoogleMap().setMapType(2); //To make it satellite
+                                            break;
+                                        case "Terrain":
+                                            controller.getGoogleMap().setMapType(3); //To make it terrain
+                                            break;
+                                    }
+                                }
+                            }
+                        });
+                mDialog = builder.create(); // Create the AlertDialog object and return it
+            break;
         }
-        return builder.create(); // Create the AlertDialog object and return it
+        return mDialog;
     }
 }

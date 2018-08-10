@@ -19,11 +19,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
+    private static final int setTimeOnCounters = 1500; //1.5 sec
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed;
@@ -57,14 +59,14 @@ public class MapsUtilities {
         String modeOfApp = controller.getProgramStatus();
 //        Log.d(TAG, "Program status:" + modeOfApp);
         switch (modeOfApp){
-            case Controller.MODE_0_RECORD_FIELD:
-                label.setText(String.format("Mode: %s", Controller.MODE_0_RECORD_FIELD));
+            case Controller.MODE_1_RECORD_FIELD:
+                label.setText(String.format("Mode: %s", Controller.MODE_1_RECORD_FIELD));
                 break;
-            case Controller.MODE_1_CREAT_LINE:
-                label.setText(String.format("Mode: %s", Controller.MODE_1_CREAT_LINE));
+            case Controller.MODE_2_CREATE_LINE:
+                label.setText(String.format("Mode: %s", Controller.MODE_2_CREATE_LINE));
                 break;
-            case Controller.MODE_2_DRIVING:
-                label.setText(String.format("Mode: %s", Controller.MODE_2_DRIVING));
+            case Controller.MODE_3_DRIVING:
+                label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
                 startStopTBtn.setVisibility(View.INVISIBLE);
                 break;
         }
@@ -77,6 +79,15 @@ public class MapsUtilities {
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     }
+
+    public static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(5)
+                .color(Color.BLUE)
+                .addAll(directionPoints);
+        googleMap.addPolyline(polylineOptions);
+    }
+
     public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolygonOptions polygonOptions = new PolygonOptions()
                 .fillColor(Color.TRANSPARENT)
@@ -102,17 +113,41 @@ public class MapsUtilities {
                 MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
             }
         };
-        handler.postDelayed(runnableForSpeed, 1500);
+        handler.postDelayed(runnableForSpeed, setTimeOnCounters);
     }
     public static void checkIfModeChanged(final TextView textView, final ToggleButton toggleButton){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
                 changeLabelAboutMode(textView, toggleButton);
-                handler.postDelayed(runnableForModes,1000);
+                handler.postDelayed(runnableForModes,setTimeOnCounters);
             }
         };
-        handler.postDelayed(runnableForModes, 1000);
+        handler.postDelayed(runnableForModes, setTimeOnCounters);
+    }
+    //TODO: After finish of navigationAlgorithm I can use it
+    public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
+        mMap.clear();
+        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
+        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
+        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
+            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
+        }
+    }
+
+    public static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
+        Controller controller = new Controller();
+        Boolean focusOnSpecificPlace = false;
+
+        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){
+            focusOnSpecificPlace = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_POLYLINE);
+            if(focusOnSpecificPlace){
+                controller.setArrayListForLineToFocus(focusedPolyline);
+                break;
+            }
+        }
+        return focusOnSpecificPlace;
     }
 
     //I use it on SettingsActivity.java and DialogFragment.java but it doesn't need new class only for 1 function

@@ -28,4 +28,7 @@
     <string name="stop">stop</string>
     <string name="mode_unknown">Mode: Unknown</string>
     <string name="main_description_for_nav_bar">All attributes for nav_bar</string>
+    <string name="terrain_type_1">Normal</string>
+    <string name="terrain_type_2">Satellite</string>
+    <string name="terrain_type_3">Terrain</string>
 </resources>

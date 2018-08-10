@@ -115,13 +115,23 @@
             android:layout_gravity="bottom|center"
             android:textColor="@color/colorPrimaryDark"
             android:text="@string/mode_unknown" />
-        <ToggleButton
-            android:id="@+id/start_calculations"
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textOn="@string/stop"
-            android:textOff="@string/start"
-            android:padding="10dp" />
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/maps_icon_button"
+                android:id="@+id/bt_map_terrain_change"/>
+            <ToggleButton
+                android:id="@+id/start_calculations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textOn="@string/stop"
+                android:textOff="@string/start"
+                android:padding="10dp" />
+        </LinearLayout>
     </LinearLayout>
 </fragment>

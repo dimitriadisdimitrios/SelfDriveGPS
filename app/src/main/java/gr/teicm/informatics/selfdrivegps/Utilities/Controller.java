@@ -1,18 +1,23 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class Controller {
-    private static ArrayList<LatLng> fieldArrayList, lineArrayList;
+    private static ArrayList<LatLng> fieldArrayList, lineArrayList, lineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
-    private static String idOfList, mStatus ="Record field selected";
-    private static LatLng mLatLng;
-    private static int mRange;
+    private static String idOfList, mLastStatus, mStatus ="Record field selected";
+    private static Integer mRange;
+    private static GoogleMap gMap;
 
-    public static final String MODE_0_RECORD_FIELD = "Record Field";
-    public static final String MODE_1_CREAT_LINE = "Create Line";
-    public static final String MODE_2_DRIVING = "Driving";
+    public static final String MODE_1_RECORD_FIELD = "Record Field";
+    public static final String MODE_2_CREATE_LINE = "Create Line";
+    public static final String MODE_3_DRIVING = "Driving";
+    public static final String MODE_0_SET_TERRAIN = "Set terrain mode";
+
+    public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; // To meters
+    public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2.5;
 
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
     public void setArrayListForField(ArrayList<LatLng> points){
@@ -21,7 +26,6 @@ public class Controller {
     public ArrayList<LatLng> getArrayListForField(){
         return fieldArrayList;
     }
-
     //Setter/Getter for ArrayList<LatLng> which refer to Line inside of polygon
     public void setArrayListForLine(ArrayList<LatLng> linePoints){
         lineArrayList = linePoints;
@@ -29,29 +33,20 @@ public class Controller {
     public ArrayList<LatLng> getArrayListForLine(){
         return lineArrayList;
     }
-
-    //Setter/Getter for get id from list of FireBase
-    public void setIdOfListView(String id){
-        idOfList = id;
+    //Setter/Getter for ArrayList<LatLng> which refer to Line which user focus on navigation mode
+    public void setArrayListForLineToFocus(ArrayList<LatLng> lineToFocus){
+        lineFocus = lineToFocus;
     }
-    public String getIdOfListView(){
-        return idOfList;
-    }
-
-    //Setter/Getter to get current LatLng of user
-    public void setLocationOfUser(LatLng latLng){
-        mLatLng = latLng;
-    }
-    public LatLng getLocationOfUser() {
-        return mLatLng;
+    public ArrayList<LatLng> getArrayListForLineToFocus(){
+        return lineFocus;
     }
 
-    //Setter/Getter to interact with range meter of settingActivity
-    public void setMeterOfRange(int counter){
-        mRange = counter;
+    //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines
+    public void setArrayListOfMultipliedPolyLines(ArrayList<ArrayList<LatLng>> linePoints){
+        lineTest = linePoints;
     }
-    public int getMeterOfRange(){
-        return mRange;
+    public ArrayList<ArrayList<LatLng>> getArrayListOfMultipliedPolyLines(){
+        return lineTest;
     }
 
     //Setter/Getter to change between "create field" and "create polyline"
@@ -62,12 +57,34 @@ public class Controller {
     public String getProgramStatus(){
         return mStatus;
     }
-    //TODO: Only for test purpose
-    //Setter/Getter for ArrayList<LatLng> which refer to Line inside of polygon
-    public void setArrayListForLineTest(ArrayList<ArrayList<LatLng>> linePoints){
-        lineTest = linePoints;
+    //Setter/Getter to save the mode so i can transfer to dialog "Change terrain"
+    public void setLastProgramStatus(String lastStatus){
+        mLastStatus = lastStatus;
     }
-    public ArrayList<ArrayList<LatLng>> getArrayListForLineTest(){
-        return lineTest;
+    public String getLastProgramStatus(){
+        return mLastStatus;
+    }
+    //Setter/Getter for get id from list of FireBase
+    public void setIdOfListView(String id){
+        idOfList = id;
+    }
+    public String getIdOfListView(){
+        return idOfList;
+    }
+
+    //Setter/Getter to interact with range meter of settingActivity
+    public void setMeterOfRange(Integer counter){
+        mRange = counter;
+    }
+    public Integer getMeterOfRange(){
+        return mRange;
+    }
+
+    //Setter/Getter to set GoogleMap to work on DialogFragment
+    public void setGoogleMap(GoogleMap map){
+        gMap = map;
+    }
+    public GoogleMap getGoogleMap(){
+        return gMap;
     }
 }

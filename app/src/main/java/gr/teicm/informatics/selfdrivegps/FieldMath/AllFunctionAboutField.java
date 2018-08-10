@@ -12,8 +12,8 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class FieldBorder {
-//    private static String TAG = "FieldBorder";
+public class AllFunctionAboutField {
+//    private static String TAG = "AllFunctionAboutField";
 
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
@@ -85,7 +85,6 @@ public class FieldBorder {
 
         double red = (ax != bx) ? ((by - ay) / (bx - ax)) : MAX_VALUE;
         double blue = (ax != px) ? ((py - ay) / (px - ax)) : MAX_VALUE;
-//        Log.d(TAG, "blue >= red: " + (blue >= red));
         return (blue >= red);
     }
 

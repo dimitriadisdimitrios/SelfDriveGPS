@@ -17,8 +17,6 @@ import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    Controller controller = new Controller();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

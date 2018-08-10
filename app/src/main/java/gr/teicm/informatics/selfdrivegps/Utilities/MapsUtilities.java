@@ -57,7 +57,6 @@ public class MapsUtilities {
 
     public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn){
         String modeOfApp = controller.getProgramStatus();
-//        Log.d(TAG, "Program status:" + modeOfApp);
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
                 label.setText(String.format("Mode: %s", Controller.MODE_1_RECORD_FIELD));

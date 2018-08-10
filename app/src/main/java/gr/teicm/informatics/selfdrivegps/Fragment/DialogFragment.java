@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
 
@@ -31,12 +32,15 @@ public class DialogFragment extends android.app.DialogFragment {
     private Controller controller = new Controller();
     private final static String TAG = "DialogFragment";
     private AlertDialog mDialog;
+    private int i=0;
 
     @Override
     public AlertDialog onCreateDialog(Bundle savedInstanceState) {
 
         final ArrayList<LatLng> pointsForField = controller.getArrayListForField();
         final ArrayList<LatLng> pointsForLine = controller.getArrayListForLine();
+
+        controller.setIfFoundMatchOnFireBase(false);
 
         // Use the Builder class for convenient mDialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -52,7 +56,6 @@ public class DialogFragment extends android.app.DialogFragment {
 
         switch (controller.getProgramStatus()) {
             case Controller.MODE_1_RECORD_FIELD:
-                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
 
                 Log.d(TAG, "Record field selected");
                 editTextToSaveNameOfField.setVisibility(View.VISIBLE);
@@ -64,31 +67,51 @@ public class DialogFragment extends android.app.DialogFragment {
                         .setPositiveButton(R.string.bt_on_dialog_cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    Toast.makeText(getContext(), "Preparation for sending Canceled !", Toast.LENGTH_SHORT).show();
-                                    controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
+                                    controller.setArrayListForField(pointsForField); //Set the cleared arrayList to Controller.java
+                                    Toast.makeText(getContext(), "Preparation for sending Canceled, try again!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
                         .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
-                                String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
-
-                                if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    //Create child with specific name which include LatLng for field
-                                    databaseReference.child(nameOfDataBaseKey).child("Polygon").setValue(pointsForField);
-                                    Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
-                                    controller.setIdOfListView(nameOfDataBaseKey);
-                                } else {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                                        controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
-                                    }
-                                }
+                                //Nothing here to override next
                             }
                         });
                 mDialog = builder.create(); // Create the AlertDialog object and return it
+
+                mDialog.show(); //Override Negative btn to control the editText
+                mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Boolean isNameBeenAccepted = false; //Is a measure to control when the name for FireBase is acceptable
+
+                        EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
+                        String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
+
+                        DialogUtilities.checkNameIfExistInBase(nameOfDataBaseKey);
+
+                        if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            //Create child with specific name which include LatLng for field
+                            Log.d(TAG, String.valueOf(controller.getIfFoundMatchOnFireBase()));
+                            //TODO: Under constructed
+//                            if(!controller.getIfFoundMatchOnFireBase()){
+                                databaseReference.child(nameOfDataBaseKey).child("Polygon").setValue(pointsForField);
+                                Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
+                                controller.setIdOfListView(nameOfDataBaseKey);
+                                isNameBeenAccepted = true;
+//                            }else{
+//                                controller.setIfFoundMatchOnFireBase(false);
+//                                Toast.makeText(getContext(), "This name already used. Try Again!", Toast.LENGTH_SHORT).show();
+//                            }
+                        } else if (nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
+                        }
+                        if(isNameBeenAccepted){
+                            mDialog.dismiss();
+                        }
+                    }
+                });
             break;
 
             case Controller.MODE_2_CREATE_LINE:
@@ -141,7 +164,7 @@ public class DialogFragment extends android.app.DialogFragment {
                 mDialog = builder.create(); // Create the AlertDialog object and return it
             break;
 
-                case Controller.MODE_0_SET_TERRAIN:
+            case Controller.MODE_0_SET_TERRAIN:
                 controller.setProgramStatus(controller.getLastProgramStatus());
 
                 Log.d(TAG, "Terrain changing");
@@ -153,7 +176,7 @@ public class DialogFragment extends android.app.DialogFragment {
 
                 builder.setView(mView)
                         .setMessage("Change terrain of map")
-                        .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     int idOfCheckedRadioButton = radioGroupAboutTerrain.getCheckedRadioButtonId(); //Get id of radio button is checked

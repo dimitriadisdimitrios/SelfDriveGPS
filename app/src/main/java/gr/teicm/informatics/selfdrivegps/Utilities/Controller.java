@@ -8,7 +8,7 @@ public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, lineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
     private static String idOfList, mLastStatus, mStatus ="Record field selected";
-    private static int mRange, mIdOfField  = 1;
+    private static Integer mRange;
     private static GoogleMap gMap;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";

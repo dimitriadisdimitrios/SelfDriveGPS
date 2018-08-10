@@ -1,7 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,14 +30,15 @@ import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 public class DialogFragment extends android.app.DialogFragment {
     private Controller controller = new Controller();
     private final static String TAG = "DialogFragment";
+    private AlertDialog mDialog;
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(Bundle savedInstanceState) {
 
         final ArrayList<LatLng> pointsForField = controller.getArrayListForField();
         final ArrayList<LatLng> pointsForLine = controller.getArrayListForLine();
 
-        // Use the Builder class for convenient dialog construction
+        // Use the Builder class for convenient mDialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -84,12 +84,12 @@ public class DialogFragment extends android.app.DialogFragment {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
                                         controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
-                                        dialog.cancel();
                                     }
                                 }
                             }
                         });
-                break;
+                mDialog = builder.create(); // Create the AlertDialog object and return it
+            break;
 
             case Controller.MODE_2_CREATE_LINE:
                 controller.setProgramStatus(Controller.MODE_3_DRIVING);
@@ -138,8 +138,10 @@ public class DialogFragment extends android.app.DialogFragment {
                                 }
                             }
                         });
-                break;
-            case Controller.MODE_0_SET_TERRAIN:
+                mDialog = builder.create(); // Create the AlertDialog object and return it
+            break;
+
+                case Controller.MODE_0_SET_TERRAIN:
                 controller.setProgramStatus(controller.getLastProgramStatus());
 
                 Log.d(TAG, "Terrain changing");
@@ -171,8 +173,9 @@ public class DialogFragment extends android.app.DialogFragment {
                                 }
                             }
                         });
-                break;
+                mDialog = builder.create(); // Create the AlertDialog object and return it
+            break;
         }
-        return builder.create(); // Create the AlertDialog object and return it
+        return mDialog;
     }
 }

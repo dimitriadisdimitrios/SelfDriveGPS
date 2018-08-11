@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -29,6 +28,7 @@ import gr.teicm.informatics.selfdrivegps.R;
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
     private static final int setTimeOnCounters = 1500; //1.5 sec
+    private static final int setTimeOnToEnableTBtn = 1; //4 sec
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed;
@@ -131,6 +131,21 @@ public class MapsUtilities {
             }
         };
         handler.postDelayed(runnableForModes, setTimeOnCounters);
+    }
+    public static void checkIfArrayListIsEmpty(final ToggleButton toggleButton){
+        runnableForModes = new Runnable() {
+            @Override
+            public void run() {
+                if(controller.getArrayListForField()==null){
+                    toggleButton.setClickable(false);
+                    Log.d(TAG, "Again111");
+                    handler.postDelayed(runnableForModes,setTimeOnToEnableTBtn);
+                }else{
+                    toggleButton.setClickable(true);
+                }
+            }
+        };
+        handler.postDelayed(runnableForModes, setTimeOnToEnableTBtn);
     }
     //TODO: After finish of navigationAlgorithm I can use it
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){

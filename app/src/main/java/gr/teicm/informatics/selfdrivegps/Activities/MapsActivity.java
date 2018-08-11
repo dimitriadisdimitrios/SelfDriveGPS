@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -62,7 +61,7 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
+        final ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
         ImageButton imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
 
@@ -99,8 +98,10 @@ public class MapsActivity extends FragmentActivity
                 if (isChecked) {
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
-
-                } else {
+                    if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD)){
+                        MapsUtilities.checkIfArrayListIsEmpty(mainStartBtn);
+                    }
+                }else{
                     Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = false;
 

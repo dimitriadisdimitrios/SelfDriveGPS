@@ -2,6 +2,7 @@ package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,8 +52,10 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Log.d(TAG, "Before TEsttt!!!!!" + controller.getArrayListForField());
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                     controller.setArrayListForField(pointsForField); //Set the cleared arrayList to Controller.java
+                                    Log.d(TAG, "After TEsttt!!!!!" + controller.getArrayListForField());
                                     Toast.makeText(getContext(), "Preparation for sending Canceled, try again!", Toast.LENGTH_SHORT).show();
                                     controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
                                 }

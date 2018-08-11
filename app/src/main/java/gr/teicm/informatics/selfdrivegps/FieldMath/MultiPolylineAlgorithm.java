@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 
 public class MultiPolylineAlgorithm {
 //    private static final String TAG = "MultiPolylineAlgorithm";

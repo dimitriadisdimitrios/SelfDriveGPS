@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps.Utilities;
+package gr.teicm.informatics.selfdrivegps.Controller;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;

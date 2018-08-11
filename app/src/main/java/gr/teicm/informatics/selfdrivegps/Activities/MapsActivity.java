@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import gr.teicm.informatics.selfdrivegps.FieldMath.AllFunctionAboutField;
 import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.R;
-import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
@@ -63,6 +63,7 @@ public class MapsActivity extends FragmentActivity
 
         ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
+        ImageButton imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
@@ -78,6 +79,14 @@ public class MapsActivity extends FragmentActivity
                 controller.setLastProgramStatus(controller.getProgramStatus());
                 controller.setProgramStatus(Controller.MODE_0_SET_TERRAIN);
                 MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
+            }
+        });
+        imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                controller.setLastProgramStatus(controller.getProgramStatus());
+                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
+                MapsUtilities.showAlertDialog(getFragmentManager());
             }
         });
 

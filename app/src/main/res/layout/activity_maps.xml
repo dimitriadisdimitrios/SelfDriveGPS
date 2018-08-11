@@ -130,6 +130,13 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/main_description_on_settings_btn_on_map"
+                android:src="@drawable/change_range_meter_icon"
+                android:id="@+id/bt_change_range_meter"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/main_description_on_settings_btn_on_map"
                 android:src="@drawable/maps_icon_button"
                 android:id="@+id/bt_map_terrain_change"/>
         </LinearLayout>

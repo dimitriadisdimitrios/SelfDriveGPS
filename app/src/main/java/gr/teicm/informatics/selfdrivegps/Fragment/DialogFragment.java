@@ -1,7 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,12 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -27,7 +21,6 @@ import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
-
 
 public class DialogFragment extends android.app.DialogFragment {
     private Controller controller = new Controller();
@@ -50,7 +43,7 @@ public class DialogFragment extends android.app.DialogFragment {
         switch (controller.getProgramStatus()) {
             case Controller.MODE_1_RECORD_FIELD:
                 Log.d(TAG, "Record field selected");
-                DialogUtilities.chooseWhichDialogWillAppear(0, 4, 4, mView); //Set through function visibility
+                DialogUtilities.chooseWhichDialogWillAppear(0, 4, mView); //Set through function visibility
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_field)
@@ -109,7 +102,7 @@ public class DialogFragment extends android.app.DialogFragment {
 
             case Controller.MODE_2_CREATE_LINE:
                 Log.d(TAG, "Create route line");
-                DialogUtilities.chooseWhichDialogWillAppear(4, 0, 4, mView); //Set through function visibility
+                DialogUtilities.chooseWhichDialogWillAppear(4, 0, mView); //Set through function visibility
                 DialogUtilities.enableRangeMeter(mView, getActivity().getApplication().getBaseContext()); //Call the range meter for dialog
 
                 builder.setView(mView)
@@ -145,7 +138,7 @@ public class DialogFragment extends android.app.DialogFragment {
 
             case Controller.MODE_3_DRIVING:
                 Log.d(TAG, "Driving mode");
-                DialogUtilities.chooseWhichDialogWillAppear(4, 0, 4, mView); //Set through function visibility
+                DialogUtilities.chooseWhichDialogWillAppear(4, 0, mView); //Set through function visibility
                 DialogUtilities.enableRangeMeter(mView, getActivity().getApplication().getBaseContext()); //Call the range meter for dialog
 
                 builder.setView(mView)
@@ -165,30 +158,6 @@ public class DialogFragment extends android.app.DialogFragment {
                         });
                 mDialog = builder.create(); // Create the AlertDialog object and return it
                 break;
-
-            case Controller.MODE_0_SET_TERRAIN:
-                Log.d(TAG, "Terrain changing");
-                DialogUtilities.chooseWhichDialogWillAppear(4, 4, 0, mView); //Set through function visibility
-
-                controller.setProgramStatus(controller.getLastProgramStatus());
-
-                builder.setView(mView)
-                        .setMessage("Change terrain of map")
-                        .setPositiveButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    RadioGroup radioGroupAboutTerrain = mView.findViewById(R.id.rg_terrain_change); //Reference to RadioGroup that need to focus
-                                    int idOfCheckedRadioButton = radioGroupAboutTerrain.getCheckedRadioButtonId(); //Get id of radio button is checked
-                                    RadioButton radioButtonWithTerrain =  mView.findViewById(idOfCheckedRadioButton); //Find the radioButton on layout
-
-                                    DialogUtilities.chooseTerrainBasedOfRadioBtn(radioButtonWithTerrain.getText().toString());
-                                    Toast.makeText(getContext(), radioButtonWithTerrain.getText().toString(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                mDialog = builder.create(); // Create the AlertDialog object and return it
-            break;
         }
         return mDialog;
     }

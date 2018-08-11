@@ -53,15 +53,13 @@ public class DialogUtilities {
         }
     }
 
-    public static void chooseWhichDialogWillAppear(int etFieldName, int llRangeMeter, int llTerrain, View mView){
+    public static void chooseWhichDialogWillAppear(int etFieldName, int llRangeMeter, View mView){
         EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
         LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
-        RadioGroup linearLayoutForTerrainChange = mView.findViewById(R.id.rg_terrain_change);
 
         // Visible = 0 || Invisible = 4
         editTextToSaveNameOfField.setVisibility(etFieldName);
         linearLayoutIncludeRangeMeter.setVisibility(llRangeMeter);
-        linearLayoutForTerrainChange.setVisibility(llTerrain);
     }
 
     public static void enableRangeMeter(View mView, final Context context){

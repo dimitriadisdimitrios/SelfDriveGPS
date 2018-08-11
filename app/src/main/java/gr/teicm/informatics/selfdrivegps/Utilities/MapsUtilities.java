@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
-import gr.teicm.informatics.selfdrivegps.Fragment.DialogRadioFragment;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentRadio;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
@@ -37,6 +38,11 @@ public class MapsUtilities {
         DialogFragment dialogFragment = new DialogFragment();
         dialogFragment.show(fragmentManager, "Main Dialog for multiple uses");
         dialogFragment.setCancelable(false); //prevent dialog box from getting dismissed on back key
+    }
+    public static void showAlertDialogRadio(android.app.FragmentManager fragmentManager){
+        DialogFragmentRadio dialogFragmentRadio = new DialogFragmentRadio();
+        dialogFragmentRadio.show(fragmentManager, "Dialog only to change terrain on map");
+        dialogFragmentRadio.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
 
     public static boolean hasPermissions(Context context, String... allPermissionNeeded) {

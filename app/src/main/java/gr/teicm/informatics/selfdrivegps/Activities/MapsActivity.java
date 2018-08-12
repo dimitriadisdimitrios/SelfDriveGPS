@@ -72,7 +72,7 @@ public class MapsActivity extends FragmentActivity
 
         createGoogleApiClient();
 
-        MapsUtilities.checkIfModeChanged(labelAboveToggleBtn, mainStartBtn);
+        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn);
 
         //Call the DialogFragmentRadio /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
@@ -98,20 +98,26 @@ public class MapsActivity extends FragmentActivity
                 if (isChecked) {
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
+                    mainStartBtn.setClickable(false); //Unable to press it again until run the below command
                     if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD)){
-                        MapsUtilities.checkIfArrayListIsEmpty(mainStartBtn);
+                        MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
                     }
                 }else{
-                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
-                    btn_haveBeenClicked = false;
+                    if(controller.getArrayListForField()!=null){
+                        Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
+                        btn_haveBeenClicked = false;
 
-                    MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
+                        MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
 
-                    mMap.clear(); //Remove polyline from the record mode
-                    MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Get ArrayList<LatLng> to transfer polyline to polygon
-                    if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
-                        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+                        mMap.clear(); //Remove polyline from the record mode
+                        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Get ArrayList<LatLng> to transfer polyline to polygon
+                        if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
+                            MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+                        }
                     }
+// else if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD)){
+//                        MapsUtilities.checkIfArrayListIsEmpty(mainStartBtn);
+//                    }
                 }
             }
         });
@@ -154,7 +160,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        MapsUtilities.checkIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
+        MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
 
         LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();

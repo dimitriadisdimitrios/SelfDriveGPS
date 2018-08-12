@@ -28,7 +28,7 @@ import gr.teicm.informatics.selfdrivegps.R;
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
     private static final int setTimeOnCounters = 1500; //1.5 sec
-    private static final int setTimeOnToEnableTBtn = 1; //4 sec
+    private static final int setTimeOnToEnableTBtn = 4000; //4 sec
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed;
@@ -112,7 +112,7 @@ public class MapsUtilities {
     }
 
     //Check if user moving. If it stay still the counter start to reset speed and accuracy
-    public static void checkIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){
+    public static void counterToCheckIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){
         handler.removeCallbacks(runnableForSpeed);
         runnableForSpeed = new Runnable() {
             @Override
@@ -122,7 +122,7 @@ public class MapsUtilities {
         };
         handler.postDelayed(runnableForSpeed, setTimeOnCounters);
     }
-    public static void checkIfModeChanged(final TextView textView, final ToggleButton toggleButton){
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
@@ -132,13 +132,11 @@ public class MapsUtilities {
         };
         handler.postDelayed(runnableForModes, setTimeOnCounters);
     }
-    public static void checkIfArrayListIsEmpty(final ToggleButton toggleButton){
+    public static void counterToCheckIfArrayListIsEmpty(final ToggleButton toggleButton){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
                 if(controller.getArrayListForField()==null){
-                    toggleButton.setClickable(false);
-                    Log.d(TAG, "Again111");
                     handler.postDelayed(runnableForModes,setTimeOnToEnableTBtn);
                 }else{
                     toggleButton.setClickable(true);

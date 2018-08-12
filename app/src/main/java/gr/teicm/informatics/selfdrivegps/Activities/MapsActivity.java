@@ -99,7 +99,7 @@ public class MapsActivity extends FragmentActivity
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command
-                    if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD)){
+                    if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD) || controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
                         MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
                     }
                 }else{
@@ -115,9 +115,6 @@ public class MapsActivity extends FragmentActivity
                             MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
                         }
                     }
-// else if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD)){
-//                        MapsUtilities.checkIfArrayListIsEmpty(mainStartBtn);
-//                    }
                 }
             }
         });

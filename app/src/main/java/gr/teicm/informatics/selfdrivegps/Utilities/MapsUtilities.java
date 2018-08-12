@@ -27,8 +27,7 @@ import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
-    private static final int setTimeOnCounters = 1500; //1.5 sec
-    private static final int setTimeOnToEnableTBtn = 4000; //4 sec
+    private static final int setTimeForCheckSpeedAccuracy = 1500 /*1.5 sec*/, setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed;
@@ -45,6 +44,14 @@ public class MapsUtilities {
         dialogFragmentRadio.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
 
+    //All Permissions i need for android 6.0 and above
+    public static void checkLocationPermission(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "Permissions check passed");
+            }
+        }
+    }
     public static boolean hasPermissions(Context context, String... allPermissionNeeded) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && context != null && allPermissionNeeded != null)
@@ -54,13 +61,33 @@ public class MapsUtilities {
         return true;
     }
 
-    //All Permissions i need for android 6.0 and above
-    public static void checkLocationPermission(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "Permissions check passed");
-            }
-        }
+    public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(5)
+                .color(Color.RED)
+                .addAll(directionPoints);
+        googleMap.addPolyline(polylineOptions);
+    }
+    public static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(5)
+                .color(Color.BLUE)
+                .addAll(directionPoints);
+        googleMap.addPolyline(polylineOptions);
+    }
+    public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
+        PolygonOptions polygonOptions = new PolygonOptions()
+                .fillColor(Color.TRANSPARENT)
+                .strokeColor(Color.GREEN)
+                .strokeWidth(5)
+                .addAll(directionPoints);
+        googleMap.addPolygon(polygonOptions);
+    }
+
+    public static void getSpecsForStatusBar(float speed, float accuracy, TextView mSpeed, TextView mAccuracy, Context context){
+        float kmH = (float) (speed *3.6); //Convert m/s to km/h
+        mSpeed.setText(context.getString(R.string.speed_counter, kmH));
+        mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
     }
 
     public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn){
@@ -79,40 +106,7 @@ public class MapsUtilities {
         }
     }
 
-    public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .width(5)
-                .color(Color.RED)
-                .addAll(directionPoints);
-        googleMap.addPolyline(polylineOptions);
-    }
-
-    public static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .width(5)
-                .color(Color.BLUE)
-                .addAll(directionPoints);
-        googleMap.addPolyline(polylineOptions);
-    }
-
-    public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
-        PolygonOptions polygonOptions = new PolygonOptions()
-                .fillColor(Color.TRANSPARENT)
-                .strokeColor(Color.GREEN)
-                .strokeWidth(5)
-                .addAll(directionPoints);
-        googleMap.addPolygon(polygonOptions);
-    }
-
-    public static void getSpecsForStatusBar(float speed, float accuracy, TextView mSpeed, TextView mAccuracy, Context context){
-        float kmH = (float) (speed *3.6); //Convert m/s to km/h
-
-        mSpeed.setText(context.getString(R.string.speed_counter, kmH));
-        mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
-    }
-
-    //Check if user moving. If it stay still the counter start to reset speed and accuracy
-    public static void counterToCheckIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){
+    public static void counterToCheckIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){ //Counter to check if user moving. If it stay still the counter start to reset speed and accuracy
         handler.removeCallbacks(runnableForSpeed);
         runnableForSpeed = new Runnable() {
             @Override
@@ -120,38 +114,51 @@ public class MapsUtilities {
                 MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
             }
         };
-        handler.postDelayed(runnableForSpeed, setTimeOnCounters);
+        handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
     }
-    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton){
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton){ //Counter to check in which mode program are
         runnableForModes = new Runnable() {
             @Override
             public void run() {
                 changeLabelAboutMode(textView, toggleButton);
-                handler.postDelayed(runnableForModes,setTimeOnCounters);
+                handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
             }
         };
-        handler.postDelayed(runnableForModes, setTimeOnCounters);
+        handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
     }
-    public static void counterToCheckIfArrayListIsEmpty(final ToggleButton toggleButton){
+    public static void counterToCheckIfArrayListIsEmpty(final ToggleButton toggleButton){ //Counter to make sure the tBtn start/stop wouldn't double-pressed
         runnableForModes = new Runnable() {
             @Override
             public void run() {
-                if(controller.getArrayListForField()==null){
-                    handler.postDelayed(runnableForModes,setTimeOnToEnableTBtn);
-                }else{
-                    toggleButton.setClickable(true);
+                switch (controller.getProgramStatus()){
+                    case Controller.MODE_1_RECORD_FIELD:
+                        if(controller.getArrayListForField()==null){
+                            handler.postDelayed(runnableForModes, setTimeOnCounterForChecks);
+                        }else{
+                            toggleButton.setClickable(true);
+                        }
+                        break;
+                    case Controller.MODE_2_CREATE_LINE:
+                        if(controller.getArrayListForLine()==null){
+                            handler.postDelayed(runnableForModes, setTimeOnCounterForChecks);
+                        }else{
+                            toggleButton.setClickable(true);
+                        }
+                        break;
                 }
             }
         };
-        handler.postDelayed(runnableForModes, setTimeOnToEnableTBtn);
+        handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
     }
-    //TODO: After finish of navigationAlgorithm I can use it
+
+    // Clear the map, Create field, place multi-polyLine,
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
-        mMap.clear();
-        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
-        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
-        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
-        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
+        mMap.clear(); //clear the map
+        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: find why i use that !
+
+        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
+        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){ //Place multi-polyLine to map
             MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
         }
     }

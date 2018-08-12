@@ -1,6 +1,5 @@
 package gr.teicm.informatics.selfdrivegps.FieldMath;
 
-
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -13,12 +12,13 @@ public class MultiPolylineAlgorithm {
 
     //Function which calculate through algorithm how many polyline fits left and right of given polyline inside of field
     public static void algorithmForCreatingPolylineInField(ArrayList<LatLng> mArray/*, double distanceBetweenLines*/){
-        double bearingForRightSide = (AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1))) + 90; // Get Bearing for right side
-        double bearingForLeftSide = (AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1))) + 270; // Get Bearing for left side
-        double mBearing = AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1));
 
         ArrayList<ArrayList<LatLng>> outerArrayListForMultiPolyline = new ArrayList<>();
         ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
+
+        double bearingForRightSide = (AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1))) + 90; // Get Bearing for right side
+        double bearingForLeftSide = (AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1))) + 270; // Get Bearing for left side
+        double mBearing = AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1));
 
         loopToMultiPolyLines(mArray, bearingForRightSide, mBearing, mArray.size()-1, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline); //#1
         loopToMultiPolyLines(mArray, bearingForLeftSide, mBearing, mArray.size()-1, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline);  //#1
@@ -53,6 +53,7 @@ public class MultiPolylineAlgorithm {
 
             distanceBetweenLines += controller.getMeterOfRange();
         }
+        outer.add(0, mArrayToCheck); //Ensure that inside of controller.getArrayListOfMultipliedPolyLines (outerArrayListForMultiPolyLine)
     }
 
     //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field (#2)
@@ -69,9 +70,9 @@ public class MultiPolylineAlgorithm {
         }
         return resultForCheckingIfPointIsInsideOfField;
     }
-
     //Check every arrayList if has place to add more points to fill the space
     private static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, LatLng latLngToCheck, double bearingOfPolyline, Boolean isTheEndOfArray){
+
         LatLng pointOfmArrayToCheck = AllFunctionAboutField.calculateLocationFewMetersAhead(latLngToCheck, bearingOfPolyline, 1);
 
         while(AllFunctionAboutField.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField())){

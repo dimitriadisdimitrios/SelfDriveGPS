@@ -15,9 +15,9 @@ public class Controller {
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
     public static final String MODE_3_DRIVING = "Driving";
-    public static final String MODE_0_SET_TERRAIN = "Set terrain mode";
-
-    public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; // To meters
+    //TODO: If algorithms doesn't work It's maybe the fact that i change value from int to double
+    public static final double MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE = 2.5; // To meters
+    public static final double MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE = 3; // To meters
     public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2.5;
 
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)

@@ -81,13 +81,16 @@ public class MapsActivity extends FragmentActivity
                 MapsUtilities.showAlertDialogRadio(getFragmentManager());//Set listener on button to transfer data to database
             }
         });
+
         //Call the DialogFragment /layout to set FieldName and RangeMeter
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.setLastProgramStatus(controller.getProgramStatus());
-                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
-                MapsUtilities.showAlertDialog(getFragmentManager());
+                if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){ // Secure the controller.gerArrayList != null
+                    MapsUtilities.showAlertDialog(getFragmentManager());
+                }else{
+                    Toast.makeText(context,"You don't have draw any field !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -96,6 +99,7 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
+                    Log.d(TAG, controller.getProgramStatus());
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command
@@ -147,8 +151,9 @@ public class MapsActivity extends FragmentActivity
         checkToGetDataFromAnotherActivity(mainStartBtn);
 
         if(getIntent().getExtras()!=null) {
+            controller.setProgramStatus(Controller.MODE_3_DRIVING);
             //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
-//            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
+            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
         }else{
             controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
             Log.d("modes",Controller.MODE_1_RECORD_FIELD);
@@ -179,9 +184,9 @@ public class MapsActivity extends FragmentActivity
 
         //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
-//            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
-//                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
-//            }
+            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
+                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
+            }
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
@@ -232,21 +237,14 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //TODO: Add code on back btn to test it... When finished remove it all
-        mMap.clear();
-//        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
-//        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
-//        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
-//        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
-//            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
+//        MapsUtilities.recreateFieldWithMultiPolyline(mMap);
+//        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
+//        for(ArrayList<LatLng> temp : parPolyline){
+//            MapsUtilities.placePolylineParallel(temp, mMap);
 //        }
-        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
-        MapsUtilities.recreateFieldWithMultiPolyline(mMap);
 
-        for(ArrayList<LatLng> temp : parPolyline){
-            MapsUtilities.placePolylineParallel(temp, mMap);
-        }
         //Back Btn do nothing !
-//        super.onBackPressed();
+        super.onBackPressed();
     }
 
     public void createGoogleApiClient(){

@@ -18,16 +18,23 @@ public class NavigationPolylineAlgorithm {
         double mBearing = AllFunctionAboutField.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1));
 
         ArrayList<ArrayList<LatLng>> outerArrayListForMultiPolyline = new ArrayList<>();
-//        ArrayList<LatLng> innerArrayListForMultiPolyline = new ArrayList<>();
 
         checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(0),mBearing+180,false);
         checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(mArray.size()-1), mBearing,true);
 
-        outerArrayListForMultiPolyline.add(createTwoInvisiblePolylinesForNavation(mArray, bearingForLeftSide));
-        outerArrayListForMultiPolyline.add(createTwoInvisiblePolylinesForNavation(mArray, bearingForRightSide));
+        outerArrayListForMultiPolyline.add(createTwoInvisiblePolyLinesForNavigation(mArray, bearingForLeftSide));
+        outerArrayListForMultiPolyline.add(createTwoInvisiblePolyLinesForNavigation(mArray, bearingForRightSide));
 
         return outerArrayListForMultiPolyline;
         }
+
+    private static ArrayList<LatLng> createTwoInvisiblePolyLinesForNavigation(ArrayList<LatLng> mainPolyline, Double mainBearing){
+        ArrayList<LatLng> parallelPolyLines = new ArrayList<>();
+        for(LatLng mainPoint : mainPolyline){
+            parallelPolyLines.add(AllFunctionAboutField.calculateLocationFewMetersAhead(mainPoint, mainBearing, Controller.MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE));
+        }
+        return parallelPolyLines;
+    }
 
     //Check every arrayList if has place to add more points to fill the space
     private static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, LatLng latLngToCheck, double bearingOfPolyline, Boolean isTheEndOfArray){
@@ -42,13 +49,5 @@ public class NavigationPolylineAlgorithm {
             pointOfmArrayToCheck = AllFunctionAboutField.calculateLocationFewMetersAhead(pointOfmArrayToCheck, bearingOfPolyline, 1);
         }
     }
-
-    private static ArrayList<LatLng> createTwoInvisiblePolylinesForNavation(ArrayList<LatLng> mainPolyline, Double mainBearing){
-        ArrayList<LatLng> parallelPolyLines = new ArrayList<>();
-        for(LatLng mainPoint : mainPolyline){
-            parallelPolyLines.add(AllFunctionAboutField.calculateLocationFewMetersAhead(mainPoint, mainBearing, Controller.MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE));
-        }
-        return parallelPolyLines;
-
-    }
+    //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field (#2)
 }

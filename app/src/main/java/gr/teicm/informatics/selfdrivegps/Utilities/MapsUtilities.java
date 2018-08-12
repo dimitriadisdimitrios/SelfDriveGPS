@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
+import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentRadio;
 import gr.teicm.informatics.selfdrivegps.R;
@@ -30,8 +31,8 @@ public class MapsUtilities {
     private static final int setTimeForCheckSpeedAccuracy = 1500 /*1.5 sec*/, setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
-    private static Runnable runnableForModes, runnableForSpeed;
-
+    private static Runnable runnableForModes;
+    private static Runnable runnableForSpeed;
 
     public static void showAlertDialog(android.app.FragmentManager fragmentManager){
         DialogFragment dialogFragment = new DialogFragment();
@@ -112,6 +113,7 @@ public class MapsUtilities {
             @Override
             public void run() {
                 MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
+                handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
             }
         };
         handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
@@ -127,39 +129,44 @@ public class MapsUtilities {
         handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
     }
     public static void counterToCheckIfArrayListIsEmpty(final ToggleButton toggleButton){ //Counter to make sure the tBtn start/stop wouldn't double-pressed
-        runnableForModes = new Runnable() {
+        Runnable runnableForTBtnClickAbility = new Runnable() {
             @Override
             public void run() {
-                switch (controller.getProgramStatus()){
+                switch (controller.getProgramStatus()) {
                     case Controller.MODE_1_RECORD_FIELD:
-                        if(controller.getArrayListForField()==null){
+                        if (controller.getArrayListForField() == null) {
                             handler.postDelayed(runnableForModes, setTimeOnCounterForChecks);
-                        }else{
+                        } else {
                             toggleButton.setClickable(true);
                         }
                         break;
                     case Controller.MODE_2_CREATE_LINE:
-                        if(controller.getArrayListForLine()==null){
+                        if (controller.getArrayListForLine() == null) {
                             handler.postDelayed(runnableForModes, setTimeOnCounterForChecks);
-                        }else{
+                        } else {
                             toggleButton.setClickable(true);
                         }
                         break;
                 }
             }
         };
-        handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
+        handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
 
     // Clear the map, Create field, place multi-polyLine,
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
-        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: find why i use that !
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Remove it after finish with algorithm
 
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
         for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){ //Place multi-polyLine to map
             MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
+        }
+        //Create the parallel lines to given //TODO: Need a lot of work
+        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
+        for(ArrayList<LatLng> temp : parPolyline){
+            MapsUtilities.placePolylineParallel(temp, mMap);
         }
     }
 
@@ -167,8 +174,8 @@ public class MapsUtilities {
         Controller controller = new Controller();
         Boolean focusOnSpecificPlace = false;
 
-        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){
-            focusOnSpecificPlace = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_POLYLINE);
+        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to
+            focusOnSpecificPlace = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
             if(focusOnSpecificPlace){
                 controller.setArrayListForLineToFocus(focusedPolyline);
                 break;

@@ -52,10 +52,8 @@ public class DialogFragment extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    Log.d(TAG, "Before TEsttt!!!!!" + controller.getArrayListForField());
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                     controller.setArrayListForField(pointsForField); //Set the cleared arrayList to Controller.java
-                                    Log.d(TAG, "After TEsttt!!!!!" + controller.getArrayListForField());
                                     Toast.makeText(getContext(), "Preparation for sending Canceled, try again!", Toast.LENGTH_SHORT).show();
                                     controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
                                 }
@@ -139,28 +137,28 @@ public class DialogFragment extends android.app.DialogFragment {
                 mDialog = builder.create(); // Create the AlertDialog object and return it
             break;
 
-            case Controller.MODE_3_DRIVING:
-                Log.d(TAG, "Driving mode");
-                DialogUtilities.chooseWhichDialogWillAppear(4, 0, mView); //Set through function visibility
-                DialogUtilities.enableRangeMeter(mView, getActivity().getApplication().getBaseContext()); //Call the range meter for dialog
-
-                builder.setView(mView)
-                        .setMessage(R.string.label_on_dialog_driving)
-                        .setPositiveButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
-                                    controller.setArrayListForLine(pointsForLine);
-                                    controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
-                                    MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), controller.getGoogleMap());
-
-                                    Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                mDialog = builder.create(); // Create the AlertDialog object and return it
-                break;
+//            case Controller.MODE_3_DRIVING:
+//                Log.d(TAG, "Driving mode");
+//                DialogUtilities.chooseWhichDialogWillAppear(4, 0, mView); //Set through function visibility
+//                DialogUtilities.enableRangeMeter(mView, getActivity().getApplication().getBaseContext()); //Call the range meter for dialog
+//
+//                builder.setView(mView)
+//                        .setMessage(R.string.label_on_dialog_driving)
+//                        .setPositiveButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                                    pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
+//                                    controller.setArrayListForLine(pointsForLine);
+//                                    controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
+//                                    MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), controller.getGoogleMap());
+//
+//                                    Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
+//                mDialog = builder.create(); // Create the AlertDialog object and return it
+//                break;
         }
         return mDialog;
     }

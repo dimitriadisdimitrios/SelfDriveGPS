@@ -1,4 +1,4 @@
-package gr.teicm.informatics.selfdrivegps.Utilities;
+package gr.teicm.informatics.selfdrivegps.Controller;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -10,6 +10,7 @@ public class Controller {
     private static String idOfList, mLastStatus, mStatus ="Record field selected";
     private static Integer mRange;
     private static GoogleMap gMap;
+    private static Boolean mNameExist;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
@@ -86,5 +87,13 @@ public class Controller {
     }
     public GoogleMap getGoogleMap(){
         return gMap;
+    }
+
+    //Setter/Getter to interact with range meter of settingActivity
+    public void setIfFoundMatchOnFireBase(Boolean nameToMatch){
+        mNameExist = nameToMatch;
+    }
+    public Boolean getIfFoundMatchOnFireBase(){
+        return mNameExist;
     }
 }

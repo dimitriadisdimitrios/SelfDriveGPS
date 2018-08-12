@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import gr.teicm.informatics.selfdrivegps.FieldMath.AllFunctionAboutField;
 import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.R;
-import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
@@ -61,8 +61,10 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
+        final ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
+        ImageButton imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
+
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
@@ -70,14 +72,22 @@ public class MapsActivity extends FragmentActivity
 
         createGoogleApiClient();
 
-        MapsUtilities.checkIfModeChanged(labelAboveToggleBtn, mainStartBtn);
+        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn);
 
+        //Call the DialogFragmentRadio /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MapsUtilities.showAlertDialogRadio(getFragmentManager());//Set listener on button to transfer data to database
+            }
+        });
+        //Call the DialogFragment /layout to set FieldName and RangeMeter
+        imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 controller.setLastProgramStatus(controller.getProgramStatus());
-                controller.setProgramStatus(Controller.MODE_0_SET_TERRAIN);
-                MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
+                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
+                MapsUtilities.showAlertDialog(getFragmentManager());
             }
         });
 
@@ -88,17 +98,22 @@ public class MapsActivity extends FragmentActivity
                 if (isChecked) {
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
+                    mainStartBtn.setClickable(false); //Unable to press it again until run the below command
+                    if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD) || controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
+                        MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
+                    }
+                }else{
+                    if(controller.getArrayListForField()!=null){
+                        Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
+                        btn_haveBeenClicked = false;
 
-                } else {
-                    Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
-                    btn_haveBeenClicked = false;
+                        MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
 
-                    MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
-
-                    mMap.clear(); //Remove polyline from the record mode
-                    MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Get ArrayList<LatLng> to transfer polyline to polygon
-                    if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
-                        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+                        mMap.clear(); //Remove polyline from the record mode
+                        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Get ArrayList<LatLng> to transfer polyline to polygon
+                        if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
+                            MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+                        }
                     }
                 }
             }
@@ -142,7 +157,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        MapsUtilities.checkIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
+        MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
 
         LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();

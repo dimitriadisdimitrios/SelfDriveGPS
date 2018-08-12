@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.R;
-import gr.teicm.informatics.selfdrivegps.Utilities.Controller;
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 
 public class RetrieveDataActivity extends Activity {
     final String TAG = "RetrieveDataActivity";
@@ -48,9 +49,13 @@ public class RetrieveDataActivity extends Activity {
                     String id = child.getKey();
                     fList.add(id);
                 }
+                ProgressBar progressBarOfWaitingFireBase = findViewById(R.id.pb_waiting_fireBase);
+                progressBarOfWaitingFireBase.setVisibility(View.INVISIBLE);
+
 
                 //Create ListView to show data from FireBase
                 ListView listView =  findViewById(R.id.list_view_main_frame);
+                listView.setVisibility(View.VISIBLE);
                 listView.setClickable(true);
                 final ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);

@@ -16,28 +16,6 @@
         android:hint="@string/et_give_name_of_field_you_saved_popActivity">
     </EditText>
 
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/rg_terrain_change">
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rb_normal"
-                android:text="@string/terrain_type_1"
-                android:checked="true" />
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rb_satellite"
-                android:text="@string/terrain_type_2"/>
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rb_terrain"
-                android:text="@string/terrain_type_3"/>
-        </RadioGroup>
-
     <LinearLayout
         android:id="@+id/linear_layout_with_range_meter"
         android:visibility="invisible"

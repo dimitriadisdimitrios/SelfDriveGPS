@@ -149,15 +149,6 @@ public class MapsActivity extends FragmentActivity
         ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
 
         checkToGetDataFromAnotherActivity(mainStartBtn);
-
-        if(getIntent().getExtras()!=null) {
-            controller.setProgramStatus(Controller.MODE_3_DRIVING);
-            //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
-            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-        }else{
-            controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
-            Log.d("modes",Controller.MODE_1_RECORD_FIELD);
-        }
     }
 
     @Override
@@ -236,13 +227,6 @@ public class MapsActivity extends FragmentActivity
     }
     @Override
     public void onBackPressed() {
-        //TODO: Add code on back btn to test it... When finished remove it all
-//        MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-//        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
-//        for(ArrayList<LatLng> temp : parPolyline){
-//            MapsUtilities.placePolylineParallel(temp, mMap);
-//        }
-
         //Back Btn do nothing !
         super.onBackPressed();
     }
@@ -269,11 +253,13 @@ public class MapsActivity extends FragmentActivity
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
         // When load field from "load btn" draw the necessary lines to show it and
         if(getIntent().getExtras()!=null) {
-            MapsUtilities.placePolygonForRoute(controller.getArrayListForField(),mMap);
-            MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+            controller.setProgramStatus(Controller.MODE_3_DRIVING); //Set the Driving mode to use app
 
-            controller.setProgramStatus(Controller.MODE_3_DRIVING);
-            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
+            MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Draw the map to work
+            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn); //Show the mode and hide tBtn
+        }else{
+            controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
+            Log.d("modes",Controller.MODE_1_RECORD_FIELD);
         }
     }
 }

@@ -157,12 +157,13 @@ public class MapsUtilities {
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
-        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Remove it after finish with algorithm
+        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Temporary use for working with navigationAlgorithmV2
 
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
         for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){ //Place multi-polyLine to map
-            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
+//            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
         }
+
         //Create the parallel lines to given //TODO: Need a lot of work
         ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
         for(ArrayList<LatLng> temp : parPolyline){
@@ -170,6 +171,7 @@ public class MapsUtilities {
         }
     }
 
+    //Recognize in which polyline you are
     public static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
         Controller controller = new Controller();
         Boolean focusOnSpecificPlace = false;

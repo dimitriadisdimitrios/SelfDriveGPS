@@ -1,11 +1,15 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
+import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
 
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.Math.PI;
@@ -15,8 +19,9 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class FieldFunctionsUtilities {
-//    private static String TAG = "FieldFunctionsUtilities";
+    private static final String TAG = "FieldFunctionsUtilities";
     private static Controller controller = new Controller();
+
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
         LatLng centerLatLng;
@@ -150,5 +155,38 @@ public class FieldFunctionsUtilities {
             }
         }
         return resultForCheckingIfPointIsInsideOfField;
+    }
+
+    //Function to generate invisible parallel
+    public static void generateTempParallelPolyLinesWithInvisibleBorders(GoogleMap googleMap, LatLng mCurrentLocation){
+        Boolean focusOnSpecificSecondLine;
+
+        if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
+            //Get the main ArrayList to generate the 2 polyLines
+            ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus());
+
+            for(ArrayList<LatLng> temp : parPolyline){ //It creates them
+                focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE); //Add the border
+                if(focusOnSpecificSecondLine) { //Check if user cross the border of one of 2 lines show it!
+                    MapsUtilities.placePolylineParallel(temp, googleMap); //Draw the 2 PolyLines on map
+//                    Log.d(TAG, "Make something right - Main: " +checkingInWhichPolylineUserEntered(mCurrentLocation)+ " - Second: " +focusOnSpecificSecondLine+ " - The number of line is: " +parPolyline.indexOf(temp));
+                }
+            }
+        }else{
+            MapsUtilities.recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal
+        }
+    }
+    //Recognize in which polyline you are
+    private static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
+        Boolean focusOnSpecificMainLine = false;
+
+        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to test it about which one is the user
+            focusOnSpecificMainLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
+            if(focusOnSpecificMainLine){
+                controller.setArrayListForLineToFocus(focusedPolyline); //Set it on controller to get then number of index to show it on MapsActivity
+                break;
+            }
+        }
+        return focusOnSpecificMainLine;
     }
 }

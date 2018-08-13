@@ -23,14 +23,14 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
-import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentRadio;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
-    private static final int setTimeForCheckSpeedAccuracy = 1500 /*1.5 sec*/, setTimeOnCounterForChecks = 4000 /*4 sec*/;
+    private static final int setTimeForCheckSpeedAccuracy = 1500; /*1.5 sec*/
+    private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes;
@@ -70,14 +70,14 @@ public class MapsUtilities {
                 .color(Color.RED)
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
-    }
-    private static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+    } //Draw the main\multi lines
+    public static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
                 .color(Color.BLUE)
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
-    }
+    } //Draw the parallel lines
     public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolygonOptions polygonOptions = new PolygonOptions()
                 .fillColor(Color.TRANSPARENT)
@@ -85,7 +85,7 @@ public class MapsUtilities {
                 .strokeWidth(5)
                 .addAll(directionPoints);
         googleMap.addPolygon(polygonOptions);
-    }
+    } //Draw the polygon for field
 
     public static void getSpecsForStatusBar(float speed, float accuracy, TextView mSpeed, TextView mAccuracy, Context context){
         float kmH = (float) (speed *3.6); //Convert m/s to km/h
@@ -169,39 +169,6 @@ public class MapsUtilities {
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
         for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
             MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap); // Draw the multi-polyLines on map
-        }
-    }
-
-    //Recognize in which polyline you are
-    private static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
-        Boolean focusOnSpecificMainLine = false;
-
-        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to test it about which one is the user
-            focusOnSpecificMainLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
-            if(focusOnSpecificMainLine){
-                controller.setArrayListForLineToFocus(focusedPolyline); //Set it on controller to get then number of index to show it on MapsActivity
-                break;
-            }
-        }
-        return focusOnSpecificMainLine;
-    }
-    //Function to generate invisible parallel
-    public static void generateTempParallelPolyLinesWithInvisibleBorders(GoogleMap googleMap, LatLng mCurrentLocation){
-        Boolean focusOnSpecificSecondLine = false;
-
-        if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
-            //Create the parallel lines to given //TODO: Need a lot of work
-            ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus()); //Get the main ArrayList to generate the 2 polyLines
-
-            for(ArrayList<LatLng> temp : parPolyline){ //It creates them
-                focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE); //Add the border
-                if(focusOnSpecificSecondLine) { //Check if user cross the border of one of 2 lines show it!
-                    MapsUtilities.placePolylineParallel(temp, googleMap); //Place the 2 PolyLines on map //TODO: this line while remove after finish with algorithm
-//                    Log.d(TAG, "Make something right - Main: " +checkingInWhichPolylineUserEntered(mCurrentLocation)+ " - Second: " +focusOnSpecificSecondLine+ " - The number of line is: " +parPolyline.indexOf(temp));
-                }
-            }
-        }else{
-            recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal
         }
     }
 }

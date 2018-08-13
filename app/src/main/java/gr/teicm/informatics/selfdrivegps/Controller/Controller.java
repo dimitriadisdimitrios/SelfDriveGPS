@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, lineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
-    private static String idOfList, mLastStatus, mStatus ="Record field selected";
+    private static String idOfList, mStatus ="Record field selected";
     private static Integer mRange;
     private static GoogleMap gMap;
     private static Boolean mNameExist;
@@ -15,10 +15,10 @@ public class Controller {
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
     public static final String MODE_3_DRIVING = "Driving";
-    //TODO: If algorithms doesn't work It's maybe the fact that i change value from int to double
-    public static final double MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE = 2.5; // To meters //it works for 2.5
-    public static final double MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE = 3; // To meters
-    public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 3;
+
+    public static final double MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE = 3; // To meters //it works for 2.5
+    public static final double MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE = 1; // To meters
+    public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2;
 
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
     public void setArrayListForField(ArrayList<LatLng> points){
@@ -58,13 +58,7 @@ public class Controller {
     public String getProgramStatus(){
         return mStatus;
     }
-//    //Setter/Getter to save the mode so i can transfer to dialog "Change terrain"
-//    public void setLastProgramStatus(String lastStatus){
-//        mLastStatus = lastStatus;
-//    }
-//    public String getLastProgramStatus(){
-//        return mLastStatus;
-//    }
+
     //Setter/Getter for get id from list of FireBase
     public void setIdOfListView(String id){
         idOfList = id;

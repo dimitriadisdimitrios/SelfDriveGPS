@@ -69,7 +69,7 @@ public class MapsUtilities {
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     }
-    public static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+    private static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
                 .color(Color.BLUE)
@@ -153,36 +153,44 @@ public class MapsUtilities {
         handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
 
-    // Clear the map, Create field, place multi-polyLine,
+    // Re-draw the map. Use it as default function
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
         MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Temporary use for working with navigationAlgorithmV2
 
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
-        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){ //Place multi-polyLine to map
-//            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
-        }
-
-        //Create the parallel lines to given //TODO: Need a lot of work
-        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
-        for(ArrayList<LatLng> temp : parPolyline){
-            MapsUtilities.placePolylineParallel(temp, mMap);
+        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
+            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap); // Draw the multi-polyLines on map
         }
     }
 
     //Recognize in which polyline you are
-    public static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
-        Controller controller = new Controller();
+    private static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
         Boolean focusOnSpecificPlace = false;
 
-        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to
+        for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to test it about which one is the user
             focusOnSpecificPlace = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
             if(focusOnSpecificPlace){
-                controller.setArrayListForLineToFocus(focusedPolyline);
+                controller.setArrayListForLineToFocus(focusedPolyline); //Set it on controller to get then number of index to show it on MapsActivity
                 break;
             }
         }
         return focusOnSpecificPlace;
+    }
+
+    //Function to generate invisible parallel
+    public static void generateTempParallelPolyLines(GoogleMap googleMap, LatLng mCurrentLocation){
+
+        if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
+            //Create the parallel lines to given //TODO: Need a lot of work
+            ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus()); //Get the main ArrayList to generate the 2 polyLines
+
+            for(ArrayList<LatLng> temp : parPolyline){
+                MapsUtilities.placePolylineParallel(temp, googleMap); //Place the 2 PolyLines on map
+            }
+        }else{
+            recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal
+        }
     }
 }

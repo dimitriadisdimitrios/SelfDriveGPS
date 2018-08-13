@@ -175,9 +175,10 @@ public class MapsActivity extends FragmentActivity
 
         //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
-            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
-                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
-            }
+            MapsUtilities.generateTempParallelPolyLines(mMap, latLngOfCurrentTime);
+//            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
+//                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
+//            }
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!

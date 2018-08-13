@@ -25,7 +25,7 @@ public class DialogUtilities {
                 counter = counter + 1; //Increase the meter
             }
         }else if(function.equals("sub")){
-            if(counter > 5) {
+            if(counter > 6) {
                 counter = counter - 1; //Decrease the meter
             }
         }
@@ -37,19 +37,13 @@ public class DialogUtilities {
         switch (mName) {
             case "Normal":
                 controller.getGoogleMap().setMapType(1); //To make it normal
-                Log.d(TAG, "Something happer 1");
                 break;
             case "Satellite":
                 controller.getGoogleMap().setMapType(2); //To make it satellite
-                Log.d(TAG, "Something happer 2");
                 break;
             case "Terrain":
                 controller.getGoogleMap().setMapType(3); //To make it terrain
-                Log.d(TAG, "Something happer 3");
                 break;
-                default:
-                    Log.d(TAG, "Something happer !!!");
-                    break;
         }
     }
 

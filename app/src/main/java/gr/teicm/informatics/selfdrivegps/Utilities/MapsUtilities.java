@@ -36,9 +36,7 @@ public class MapsUtilities {
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
-    private static Runnable runnableForModes;
-    private static Runnable runnableForSpeed;
-    private static Runnable runnableForTBtnClickAbility;
+    private static Runnable runnableForModes, runnableForSpeed, runnableForTBtnClickAbility;
 
     public static void showAlertDialog(android.app.FragmentManager fragmentManager){
         DialogFragment dialogFragment = new DialogFragment();
@@ -115,18 +113,7 @@ public class MapsUtilities {
         }
     }
 
-    public static void counterToCheckIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){ //Counter to check if user moving. If it stay still the counter start to reset speed and accuracy
-        handler.removeCallbacks(runnableForSpeed);
-        runnableForSpeed = new Runnable() {
-            @Override
-            public void run() {
-                MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
-                handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
-            }
-        };
-        handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
-    }
-    //Counter to check in which mode program are
+    //Counters for speed, gps-accuracy, to check which mode is enabled
     public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar, final ImageButton iBtnRangeMeter){
         runnableForModes = new Runnable() {
             @Override
@@ -140,6 +127,17 @@ public class MapsUtilities {
             }
         };
         handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
+    }
+    public static void counterToCheckIfUserStandStill(final TextView mSpeed, final TextView mAccuracy, final Context context){ //Counter to check if user moving. If it stay still the counter start to reset speed and accuracy
+        handler.removeCallbacks(runnableForSpeed);
+        runnableForSpeed = new Runnable() {
+            @Override
+            public void run() {
+                MapsUtilities.getSpecsForStatusBar(0,0, mSpeed, mAccuracy, context);
+                handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
+            }
+        };
+        handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
     }
     public static void counterToCheckIfArrayListIsEmpty(final ToggleButton toggleButton){ //Counter to make sure the tBtn start/stop wouldn't double-pressed
         runnableForTBtnClickAbility = new Runnable() {
@@ -165,6 +163,7 @@ public class MapsUtilities {
         };
         handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
+
 
     // Re-draw the map. Use it as default function
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){

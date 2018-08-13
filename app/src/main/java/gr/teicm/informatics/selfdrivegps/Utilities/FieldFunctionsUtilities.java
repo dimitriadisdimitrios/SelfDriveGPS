@@ -111,7 +111,7 @@ public class FieldFunctionsUtilities {
     }
 
     //Take 2 points and find their bearing
-    public static double calculateBearing(LatLng startLatLng, LatLng endLatLng){
+    public static Double calculateBearing(LatLng startLatLng, LatLng endLatLng){
         Double startLat = startLatLng.latitude;
         Double startLng = startLatLng.longitude;
         Double endLat = endLatLng.latitude;
@@ -158,7 +158,7 @@ public class FieldFunctionsUtilities {
     }
 
     //Function to generate invisible parallel
-    public static void generateTempParallelPolyLinesWithInvisibleBorders(GoogleMap googleMap, LatLng mCurrentLocation){
+    public static void generateTempParallelPolyLinesWithInvisibleBorders(GoogleMap googleMap, LatLng mCurrentLocation, Double bearingOfUser){
         Boolean focusOnSpecificSecondLine;
 
         if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
@@ -166,9 +166,12 @@ public class FieldFunctionsUtilities {
             ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus());
 
             for(ArrayList<LatLng> temp : parPolyline){ //It creates them
+
                 focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE); //Add the border
+
                 if(focusOnSpecificSecondLine) { //Check if user cross the border of one of 2 lines show it!
                     MapsUtilities.placePolylineParallel(temp, googleMap); //Draw the 2 PolyLines on map
+                    //TODO: I must work here !
 //                    Log.d(TAG, "Make something right - Main: " +checkingInWhichPolylineUserEntered(mCurrentLocation)+ " - Second: " +focusOnSpecificSecondLine+ " - The number of line is: " +parPolyline.indexOf(temp));
                 }
             }
@@ -181,9 +184,16 @@ public class FieldFunctionsUtilities {
         Boolean focusOnSpecificMainLine = false;
 
         for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to test it about which one is the user
+
             focusOnSpecificMainLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
+
             if(focusOnSpecificMainLine){
-                controller.setArrayListForLineToFocus(focusedPolyline); //Set it on controller to get then number of index to show it on MapsActivity
+
+                //Set it on controller to get then number of index to show it on MapsActivity
+                controller.setArrayListForLineToFocus(focusedPolyline);
+
+                // Get the bearing to use it next for the navigation Algorithm
+                controller.setBearingForNavigationPurpose(calculateBearing(focusedPolyline.get(0), focusedPolyline.get(focusedPolyline.size()-1)));
                 break;
             }
         }

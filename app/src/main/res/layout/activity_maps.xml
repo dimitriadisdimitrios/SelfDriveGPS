@@ -22,9 +22,9 @@
             android:id="@+id/rl_navigation_bar"
             android:visibility="invisible">
             <ImageView
+                android:id="@+id/iv_center_green_cube"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:id="@+id/iv_center_green_cube"
                 android:layout_margin="10dp"
                 android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
@@ -33,9 +33,9 @@
                 android:visibility="invisible"
                 android:src="@drawable/green_cube"/>
             <ImageView
+                android:id="@+id/iv_left_green_cube"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:id="@+id/iv_left_green_cube"
                 android:layout_alignBottom="@+id/iv_main_nav_bar"
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="6dp"
@@ -44,9 +44,9 @@
                 android:visibility="invisible"
                 android:src="@drawable/green_cube" />
             <ImageView
+                android:id="@+id/iv_right_green_cube"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:id="@+id/iv_right_green_cube"
                 android:layout_alignBottom="@+id/iv_main_nav_bar"
                 android:layout_alignEnd="@+id/iv_main_nav_bar"
                 android:layout_marginBottom="6dp"
@@ -55,11 +55,11 @@
                 android:visibility="invisible"
                 android:src="@drawable/green_cube" />
             <ImageView
+                android:id="@+id/iv_main_nav_bar"
                 android:layout_width="270dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/nav_bar"
                 android:contentDescription="@string/main_description_for_nav_bar"
-                android:id="@+id/iv_main_nav_bar"
                 android:layout_marginTop="4dp"/>
         </RelativeLayout>
     </LinearLayout>
@@ -139,7 +139,7 @@
                     android:src="@drawable/change_range_meter_icon"
                     android:layout_alignEnd="@id/start_calculations"
                     android:id="@+id/bt_change_range_meter"
-                    android:visibility="invisible"/>
+                    android:visibility="inv"/>
             </RelativeLayout>
             <ImageButton
                 android:layout_width="wrap_content"

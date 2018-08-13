@@ -154,7 +154,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
+        MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //Set the counter so i can reset speed/accuracy meter to 0 when it need it
 
         LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
@@ -174,12 +174,12 @@ public class MapsActivity extends FragmentActivity
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
 
+        //Necessary converting from float (mBearing) to double (convertedBearing) so it will be pass on the next functions
+        Double convertedBearing = Double.parseDouble(String.valueOf(mBearing));
+
         //TODO: Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
-            FieldFunctionsUtilities.generateTempParallelPolyLinesWithInvisibleBorders(mMap, latLngOfCurrentTime);
-//            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
-//                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
-//            }
+            FieldFunctionsUtilities.generateTempParallelPolyLinesWithInvisibleBorders(mMap, latLngOfCurrentTime, convertedBearing);
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
@@ -199,7 +199,6 @@ public class MapsActivity extends FragmentActivity
             controller.setArrayListForLine(pointsForLine);
             MapsUtilities.placePolylineForRoute(pointsForLine, mMap);
         }
-//        Log.d(TAG, String.valueOf(pointsForLine));
     }
 
     @Override

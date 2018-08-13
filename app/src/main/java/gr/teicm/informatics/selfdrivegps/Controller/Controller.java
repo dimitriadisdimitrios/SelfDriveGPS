@@ -11,6 +11,7 @@ public class Controller {
     private static Integer mRange;
     private static GoogleMap gMap;
     private static Boolean mNameExist;
+    private static Double mBearing;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
@@ -58,7 +59,6 @@ public class Controller {
     public String getProgramStatus(){
         return mStatus;
     }
-
     //Setter/Getter for get id from list of FireBase
     public void setIdOfListView(String id){
         idOfList = id;
@@ -89,5 +89,13 @@ public class Controller {
     }
     public Boolean getIfFoundMatchOnFireBase(){
         return mNameExist;
+    }
+
+    //Setter/Getter for bearing to use it for the navigationAlgorithm
+    public void setBearingForNavigationPurpose(Double mainBearing){
+        mBearing = mainBearing;
+    }
+    public Double getBearingForNavigationPurpose(){
+        return mBearing;
     }
 }

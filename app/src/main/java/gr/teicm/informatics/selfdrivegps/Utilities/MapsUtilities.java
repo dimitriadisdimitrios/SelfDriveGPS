@@ -9,6 +9,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ public class MapsUtilities {
     private static Handler handler = new Handler();
     private static Runnable runnableForModes;
     private static Runnable runnableForSpeed;
+    private static Runnable runnableForTBtnClickAbility;
 
     public static void showAlertDialog(android.app.FragmentManager fragmentManager){
         DialogFragment dialogFragment = new DialogFragment();
@@ -93,7 +97,7 @@ public class MapsUtilities {
         mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
     }
 
-    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, RelativeLayout rlNavBar){
+    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, RelativeLayout rlNavBar, ImageButton iBtnRangeMeter){
         String modeOfApp = controller.getProgramStatus();
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
@@ -106,6 +110,7 @@ public class MapsUtilities {
                 label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
                 startStopTBtn.setVisibility(View.INVISIBLE);
                 rlNavBar.setVisibility(View.VISIBLE);
+                iBtnRangeMeter.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -121,11 +126,12 @@ public class MapsUtilities {
         };
         handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
     }
-    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar){ //Counter to check in which mode program are
+    //Counter to check in which mode program are
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar, final ImageButton iBtnRangeMeter){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
-                changeLabelAboutMode(textView, toggleButton, rlNavBar);
+                changeLabelAboutMode(textView, toggleButton, rlNavBar, iBtnRangeMeter);
                 if(!controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
                     handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
                 }else{
@@ -136,20 +142,20 @@ public class MapsUtilities {
         handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
     }
     public static void counterToCheckIfArrayListIsEmpty(final ToggleButton toggleButton){ //Counter to make sure the tBtn start/stop wouldn't double-pressed
-        Runnable runnableForTBtnClickAbility = new Runnable() {
+        runnableForTBtnClickAbility = new Runnable() {
             @Override
             public void run() {
                 switch (controller.getProgramStatus()) {
                     case Controller.MODE_1_RECORD_FIELD:
                         if (controller.getArrayListForField() == null) {
-                            handler.postDelayed(runnableForModes, setTimeOnCounterForChecks);
+                            handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
                         } else {
                             toggleButton.setClickable(true);
                         }
                         break;
                     case Controller.MODE_2_CREATE_LINE:
                         if (controller.getArrayListForLine() == null) {
-                            handler.postDelayed(runnableForModes, setTimeOnCounterForChecks);
+                            handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
                         } else {
                             toggleButton.setClickable(true);
                         }

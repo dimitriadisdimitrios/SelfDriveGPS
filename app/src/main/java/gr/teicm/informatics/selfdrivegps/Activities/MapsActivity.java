@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,8 +32,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.ArrayList;
 
-import gr.teicm.informatics.selfdrivegps.FieldMath.AllFunctionAboutField;
-import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
+import gr.teicm.informatics.selfdrivegps.Utilities.FieldFunctionsUtilities;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
@@ -55,6 +55,7 @@ public class MapsActivity extends FragmentActivity
     private Controller controller = new Controller();
 
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
+    private RelativeLayout relativeLayoutForNavigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MapsActivity extends FragmentActivity
         ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
         ImageButton imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
 
+        relativeLayoutForNavigationBar = findViewById(R.id.rl_navigation_bar);
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
@@ -72,7 +74,7 @@ public class MapsActivity extends FragmentActivity
 
         createGoogleApiClient();
 
-        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn);
+        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, relativeLayoutForNavigationBar);
 
         //Call the DialogFragmentRadio /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +177,7 @@ public class MapsActivity extends FragmentActivity
 
         //TODO: Use it to locate when user come close to polyline !!!
         if(getIntent().getExtras()!=null){
-            MapsUtilities.generateTempParallelPolyLines(mMap, latLngOfCurrentTime);
+            MapsUtilities.generateTempParallelPolyLinesWithInvisibleBorders(mMap, latLngOfCurrentTime);
 //            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
 //                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
 //            }
@@ -191,8 +193,8 @@ public class MapsActivity extends FragmentActivity
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)
                 && btn_haveBeenClicked
-                && AllFunctionAboutField.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
-                && AllFunctionAboutField.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
+                && FieldFunctionsUtilities.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
+                && FieldFunctionsUtilities.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
 
             pointsForLine.add(latLngOfCurrentTime);
             controller.setArrayListForLine(pointsForLine);
@@ -257,7 +259,7 @@ public class MapsActivity extends FragmentActivity
             controller.setProgramStatus(Controller.MODE_3_DRIVING); //Set the Driving mode to use app
 
             MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Draw the map to work
-            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn); //Show the mode and hide tBtn
+            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn, relativeLayoutForNavigationBar); //Show the mode and hide tBtn
         }else{
             controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
             Log.d("modes",Controller.MODE_1_RECORD_FIELD);

@@ -1,9 +1,11 @@
-package gr.teicm.informatics.selfdrivegps.FieldMath;
+package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
+
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.Math.PI;
@@ -12,9 +14,9 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class AllFunctionAboutField {
-//    private static String TAG = "AllFunctionAboutField";
-
+public class FieldFunctionsUtilities {
+//    private static String TAG = "FieldFunctionsUtilities";
+    private static Controller controller = new Controller();
     //It find the center of polygon
     public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
         LatLng centerLatLng;
@@ -119,5 +121,34 @@ public class AllFunctionAboutField {
         double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
 
         return (Math.toDegrees(Math.atan2(y, x))+360)%360;
+    }
+
+    //Check every arrayList if has place to add more points to fill the space
+    public static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, LatLng latLngToCheck, double bearingOfPolyline, Boolean isTheEndOfArray){
+
+        LatLng pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(latLngToCheck, bearingOfPolyline, 1);
+
+        while(FieldFunctionsUtilities.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField())){
+            if(isTheEndOfArray){
+                baseArrayListToAddExtraLatLng.add(pointOfmArrayToCheck);
+            }else{
+                baseArrayListToAddExtraLatLng.add(0, pointOfmArrayToCheck);
+            }
+            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(pointOfmArrayToCheck, bearingOfPolyline, 1);
+        }
+    }
+    //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field (#2) (It used on MultiPolyline Algorithm)
+    public static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){
+        boolean resultForCheckingIfPointIsInsideOfField = false;
+
+        //Check every spot (x meter away with specific bearing) and if found at least one inside (stops) and return true
+        for(int i=0; i<givenArrayListToCheck.size(); i++){
+            LatLng tempSpot = FieldFunctionsUtilities.calculateLocationFewMetersAhead(givenArrayListToCheck.get(i), mBearing, mMeter);
+            if(FieldFunctionsUtilities.PointIsInRegion(tempSpot, controller.getArrayListForField())){
+                resultForCheckingIfPointIsInsideOfField = true;
+                i = givenArrayListToCheck.size();
+            }
+        }
+        return resultForCheckingIfPointIsInsideOfField;
     }
 }

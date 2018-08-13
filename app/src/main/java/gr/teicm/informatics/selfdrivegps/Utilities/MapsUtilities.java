@@ -9,7 +9,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -91,7 +93,7 @@ public class MapsUtilities {
         mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
     }
 
-    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn){
+    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, RelativeLayout rlNavBar){
         String modeOfApp = controller.getProgramStatus();
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
@@ -103,6 +105,7 @@ public class MapsUtilities {
             case Controller.MODE_3_DRIVING:
                 label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
                 startStopTBtn.setVisibility(View.INVISIBLE);
+                rlNavBar.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -118,12 +121,16 @@ public class MapsUtilities {
         };
         handler.postDelayed(runnableForSpeed, setTimeForCheckSpeedAccuracy);
     }
-    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton){ //Counter to check in which mode program are
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar){ //Counter to check in which mode program are
         runnableForModes = new Runnable() {
             @Override
             public void run() {
-                changeLabelAboutMode(textView, toggleButton);
-                handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
+                changeLabelAboutMode(textView, toggleButton, rlNavBar);
+                if(!controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+                    handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
+                }else{
+                    handler.removeCallbacks(runnableForModes);
+                }
             }
         };
         handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
@@ -167,27 +174,31 @@ public class MapsUtilities {
 
     //Recognize in which polyline you are
     private static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
-        Boolean focusOnSpecificPlace = false;
+        Boolean focusOnSpecificMainLine = false;
 
         for(ArrayList<LatLng> focusedPolyline : controller.getArrayListOfMultipliedPolyLines()){ // Set polyLines to test it about which one is the user
-            focusOnSpecificPlace = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
-            if(focusOnSpecificPlace){
+            focusOnSpecificMainLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(focusedPolyline, currentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE);
+            if(focusOnSpecificMainLine){
                 controller.setArrayListForLineToFocus(focusedPolyline); //Set it on controller to get then number of index to show it on MapsActivity
                 break;
             }
         }
-        return focusOnSpecificPlace;
+        return focusOnSpecificMainLine;
     }
-
     //Function to generate invisible parallel
-    public static void generateTempParallelPolyLines(GoogleMap googleMap, LatLng mCurrentLocation){
+    public static void generateTempParallelPolyLinesWithInvisibleBorders(GoogleMap googleMap, LatLng mCurrentLocation){
+        Boolean focusOnSpecificSecondLine = false;
 
         if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
             //Create the parallel lines to given //TODO: Need a lot of work
             ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus()); //Get the main ArrayList to generate the 2 polyLines
 
-            for(ArrayList<LatLng> temp : parPolyline){
-                MapsUtilities.placePolylineParallel(temp, googleMap); //Place the 2 PolyLines on map
+            for(ArrayList<LatLng> temp : parPolyline){ //It creates them
+                focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE); //Add the border
+                if(focusOnSpecificSecondLine) { //Check if user cross the border of one of 2 lines show it!
+                    MapsUtilities.placePolylineParallel(temp, googleMap); //Place the 2 PolyLines on map //TODO: this line while remove after finish with algorithm
+//                    Log.d(TAG, "Make something right - Main: " +checkingInWhichPolylineUserEntered(mCurrentLocation)+ " - Second: " +focusOnSpecificSecondLine+ " - The number of line is: " +parPolyline.indexOf(temp));
+                }
             }
         }else{
             recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal

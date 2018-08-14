@@ -158,28 +158,33 @@ public class FieldFunctionsUtilities {
     }
 
     //Function to generate invisible parallel
-    public static void generateTempParallelPolyLinesWithInvisibleBorders(GoogleMap googleMap, LatLng mCurrentLocation, Double bearingOfUser){
-        Boolean focusOnSpecificSecondLine;
+    public static void generateTempLineAndNavigationAlgorithm(GoogleMap googleMap, LatLng mCurrentLocation, Double bearingOfUser){
+        Boolean focusOnSpecificSecondLine; //initialize variable in which i will save (if user is inside of main Line)
 
         if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
+
             //Get the main ArrayList to generate the 2 polyLines
             ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus());
+            //TODO: I must work here !
 
-            for(ArrayList<LatLng> temp : parPolyline){ //It creates them
+            for(ArrayList<LatLng> temp : parPolyline){ //It separate them
 
                 focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE); //Add the border
 
                 if(focusOnSpecificSecondLine) { //Check if user cross the border of one of 2 lines show it!
+
                     MapsUtilities.placePolylineParallel(temp, googleMap); //Draw the 2 PolyLines on map
                     //TODO: I must work here !
 //                    Log.d(TAG, "Make something right - Main: " +checkingInWhichPolylineUserEntered(mCurrentLocation)+ " - Second: " +focusOnSpecificSecondLine+ " - The number of line is: " +parPolyline.indexOf(temp));
+                }else{
+                    MapsUtilities.recreateFieldWithMultiPolyline(googleMap);
                 }
             }
         }else{
             MapsUtilities.recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal
         }
     }
-    //Recognize in which polyline you are
+    //Recognize in which polyline you are (It is inside of above function)
     private static Boolean checkingInWhichPolylineUserEntered(LatLng currentLocation){
         Boolean focusOnSpecificMainLine = false;
 

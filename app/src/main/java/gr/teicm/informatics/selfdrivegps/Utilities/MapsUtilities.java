@@ -169,7 +169,7 @@ public class MapsUtilities {
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
         MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
-        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Temporary use for working with navigationAlgorithmV2
+//        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Temporary use for working with navigationAlgorithmV2
 
         MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
         for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){

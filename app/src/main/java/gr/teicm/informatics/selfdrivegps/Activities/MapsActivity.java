@@ -179,7 +179,7 @@ public class MapsActivity extends FragmentActivity
 
         //TODO: Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
-            FieldFunctionsUtilities.generateTempParallelPolyLinesWithInvisibleBorders(mMap, latLngOfCurrentTime, convertedBearing);
+            FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!

@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class Controller {
-    private static ArrayList<LatLng> fieldArrayList, lineArrayList, lineFocus;
+    private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
     private static String idOfList, mStatus ="Record field selected";
     private static Integer mRange;
@@ -29,18 +29,25 @@ public class Controller {
         return fieldArrayList;
     }
     //Setter/Getter for ArrayList<LatLng> which refer to Line inside of polygon
-    public void setArrayListForLine(ArrayList<LatLng> linePoints){
-        lineArrayList = linePoints;
+    public void setArrayListForLine(ArrayList<LatLng> mainLinePoints){
+        lineArrayList = mainLinePoints;
     }
     public ArrayList<LatLng> getArrayListForLine(){
         return lineArrayList;
     }
-    //Setter/Getter for ArrayList<LatLng> which refer to Line which user focus on navigation mode
+    //Setter/Getter for ArrayList<LatLng> which refer to main Line which user focus on navigation mode
     public void setArrayListForLineToFocus(ArrayList<LatLng> lineToFocus){
-        lineFocus = lineToFocus;
+        mainLineFocus = lineToFocus;
     }
     public ArrayList<LatLng> getArrayListForLineToFocus(){
-        return lineFocus;
+        return mainLineFocus;
+    }
+    //Setter/Getter for ArrayList<LatLng> which refer to second Line that activated and user focus on navigation mode
+    public void setSecondLineThatActivated(ArrayList<LatLng> secondLineToFocus){
+        secondLineFocus = secondLineToFocus;
+    }
+    public ArrayList<LatLng> getSecondLineThatActivated(){
+        return secondLineFocus;
     }
 
     //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines

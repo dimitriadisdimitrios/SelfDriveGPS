@@ -159,26 +159,31 @@ public class FieldFunctionsUtilities {
 
     //Function to generate invisible parallel
     public static void generateTempLineAndNavigationAlgorithm(GoogleMap googleMap, LatLng mCurrentLocation, Double bearingOfUser){
-        Boolean focusOnSpecificSecondLine; //initialize variable in which i will save (if user is inside of main Line)
+        Boolean focusOnSpecificSecondLine = false; //initialize variable in which i will save (if user is inside of main Line)
 
         if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
 
             //Get the main ArrayList to generate the 2 polyLines
             ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLineToFocus());
-            //TODO: I must work here !
 
             for(ArrayList<LatLng> temp : parPolyline){ //It separate them
 
-                focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE); //Add the border
+                //Add the border to check if cross one of two
+                focusOnSpecificSecondLine = ApproachPolylineUtilities.bdccGeoDistanceCheckWithRadius(temp, mCurrentLocation, Controller.MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE);
 
                 if(focusOnSpecificSecondLine) { //Check if user cross the border of one of 2 lines show it!
-
-                    MapsUtilities.placePolylineParallel(temp, googleMap); //Draw the 2 PolyLines on map
-                    //TODO: I must work here !
-//                    Log.d(TAG, "Make something right - Main: " +checkingInWhichPolylineUserEntered(mCurrentLocation)+ " - Second: " +focusOnSpecificSecondLine+ " - The number of line is: " +parPolyline.indexOf(temp));
-                }else{
-                    MapsUtilities.recreateFieldWithMultiPolyline(googleMap);
+                    controller.setSecondLineThatActivated(temp); //If found one save which one is it
+                    break; //Stop "for" loop  so it doesn't change the value with one that isn't correct
                 }
+            }
+
+            if(focusOnSpecificSecondLine){ //After pass "for" loop, check if user cross on of parallel line
+                MapsUtilities.placePolylineParallel(controller.getSecondLineThatActivated(), googleMap); // If he pass it, draw only this specific polyLines on map
+                    //TODO: I must work here !
+                Log.d(TAG, "The number of line is: " +parPolyline.indexOf(controller.getSecondLineThatActivated()));
+            }else{ // If he doesn't cron none of two, re-draw the map
+                MapsUtilities.recreateFieldWithMultiPolyline(googleMap);
+                Log.d(TAG, "The number of line is:  -1");
             }
         }else{
             MapsUtilities.recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal

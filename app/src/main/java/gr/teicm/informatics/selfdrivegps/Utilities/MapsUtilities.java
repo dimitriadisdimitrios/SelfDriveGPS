@@ -164,6 +164,30 @@ public class MapsUtilities {
         handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
 
+    public static void turnOnOffLightBehindNavigationBarToSetCourse(ImageView rightCube, ImageView leftCube, ImageView midCube){
+        switch(controller.getLocationOfUserForNavigationBar()){
+            case Controller.LEFT:
+                rightCube.setVisibility(View.INVISIBLE);
+                leftCube.setVisibility(View.VISIBLE);
+                midCube.setVisibility(View.INVISIBLE);
+                break;
+            case Controller.RIGHT:
+                rightCube.setVisibility(View.VISIBLE);
+                leftCube.setVisibility(View.INVISIBLE);
+                midCube.setVisibility(View.INVISIBLE);
+                break;
+            case Controller.MID:
+                rightCube.setVisibility(View.INVISIBLE);
+                leftCube.setVisibility(View.INVISIBLE);
+                midCube.setVisibility(View.VISIBLE);
+                break;
+            case Controller.NONE:
+                rightCube.setVisibility(View.INVISIBLE);
+                leftCube.setVisibility(View.INVISIBLE);
+                midCube.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
 
     // Re-draw the map. Use it as default function
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){

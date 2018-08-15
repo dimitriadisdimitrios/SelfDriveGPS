@@ -1,7 +1,5 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -19,7 +17,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class FieldFunctionsUtilities {
-    private static final String TAG = "FieldFunctionsUtilities";
+//    private static final String TAG = "FieldFunctionsUtilities";
     private static Controller controller = new Controller();
 
     //It find the center of polygon
@@ -158,6 +156,7 @@ public class FieldFunctionsUtilities {
     }
 
     //Function to generate invisible parallel
+    // Under right orientation the parallelLine.get(0) is the right Line and the parallelLine.get(1) is the left Line. So the 1 is for left and 0 for right
     public static void generateTempLineAndNavigationAlgorithm(GoogleMap googleMap, LatLng mCurrentLocation, Double bearingOfUser){
         Boolean focusOnSpecificSecondLine = false; //initialize variable in which i will save (if user is inside of main Line)
 
@@ -179,14 +178,17 @@ public class FieldFunctionsUtilities {
 
             if(focusOnSpecificSecondLine){ //After pass "for" loop, check if user cross on of parallel line
                 MapsUtilities.placePolylineParallel(controller.getSecondLineThatActivated(), googleMap); // If he pass it, draw only this specific polyLines on map
-                    //TODO: I must work here !
-                Log.d(TAG, "The number of line is: " +parPolyline.indexOf(controller.getSecondLineThatActivated()));
+
+                Double bearingOfMainLine = controller.getBearingForNavigationPurpose();
+
+                registerStatusForNavigationBar(isOrientationReversed(bearingOfUser, bearingOfMainLine), parPolyline.indexOf(controller.getSecondLineThatActivated()));
             }else{ // If he doesn't cron none of two, re-draw the map
                 MapsUtilities.recreateFieldWithMultiPolyline(googleMap);
-                Log.d(TAG, "The number of line is:  -1");
+                registerStatusForNavigationBar(false, 2);
             }
         }else{
             MapsUtilities.recreateFieldWithMultiPolyline(googleMap); // Secure that after move out of the specific ArrayList, the map while come to his normal
+            registerStatusForNavigationBar(false, -1);
         }
     }
     //Recognize in which polyline you are (It is inside of above function)
@@ -208,5 +210,37 @@ public class FieldFunctionsUtilities {
             }
         }
         return focusOnSpecificMainLine;
+    }
+    // Function to simplify the generateTempLineAndNavigationAlgorithm because it has start become spaghetti
+    private static Boolean isOrientationReversed(Double bearingOfUser, Double bearingOfLine) {
+        //if returns false, we don't change anything. If Function return false we must reverse left and right
+        Double startLimit = bearingOfLine - 90;
+        Double endLimit = bearingOfLine + 90;
+        if(startLimit<0){
+            return !((0 <= bearingOfUser && bearingOfUser <= endLimit) || (startLimit+360 <= bearingOfUser && bearingOfUser < 360));
+        }else if(endLimit>=360){
+            return !((0 <= bearingOfUser && bearingOfUser <= endLimit-360) || (startLimit <= bearingOfUser && bearingOfUser < 360));
+        }else{
+            return !(startLimit <= bearingOfUser && bearingOfUser <= endLimit);
+        }
+
+    }
+    private static void registerStatusForNavigationBar(Boolean isOrientationReversed, int numberWhichCorrespondsOnIndexOfLine){
+        if(isOrientationReversed && numberWhichCorrespondsOnIndexOfLine == 0){
+            controller.setLocationOfUserForNavigationBar(Controller.LEFT);
+        }else if(!isOrientationReversed && numberWhichCorrespondsOnIndexOfLine == 0){
+            controller.setLocationOfUserForNavigationBar(Controller.RIGHT);
+
+        }else if(isOrientationReversed && numberWhichCorrespondsOnIndexOfLine == 1){
+            controller.setLocationOfUserForNavigationBar(Controller.RIGHT);
+        }else if(!isOrientationReversed && numberWhichCorrespondsOnIndexOfLine == 1) {
+            controller.setLocationOfUserForNavigationBar(Controller.LEFT);
+
+        }else if(!isOrientationReversed && numberWhichCorrespondsOnIndexOfLine == 2){
+            controller.setLocationOfUserForNavigationBar(Controller.MID);
+        }else if(!isOrientationReversed && numberWhichCorrespondsOnIndexOfLine == -1){
+            controller.setLocationOfUserForNavigationBar(Controller.NONE);
+        }
+
     }
 }

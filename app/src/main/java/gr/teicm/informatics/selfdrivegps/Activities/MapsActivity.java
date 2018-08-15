@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class MapsActivity extends FragmentActivity
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
     private RelativeLayout relativeLayoutForNavigationBar;
     private ImageButton imageButtonForChangeRangeMeter;
+    private ImageView rightCube, leftCube, midCube;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,10 @@ public class MapsActivity extends FragmentActivity
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
+        rightCube = findViewById(R.id.iv_right_green_cube);
+        leftCube = findViewById(R.id.iv_left_green_cube);
+        midCube = findViewById(R.id.iv_center_green_cube);
+
         context = getApplicationContext(); //Set GetApplicationContext to use it all over the class
 
         createGoogleApiClient();
@@ -176,10 +182,12 @@ public class MapsActivity extends FragmentActivity
 
         //Necessary converting from float (mBearing) to double (convertedBearing) so it will be pass on the next functions
         Double convertedBearing = Double.parseDouble(String.valueOf(mBearing));
+        Log.d(TAG, String.valueOf(convertedBearing));
 
         //TODO: Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
             FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
+            MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube);
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
-    private static String idOfList, mStatus ="Record field selected";
+    private static String idOfList, mLocationStatus, mStatus ="Record field selected";
     private static Integer mRange;
     private static GoogleMap gMap;
     private static Boolean mNameExist;
@@ -16,6 +16,10 @@ public class Controller {
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
     public static final String MODE_3_DRIVING = "Driving";
+    public static final String LEFT = "left";
+    public static final String RIGHT= "right";
+    public static final String MID = "mid";
+    public static final String NONE = "none of them";
 
     public static final double MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE = 3; // To meters //it works for 2.5
     public static final double MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE = 1; // To meters
@@ -72,6 +76,13 @@ public class Controller {
     }
     public String getIdOfListView(){
         return idOfList;
+    }
+    //Setter/Getter set status that corresponds on place for navigation bar
+    public void setLocationOfUserForNavigationBar(String statusForLocation){
+        mLocationStatus = statusForLocation;
+    }
+    public String getLocationOfUserForNavigationBar(){
+        return mLocationStatus;
     }
 
     //Setter/Getter to interact with range meter of settingActivity

@@ -65,6 +65,7 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
+                        controller.setIdOfListView(childName); //In case tha user load a field and not create it
 
                         for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polygon").getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
@@ -85,10 +86,11 @@ public class RetrieveDataActivity extends Activity {
                             }
                         }
 
-                        Integer rangeBetweenPolylines = dataSnapshot.child(childName).child("Meter").getValue(Integer.class);
-                        if (rangeBetweenPolylines != null){
-                            int rangeBetweenLines = rangeBetweenPolylines;
+                        Integer rangeBetweenPolyLines = dataSnapshot.child(childName).child("Meter").getValue(Integer.class);
+                        if (rangeBetweenPolyLines != null){
+                            int rangeBetweenLines = rangeBetweenPolyLines;
                             controller.setMeterOfRange(rangeBetweenLines);
+                            Log.d(TAG, String.valueOf(controller.getMeterOfRange()));
                         }
 
                         Intent strMaps = new Intent(context, MapsActivity.class);

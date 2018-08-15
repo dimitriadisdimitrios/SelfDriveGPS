@@ -5,20 +5,25 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class Controller {
-    private static ArrayList<LatLng> fieldArrayList, lineArrayList, lineFocus;
+    private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest;
-    private static String idOfList, mLastStatus, mStatus ="Record field selected";
+    private static String idOfList, mLocationStatus, mStatus ="Record field selected";
     private static Integer mRange;
     private static GoogleMap gMap;
     private static Boolean mNameExist;
+    private static Double mBearing;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
     public static final String MODE_3_DRIVING = "Driving";
-    public static final String MODE_0_SET_TERRAIN = "Set terrain mode";
+    public static final String LEFT = "left";
+    public static final String RIGHT= "right";
+    public static final String MID = "mid";
+    public static final String NONE = "none of them";
 
-    public static final int MAIN_RADIUS_TO_RECOGNISE_POLYLINE = 1; // To meters
-    public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2.5;
+    public static final double MAIN_RADIUS_TO_RECOGNISE_MAIN_POLYLINE = 3; // To meters //it works for 2.5
+    public static final double MAIN_RADIUS_TO_RECOGNISE_SECONDARY_POLYLINE = 1; // To meters
+    public static final double MAIN_DISTANCE_FOR_INVISIBLE_POLYLINE = 2;
 
     //Setter/Getter for ArrayList<LatLng> which refer to Field (polygon)
     public void setArrayListForField(ArrayList<LatLng> points){
@@ -28,18 +33,25 @@ public class Controller {
         return fieldArrayList;
     }
     //Setter/Getter for ArrayList<LatLng> which refer to Line inside of polygon
-    public void setArrayListForLine(ArrayList<LatLng> linePoints){
-        lineArrayList = linePoints;
+    public void setArrayListForLine(ArrayList<LatLng> mainLinePoints){
+        lineArrayList = mainLinePoints;
     }
     public ArrayList<LatLng> getArrayListForLine(){
         return lineArrayList;
     }
-    //Setter/Getter for ArrayList<LatLng> which refer to Line which user focus on navigation mode
+    //Setter/Getter for ArrayList<LatLng> which refer to main Line which user focus on navigation mode
     public void setArrayListForLineToFocus(ArrayList<LatLng> lineToFocus){
-        lineFocus = lineToFocus;
+        mainLineFocus = lineToFocus;
     }
     public ArrayList<LatLng> getArrayListForLineToFocus(){
-        return lineFocus;
+        return mainLineFocus;
+    }
+    //Setter/Getter for ArrayList<LatLng> which refer to second Line that activated and user focus on navigation mode
+    public void setSecondLineThatActivated(ArrayList<LatLng> secondLineToFocus){
+        secondLineFocus = secondLineToFocus;
+    }
+    public ArrayList<LatLng> getSecondLineThatActivated(){
+        return secondLineFocus;
     }
 
     //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines
@@ -58,19 +70,19 @@ public class Controller {
     public String getProgramStatus(){
         return mStatus;
     }
-    //Setter/Getter to save the mode so i can transfer to dialog "Change terrain"
-    public void setLastProgramStatus(String lastStatus){
-        mLastStatus = lastStatus;
-    }
-    public String getLastProgramStatus(){
-        return mLastStatus;
-    }
     //Setter/Getter for get id from list of FireBase
     public void setIdOfListView(String id){
         idOfList = id;
     }
     public String getIdOfListView(){
         return idOfList;
+    }
+    //Setter/Getter set status that corresponds on place for navigation bar
+    public void setLocationOfUserForNavigationBar(String statusForLocation){
+        mLocationStatus = statusForLocation;
+    }
+    public String getLocationOfUserForNavigationBar(){
+        return mLocationStatus;
     }
 
     //Setter/Getter to interact with range meter of settingActivity
@@ -95,5 +107,13 @@ public class Controller {
     }
     public Boolean getIfFoundMatchOnFireBase(){
         return mNameExist;
+    }
+
+    //Setter/Getter for bearing to use it for the navigationAlgorithm
+    public void setBearingForNavigationPurpose(Double mainBearing){
+        mBearing = mainBearing;
+    }
+    public Double getBearingForNavigationPurpose(){
+        return mBearing;
     }
 }

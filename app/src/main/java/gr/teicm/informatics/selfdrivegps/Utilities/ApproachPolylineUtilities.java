@@ -9,7 +9,7 @@ import gr.teicm.informatics.selfdrivegps.Objects.bdccGeoObject;
 public class ApproachPolylineUtilities {
 
     // distance in meters from GLatLng point to GPolyline or GPolygon poly
-    public static boolean bdccGeoDistanceCheckWithRadius(ArrayList<LatLng> poly, LatLng point, int radius) {
+    public static boolean bdccGeoDistanceCheckWithRadius(ArrayList<LatLng> poly, LatLng point, double radius) {
         int i;
         bdccGeoObject.bdccGeo p = new bdccGeoObject.bdccGeo(point.latitude,point.longitude);
 

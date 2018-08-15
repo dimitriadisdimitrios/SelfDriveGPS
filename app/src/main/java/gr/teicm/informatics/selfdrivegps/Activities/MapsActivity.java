@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,8 +33,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.ArrayList;
 
-import gr.teicm.informatics.selfdrivegps.FieldMath.AllFunctionAboutField;
-import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
+import gr.teicm.informatics.selfdrivegps.Utilities.FieldFunctionsUtilities;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
@@ -55,6 +56,9 @@ public class MapsActivity extends FragmentActivity
     private Controller controller = new Controller();
 
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
+    private RelativeLayout relativeLayoutForNavigationBar;
+    private ImageButton imageButtonForChangeRangeMeter;
+    private ImageView rightCube, leftCube, midCube;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +67,21 @@ public class MapsActivity extends FragmentActivity
 
         final ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
-        ImageButton imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
 
+        imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
+        relativeLayoutForNavigationBar = findViewById(R.id.rl_navigation_bar);
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
+        rightCube = findViewById(R.id.iv_right_green_cube);
+        leftCube = findViewById(R.id.iv_left_green_cube);
+        midCube = findViewById(R.id.iv_center_green_cube);
+
         context = getApplicationContext(); //Set GetApplicationContext to use it all over the class
 
         createGoogleApiClient();
 
-        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn);
+        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
 
         //Call the DialogFragmentRadio /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
@@ -81,13 +90,16 @@ public class MapsActivity extends FragmentActivity
                 MapsUtilities.showAlertDialogRadio(getFragmentManager());//Set listener on button to transfer data to database
             }
         });
+
         //Call the DialogFragment /layout to set FieldName and RangeMeter
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.setLastProgramStatus(controller.getProgramStatus());
-                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
-                MapsUtilities.showAlertDialog(getFragmentManager());
+                if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){ // Secure the controller.gerArrayList != null
+                    MapsUtilities.showAlertDialog(getFragmentManager());
+                }else{
+                    Toast.makeText(context,"You don't have draw any field !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -96,12 +108,11 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
+                    Log.d(TAG, controller.getProgramStatus());
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command
-                    if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD) || controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
-                        MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
-                    }
+                    MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
                 }else{
                     if(controller.getArrayListForField()!=null){
                         Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
@@ -145,19 +156,11 @@ public class MapsActivity extends FragmentActivity
         ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
 
         checkToGetDataFromAnotherActivity(mainStartBtn);
-
-        if(getIntent().getExtras()!=null) {
-            //TODO: Finish with navigationAlgorithm and then find a way to pop Line range meter to use it (uncomment it and remove the next 2 lines)
-//            MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-        }else{
-            controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
-            Log.d("modes",Controller.MODE_1_RECORD_FIELD);
-        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //To reset speed/accuracy meter to 0
+        MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //Set the counter so i can reset speed/accuracy meter to 0 when it need it
 
         LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude());
         float speedOfUser = location.getSpeed();
@@ -177,11 +180,14 @@ public class MapsActivity extends FragmentActivity
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
 
+        //Necessary converting from float (mBearing) to double (convertedBearing) so it will be pass on the next functions
+        Double convertedBearing = Double.parseDouble(String.valueOf(mBearing));
+        Log.d(TAG, String.valueOf(convertedBearing));
+
         //TODO: Use it to locate when user come close to polyline !!!
-        if(getIntent().getExtras()!=null){
-//            if (MapsUtilities.checkingInWhichPolylineUserEntered(latLngOfCurrentTime)){
-//                Toast.makeText(this, "Entered in " + controller.getArrayListOfMultipliedPolyLines().indexOf(controller.getArrayListForLineToFocus()), Toast.LENGTH_SHORT).show();
-//            }
+        if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+            FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
+            MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube);
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
@@ -194,14 +200,13 @@ public class MapsActivity extends FragmentActivity
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)
                 && btn_haveBeenClicked
-                && AllFunctionAboutField.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)
-                && AllFunctionAboutField.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
+                /*&& FieldFunctionsUtilities.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)*/
+                && FieldFunctionsUtilities.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
 
             pointsForLine.add(latLngOfCurrentTime);
             controller.setArrayListForLine(pointsForLine);
             MapsUtilities.placePolylineForRoute(pointsForLine, mMap);
         }
-//        Log.d(TAG, String.valueOf(pointsForLine));
     }
 
     @Override
@@ -231,22 +236,9 @@ public class MapsActivity extends FragmentActivity
     }
     @Override
     public void onBackPressed() {
-        //TODO: Add code on back btn to test it... When finished remove it all
-        mMap.clear();
-//        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap);
-//        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine());
-//        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap);
-//        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
-//            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap);
-//        }
-        ArrayList<ArrayList<LatLng>> parPolyline = NavigationPolylineAlgorithm.algorithmForCreatingTwoInvisibleParallelPolylineForNavigation(controller.getArrayListForLine());
-        MapsUtilities.recreateFieldWithMultiPolyline(mMap);
-
-        for(ArrayList<LatLng> temp : parPolyline){
-            MapsUtilities.placePolylineParallel(temp, mMap);
-        }
         //Back Btn do nothing !
-//        super.onBackPressed();
+        controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD); //Reset the mode. Need a lot more but start from here
+        super.onBackPressed();
     }
 
     public void createGoogleApiClient(){
@@ -271,11 +263,13 @@ public class MapsActivity extends FragmentActivity
     public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
         // When load field from "load btn" draw the necessary lines to show it and
         if(getIntent().getExtras()!=null) {
-            MapsUtilities.placePolygonForRoute(controller.getArrayListForField(),mMap);
-            MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+            controller.setProgramStatus(Controller.MODE_3_DRIVING); //Set the Driving mode to use app
 
-            controller.setProgramStatus(Controller.MODE_3_DRIVING);
-            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn);
+            MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Draw the map to work
+            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter); //Show the mode and hide tBtn
+        }else{
+            controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
+            Log.d("modes",Controller.MODE_1_RECORD_FIELD);
         }
     }
 }

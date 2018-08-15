@@ -124,6 +124,6 @@ public class RetrieveDataActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        super.onBackPressed();
     }
 }

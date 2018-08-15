@@ -33,17 +33,6 @@ public class FieldFunctionsUtilities {
         return centerLatLng;
     }
 
-    //Check if given point already exist inside on Array
-    public static boolean checkIfLatLngExist(LatLng latLng, ArrayList<LatLng> points){
-        boolean latLngExist = true;
-        for(int i=0; i<points.size(); i++){
-            if(points.get(i)==latLng){
-                latLngExist=false;
-            }
-        }
-        return latLngExist;
-    }
-
     //Function to know if user is in polygon or not
     public static boolean PointIsInRegion(LatLng mLatLng, ArrayList<LatLng> thePath) {
         int crossings = 0;

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String VERSION_OF_APP = "v0.8";
+    private final static String VERSION_OF_APP = "v0.82";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

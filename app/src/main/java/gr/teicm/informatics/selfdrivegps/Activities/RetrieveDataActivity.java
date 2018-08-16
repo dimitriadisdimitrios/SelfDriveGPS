@@ -1,7 +1,9 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -65,7 +67,7 @@ public class RetrieveDataActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
-                        controller.setIdOfListView(childName); //In case tha user load a field and not create it
+                        controller.setIdOfListView(childName); //In case that user want to delete an item
 
                         for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polygon").getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
@@ -101,13 +103,22 @@ public class RetrieveDataActivity extends Activity {
                     });
                 listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
-                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        String childNameHoldClick = (String) adapterView.getItemAtPosition(i);
-                        dataSnapshot.child(childNameHoldClick).getRef().removeValue();
+                    public boolean onItemLongClick(final AdapterView<?> adapterView, View view, final int i, long l) {
+                        String childName = (String) adapterView.getItemAtPosition(i);
 
-                        //These two rows is to refresh when item removed
-                        adapter.clear();
+                        AlertDialog.Builder adb=new AlertDialog.Builder(RetrieveDataActivity.this);
+                        adb.setTitle("Delete ?");
+                        adb.setMessage("Are you sure you want to delete field  \"" + childName + "\" ?");
+                        adb.setPositiveButton(R.string.bt_on_dialog_no, null);
+                        adb.setNegativeButton(R.string.bt_on_dialog_yes, new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String childNameHoldClick = (String) adapterView.getItemAtPosition(i);
+                                dataSnapshot.child(childNameHoldClick).getRef().removeValue();
+                                adapter.clear();
                         adapter.notifyDataSetChanged();
+
+                            }});
+                        adb.show();
 
                         return true;
                     }

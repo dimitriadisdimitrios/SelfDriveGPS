@@ -2,6 +2,7 @@ package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -110,12 +111,14 @@ public class MapsActivity extends FragmentActivity
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     Log.d(TAG, controller.getProgramStatus());
+                    mainStartBtn.setTextColor(Color.parseColor("#2FA72F"));
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command
                     MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
                 }else{
                     if(controller.getArrayListForField()!=null){
+                        mainStartBtn.setTextColor(Color.WHITE);
                         Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                         btn_haveBeenClicked = false;
 

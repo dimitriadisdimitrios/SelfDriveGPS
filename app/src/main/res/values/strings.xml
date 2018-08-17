@@ -35,4 +35,5 @@
     <string name="terrain_type_2">Satellite</string>
     <string name="terrain_type_3">Terrain</string>
     <string name="main_description_on_settings_btn_on_map">Main buttons to change settings through map</string>
+    <string name="location_mode">Location Mode</string>
 </resources>

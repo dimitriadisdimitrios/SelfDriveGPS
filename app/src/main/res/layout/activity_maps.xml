@@ -69,20 +69,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:orientation="vertical"
-        android:layout_margin="10dp">
+        android:layout_margin="8dp">
         <TextView
             android:id="@+id/tv_speed_of_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:textColor="@color/colorAccent"
+            android:textColor="#ff0008"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="2"
+            android:shadowRadius="5"
             android:text="@string/speed_counter_default" />
         <TextView
             android:id="@+id/tv_accuracy_of_gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:textColor="@color/colorAccent"
+            android:textColor="#ff0008"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="2"
+            android:shadowRadius="5"
             android:text="@string/accuracy_of_gps_default" />
     </LinearLayout>
 
@@ -116,12 +122,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="#ff0008"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="2"
+            android:shadowRadius="5"
             android:text="@string/mode_unknown" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -149,5 +159,6 @@
                 android:src="@drawable/maps_icon_button"
                 android:id="@+id/bt_map_terrain_change"/>
         </LinearLayout>
+
     </LinearLayout>
 </fragment>

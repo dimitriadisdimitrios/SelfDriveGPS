@@ -106,7 +106,8 @@ public class RetrieveDataActivity extends Activity {
                     public boolean onItemLongClick(final AdapterView<?> adapterView, View view, final int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
 
-                        AlertDialog.Builder adb=new AlertDialog.Builder(RetrieveDataActivity.this);
+                        //Alert Dialog which ask confirmation before delete a field
+                        AlertDialog.Builder adb =new AlertDialog.Builder(RetrieveDataActivity.this);
                         adb.setTitle("Delete ?");
                         adb.setMessage("Are you sure you want to delete field  \"" + childName + "\" ?");
                         adb.setPositiveButton(R.string.bt_on_dialog_no, null);
@@ -115,9 +116,9 @@ public class RetrieveDataActivity extends Activity {
                                 String childNameHoldClick = (String) adapterView.getItemAtPosition(i);
                                 dataSnapshot.child(childNameHoldClick).getRef().removeValue();
                                 adapter.clear();
-                        adapter.notifyDataSetChanged();
-
-                            }});
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
                         adb.show();
 
                         return true;

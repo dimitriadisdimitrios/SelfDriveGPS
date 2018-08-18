@@ -111,7 +111,7 @@ public class MapsActivity extends FragmentActivity
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     Log.d(TAG, controller.getProgramStatus());
-                    mainStartBtn.setTextColor(Color.parseColor("#2FA72F"));
+                    mainStartBtn.setTextColor(Color.parseColor("#a90404"));
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command

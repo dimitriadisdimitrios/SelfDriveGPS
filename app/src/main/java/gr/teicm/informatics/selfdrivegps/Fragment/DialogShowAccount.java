@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import gr.teicm.informatics.selfdrivegps.R;
 
-public class DialogFragmentAccount extends android.app.DialogFragment{
+public class DialogShowAccount extends android.app.DialogFragment{
     private FirebaseAuth mAuth;
     private final String TAG = "DialogAccount";
 
@@ -24,7 +24,7 @@ public class DialogFragmentAccount extends android.app.DialogFragment{
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.show_account_layout, nullParent);
+        final View mView = inflater.inflate(R.layout.dialog_show_account, nullParent);
 
         Button btnLogOut = mView.findViewById(R.id.btn_log_out);
         mAuth = FirebaseAuth.getInstance();

@@ -23,9 +23,9 @@ import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
-public class DialogFragment extends android.app.DialogFragment {
+public class DialogMainFunction extends android.app.DialogFragment {
     private Controller controller = new Controller();
-    private final static String TAG = "DialogFragment";
+    private final static String TAG = "DialogMainFunction";
     private AlertDialog mDialog;
 
     @Override
@@ -37,7 +37,7 @@ public class DialogFragment extends android.app.DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.activity_dialog, nullParent); // Inflate the layout to interact with xml
+        final View mView = inflater.inflate(R.layout.dialog_main_function, nullParent); // Inflate the layout to interact with xml
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
 

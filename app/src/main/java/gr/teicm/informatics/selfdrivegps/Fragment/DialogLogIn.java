@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import gr.teicm.informatics.selfdrivegps.R;
 
-public class DialogFragmentLogIn extends android.app.DialogFragment {
+public class DialogLogIn extends android.app.DialogFragment {
     private final static String TAG = "DialogLogIn";
 
     private EditText etEmailToLogIn, etPasswordToLogIn;
@@ -32,7 +32,7 @@ public class DialogFragmentLogIn extends android.app.DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.activity_log_in, nullParent);
+        final View mView = inflater.inflate(R.layout.dialog_log_in, nullParent);
 
         etEmailToLogIn = mView.findViewById(R.id.et_email_log_in);
         etPasswordToLogIn = mView.findViewById(R.id.et_password_log_in);
@@ -45,7 +45,7 @@ public class DialogFragmentLogIn extends android.app.DialogFragment {
 
                 //Create dialog for create account
                 AlertDialog.Builder createAccountBuilder = new AlertDialog.Builder(getActivity());
-                final View createAccountView = inflater.inflate(R.layout.activity_create_account, nullParent);
+                final View createAccountView = inflater.inflate(R.layout.dialog_create_account, nullParent);
                 createAccountBuilder.setView(createAccountView)
                         .setMessage("Create an account")
                         .setPositiveButton("ok", new DialogInterface.OnClickListener() {

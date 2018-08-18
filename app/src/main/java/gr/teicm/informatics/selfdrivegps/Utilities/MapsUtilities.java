@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
-import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragment;
-import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentRadio;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogChangeTerrain;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogMainFunction;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
@@ -37,14 +37,14 @@ public class MapsUtilities {
     private static Runnable runnableForModes, runnableForSpeed, runnableForTBtnClickAbility;
 
     public static void showAlertDialog(android.app.FragmentManager fragmentManager){
-        DialogFragment dialogFragment = new DialogFragment();
-        dialogFragment.show(fragmentManager, "Main Dialog for multiple uses");
-        dialogFragment.setCancelable(false); //prevent dialog box from getting dismissed on back key
+        DialogMainFunction dialogMainFunction = new DialogMainFunction();
+        dialogMainFunction.show(fragmentManager, "Main Dialog for multiple uses");
+        dialogMainFunction.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
     public static void showAlertDialogRadio(android.app.FragmentManager fragmentManager){
-        DialogFragmentRadio dialogFragmentRadio = new DialogFragmentRadio();
-        dialogFragmentRadio.show(fragmentManager, "Dialog only to change terrain on map");
-        dialogFragmentRadio.setCancelable(false); //prevent dialog box from getting dismissed on back key
+        DialogChangeTerrain dialogChangeTerrain = new DialogChangeTerrain();
+        dialogChangeTerrain.show(fragmentManager, "Dialog only to change terrain on map");
+        dialogChangeTerrain.setCancelable(false); //prevent dialog box from getting dismissed on back key
     }
 
     //All Permissions i need for android 6.0 and above

@@ -93,7 +93,7 @@ public class Controller {
         return mRange;
     }
 
-    //Setter/Getter to set GoogleMap to work on DialogFragment
+    //Setter/Getter to set GoogleMap to work on DialogMainFunction
     public void setGoogleMap(GoogleMap map){
         gMap = map;
     }

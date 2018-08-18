@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentAccount;
-import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentLogIn;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogShowAccount;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(FirebaseAuth.getInstance().getCurrentUser() != null){
-                    DialogFragmentAccount dialogFragmentAccount = new DialogFragmentAccount();
-                    dialogFragmentAccount.show(getFragmentManager(),"Show Account");
-                    dialogFragmentAccount.setCancelable(false);
+                    DialogShowAccount dialogShowAccount = new DialogShowAccount();
+                    dialogShowAccount.show(getFragmentManager(),"Show Account");
+                    dialogShowAccount.setCancelable(false);
 
                 }else{
-                    DialogFragmentLogIn dialogFragmentLogIn = new DialogFragmentLogIn();
-                    dialogFragmentLogIn.show(getFragmentManager(), "Log In");
-                    dialogFragmentLogIn.setCancelable(false);
+                    DialogLogIn dialogLogIn = new DialogLogIn();
+                    dialogLogIn.show(getFragmentManager(), "Log In");
+                    dialogLogIn.setCancelable(false);
                 }
             }
         });

@@ -85,7 +85,7 @@ public class MapsActivity extends FragmentActivity
 
         MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
 
-        //Call the DialogFragmentRadio /layout to set terrain on map
+        //Call the DialogChangeTerrain /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +93,7 @@ public class MapsActivity extends FragmentActivity
             }
         });
 
-        //Call the DialogFragment /layout to set FieldName and RangeMeter
+        //Call the DialogMainFunction /layout to set FieldName and RangeMeter
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

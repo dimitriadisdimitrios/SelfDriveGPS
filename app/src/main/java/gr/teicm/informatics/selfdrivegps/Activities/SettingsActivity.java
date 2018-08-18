@@ -2,17 +2,23 @@ package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static Handler handler = new Handler();
+    private static Runnable runnableForModes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +28,10 @@ public class SettingsActivity extends AppCompatActivity {
         final ToggleButton tBtnWifi =  findViewById(R.id.tBtn_wifi);
         final ToggleButton tBtnBluetooth =  findViewById(R.id.tBtn_bluetooth);
         TextView tvBluetooth = findViewById(R.id.tv_bluetooth);
+        TextView tvLocationMode = findViewById(R.id.tv_location_mode);
+        ImageButton iBtnLocationMode = findViewById(R.id.iBtn_location_mode);
+
+        counterToRefreshLocationMode(tvLocationMode);
 
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -60,5 +70,55 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        iBtnLocationMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Open default Google Location page to change Mode
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+    }
+
+    private int getLocationMode() throws Settings.SettingNotFoundException {
+        return Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
+    }
+    private String foundWhichModeReturned(int id){
+        switch (id){
+            case 0:
+                return "Location Mode: OFF";
+            case 1:
+                return "Location Mode: Sensors Only";
+            case 2:
+                return "Location Mode: Battery Saving";
+            case 3:
+                return "Location Mode: High Accuracy";
+            default:
+                return "Unknown Mode";
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        handler.removeCallbacks(runnableForModes);
+        super.onBackPressed();
+    }
+
+    private void counterToRefreshLocationMode(final TextView textViewLocationMode){
+
+        runnableForModes = new Runnable() {
+            @Override
+            public void run() {
+                try { //On start of activity set on TextViewMode the current mode
+                    int idMode = getLocationMode();
+                    String modeName = foundWhichModeReturned(idMode);
+                    textViewLocationMode.setText(modeName);
+                }catch(Settings.SettingNotFoundException e){
+                    e.printStackTrace();
+                }
+                handler.postDelayed(runnableForModes, 500);
+            }
+        };
+        handler.postDelayed(runnableForModes, 500);
     }
 }

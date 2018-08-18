@@ -2,6 +2,7 @@ package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -56,7 +57,7 @@ public class MapsActivity extends FragmentActivity
     private Controller controller = new Controller();
 
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
-    private RelativeLayout relativeLayoutForNavigationBar;
+    private RelativeLayout relativeLayoutForNavigationBar, relativeLayoutWholeArrowForUserLocation;
     private ImageButton imageButtonForChangeRangeMeter;
     private ImageView rightCube, leftCube, midCube;
 
@@ -70,6 +71,7 @@ public class MapsActivity extends FragmentActivity
 
         imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
         relativeLayoutForNavigationBar = findViewById(R.id.rl_navigation_bar);
+        relativeLayoutWholeArrowForUserLocation = findViewById(R.id.rl_user_arrow_image);
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
@@ -109,22 +111,18 @@ public class MapsActivity extends FragmentActivity
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     Log.d(TAG, controller.getProgramStatus());
+                    mainStartBtn.setTextColor(Color.parseColor("#a90404"));
                     Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command
                     MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
                 }else{
                     if(controller.getArrayListForField()!=null){
+                        mainStartBtn.setTextColor(Color.WHITE);
                         Toast.makeText(context, "Stop saving LatLng", Toast.LENGTH_SHORT).show();
                         btn_haveBeenClicked = false;
 
                         MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
-
-                        mMap.clear(); //Remove polyline from the record mode
-                        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Get ArrayList<LatLng> to transfer polyline to polygon
-                        if(controller.getArrayListForLine()!=null && !controller.getArrayListForLine().isEmpty()){
-                            MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
-                        }
                     }
                 }
             }
@@ -167,27 +165,30 @@ public class MapsActivity extends FragmentActivity
         float accuracyOfGps = location.getAccuracy();
         MapsUtilities.getSpecsForStatusBar(speedOfUser, accuracyOfGps, mSpeed, mAccuracy, context); // Show speed and accuracy of GPS up-right on map
 
-        float mBearing = location.getBearing(); //Get bearing so i can use it to follow the user with the right direction
+        float userLocationBearing = location.getBearing(); //Get bearing so i can use it to follow the user with the right direction
 
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLngOfCurrentTime)             // Sets the center of the map to Mountain View
-                .zoom(20)                   // Sets the zoom
-                .bearing(mBearing)          // Sets the orientation of the camera to east
-                .tilt(90)                   // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
+                .target(latLngOfCurrentTime)                                                  // Sets the center of the map to Mountain View
+                .zoom(MapsUtilities.changeZoomOfCameraBasedOnMode())                          // Sets the zoom
+                .bearing(MapsUtilities.changeBearingOfCameraBasedOnMode(userLocationBearing)) // Sets the orientation of the camera to east
+                .tilt(MapsUtilities.changeTiltOfCameraBasedOnMode())                          // Sets the tilt of the camera to 30 degrees
+                .build();                                                                     // Creates a CameraPosition from the builder
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         mMap.animateCamera(cameraUpdate);
 
-        //Necessary converting from float (mBearing) to double (convertedBearing) so it will be pass on the next functions
-        Double convertedBearing = Double.parseDouble(String.valueOf(mBearing));
+        //Necessary converting from float (userLocationBearing) to double (convertedBearing) so it will be pass on the next functions
+        Double convertedBearing = Double.parseDouble(String.valueOf(userLocationBearing));
         Log.d(TAG, String.valueOf(convertedBearing));
 
-        //TODO: Use it to locate when user come close to polyline !!!
+        //Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+            MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 );
             FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
-            MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube);
+            MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube); //Interact with backLight of NavigationBar
+        }else{
+            MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, userLocationBearing);//It has the job to rotate whole arrow based on user bearing
         }
 
         //Save every lat\lng on specific arrayList<Lat/lng>. Depend on which mode app is !!
@@ -200,7 +201,6 @@ public class MapsActivity extends FragmentActivity
         }
         else if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)
                 && btn_haveBeenClicked
-                /*&& FieldFunctionsUtilities.checkIfLatLngExist(latLngOfCurrentTime,pointsForLine)*/
                 && FieldFunctionsUtilities.PointIsInRegion(latLngOfCurrentTime, controller.getArrayListForField())){
 
             pointsForLine.add(latLngOfCurrentTime);
@@ -228,7 +228,6 @@ public class MapsActivity extends FragmentActivity
         Log.i(TAG, "Failed to connect to  Google Api Client - " + connectionResult.getErrorMessage());
         googleApiClient.reconnect();
     }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Connected to Google Api Client");

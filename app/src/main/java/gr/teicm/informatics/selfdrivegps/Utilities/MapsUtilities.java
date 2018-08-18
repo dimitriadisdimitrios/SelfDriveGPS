@@ -9,12 +9,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -112,6 +110,34 @@ public class MapsUtilities {
                 break;
         }
     }
+    //It has the job to rotate whole arrow based on user bearing
+    public static void changeRotationOnUserLocationArrow(RelativeLayout wholeArrow, Float userBearing){
+        wholeArrow.setRotation(userBearing);
+    }
+    //Use it to set bearing of map camera
+    public static Float changeBearingOfCameraBasedOnMode(Float userBearing){
+        if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+            return userBearing;
+        }else{
+            return (float) 0;
+        }
+    }
+    //Use it to set zoom of map camera
+    public static Integer changeZoomOfCameraBasedOnMode(){
+        if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+            return 20;
+        }else{
+            return 16;
+        }
+    }
+    //Use it to set tilt of map camera
+    public static Integer changeTiltOfCameraBasedOnMode(){
+        if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+            return 90;
+        }else{
+            return 0;
+        }
+    }
 
     //Counters for speed, gps-accuracy, to check which mode is enabled
     public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar, final ImageButton iBtnRangeMeter){
@@ -192,12 +218,15 @@ public class MapsUtilities {
     // Re-draw the map. Use it as default function
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
-        MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
-//        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(),mMap); //TODO: Temporary use for working with navigationAlgorithmV2
+        if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
+            MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
+        }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
 
-        MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
-        for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
-            MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap); // Draw the multi-polyLines on map
+            MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
+            MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
+            for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){
+                MapsUtilities.placePolylineForRoute(controller.getArrayListOfMultipliedPolyLines().get(i), mMap); // Draw the multi-polyLines on map
+            }
         }
     }
 }

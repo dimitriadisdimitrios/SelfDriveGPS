@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String VERSION_OF_APP = "v0.8";
+    private final static String VERSION_OF_APP = "v0.84";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         Button loadPlanBtn =  findViewById(R.id.load_plans_btn);
         Button settingBtn =  findViewById(R.id.setting_btn);
         TextView tvVersionOfApp = findViewById(R.id.tv_app_version);
+        ImageButton iBtnLogIn = findViewById(R.id.iBtn_account_log_in);
 
         //Set the version of App on this variable
         tvVersionOfApp.setText(VERSION_OF_APP);
@@ -42,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            }
+        });
+        iBtnLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragmentLogIn dialogFragmentLogIn = new DialogFragmentLogIn();
+                dialogFragmentLogIn.show(getFragmentManager(), "Log In");
+                dialogFragmentLogIn.setCancelable(false);
             }
         });
     }

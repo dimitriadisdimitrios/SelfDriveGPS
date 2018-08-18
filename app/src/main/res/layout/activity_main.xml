@@ -10,38 +10,59 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_app_version"
+            android:text="@string/mode_unknown"
             android:layout_marginEnd="2dp"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
         <Button
             android:id="@+id/start_calculations_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
             android:text="@string/bt_new_project_mainActivity"
-            android:textAllCaps="false"
-            android:gravity="center_vertical|center_horizontal"/>
+            android:textAllCaps="false" />
+
         <Button
             android:id="@+id/load_plans_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/btn_load_projects_mainActivity"
             android:layout_marginTop="14dp"
             android:gravity="center_vertical|center_horizontal"
+            android:text="@string/btn_load_projects_mainActivity"
             android:textAllCaps="false" />
+
         <Button
             android:id="@+id/setting_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/btn_settings_mainActivity"
             android:layout_marginTop="14dp"
             android:gravity="center_vertical|center_horizontal"
-            android:textAllCaps="false"/>
+            android:text="@string/btn_settings_mainActivity"
+            android:textAllCaps="false" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="end|bottom">
+
+        <ImageButton
+            android:id="@+id/iBtn_account_log_in"
+            android:contentDescription="@string/main_description_for_nav_bar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/user_log_in"/>
+    </RelativeLayout>
 </RelativeLayout>

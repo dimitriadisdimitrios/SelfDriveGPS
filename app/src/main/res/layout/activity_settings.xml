@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/tv_wifi_switch_settingsActivity"
         android:layout_gravity="center"
+        android:textSize="18sp"
         android:textStyle="bold|italic"/>
     <ToggleButton
         android:layout_width="wrap_content"
@@ -22,6 +23,7 @@
         android:text="@string/tv_bluetooth_switch_settingsActivity"
         android:id="@+id/tv_bluetooth"
         android:layout_gravity="center"
+        android:textSize="18sp"
         android:textStyle="bold|italic"/>
     <ToggleButton
         android:layout_width="wrap_content"
@@ -33,41 +35,31 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tv_rangeOfSet_settingsActivity"
+        android:text="@string/location_mode"
         android:layout_gravity="center"
+        android:textSize="18sp"
         android:textStyle="bold|italic"/>
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
+        android:orientation="horizontal"
+        android:gravity="center">
+    <ImageButton
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:id="@+id/btn_sub"
-            android:text="@string/sub_btn_settingsActivity"/>
+            android:id="@+id/iBtn_location_mode"
+            android:contentDescription="@string/main_description_for_nav_bar"
+            android:src="@drawable/location_mode_icon"
+            android:focusable="true"/>
         <Space
             android:layout_width="5dp"
             android:layout_height="0dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_range_of_field_meter"
-            android:text="@string/tv_default_range_field"/>
-        <Space
-            android:layout_width="5dp"
-            android:layout_height="0dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_meter_of_range_for_field_default"/>
-        <Space
-            android:layout_width="5dp"
-            android:layout_height="0dp" />
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:id="@+id/btn_plus"
-            android:text="@string/plus_btn_settingsActivity"/>
+            android:id="@+id/tv_location_mode"
+            android:text="@string/mode_unknown"/>
     </LinearLayout>
 
 </LinearLayout>

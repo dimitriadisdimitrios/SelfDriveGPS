@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +86,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                 Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
                                 controller.setIdOfListView(nameOfDataBaseKey);
                                 controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
+                                MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
                                 isNameBeenAccepted = true;
 //                            }else{
 //                                controller.setIfFoundMatchOnFireBase(false);
@@ -117,6 +117,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                     databaseReference.child(controller.getIdOfListView()).child("Polyline").setValue(pointsForLine);
                                     databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
                                     controller.setProgramStatus(Controller.MODE_3_DRIVING);
+                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
 
                                     Toast.makeText(getContext(), "LatLng for Polyline: Have been added", Toast.LENGTH_SHORT).show();
                                 }
@@ -154,7 +155,7 @@ public class DialogFragment extends android.app.DialogFragment {
                                     //Add ArrayList for PolyLine on same child
                                     databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
                                     Toast.makeText(getContext(), "Range between lines, changed", Toast.LENGTH_SHORT).show();
-                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
+                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
                                 }
                             }
                         });

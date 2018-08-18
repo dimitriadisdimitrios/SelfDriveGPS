@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentAccount;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogFragmentLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
@@ -50,9 +53,16 @@ public class MainActivity extends AppCompatActivity {
         iBtnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragmentLogIn dialogFragmentLogIn = new DialogFragmentLogIn();
-                dialogFragmentLogIn.show(getFragmentManager(), "Log In");
-                dialogFragmentLogIn.setCancelable(false);
+                if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                    DialogFragmentAccount dialogFragmentAccount = new DialogFragmentAccount();
+                    dialogFragmentAccount.show(getFragmentManager(),"Show Account");
+                    dialogFragmentAccount.setCancelable(false);
+
+                }else{
+                    DialogFragmentLogIn dialogFragmentLogIn = new DialogFragmentLogIn();
+                    dialogFragmentLogIn.show(getFragmentManager(), "Log In");
+                    dialogFragmentLogIn.setCancelable(false);
+                }
             }
         });
     }

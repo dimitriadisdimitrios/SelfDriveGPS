@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,7 +28,13 @@ public class DialogShowAccount extends android.app.DialogFragment{
         final View mView = inflater.inflate(R.layout.dialog_show_account, nullParent);
 
         Button btnLogOut = mView.findViewById(R.id.btn_log_out);
+        TextView tvUserMail = mView.findViewById(R.id.tv_logged_in_username_show);
+
         mAuth = FirebaseAuth.getInstance();
+
+        if(mAuth.getCurrentUser()!=null){
+            tvUserMail.setText(mAuth.getCurrentUser().getEmail());
+        }
 
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +46,7 @@ public class DialogShowAccount extends android.app.DialogFragment{
         });
 
         builder.setView(mView)
-                .setMessage("Account").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setMessage("You logged in, as:").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dismiss();

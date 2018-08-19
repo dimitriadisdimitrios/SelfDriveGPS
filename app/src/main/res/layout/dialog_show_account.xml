@@ -8,7 +8,7 @@
         android:id="@+id/tv_logged_in_username_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textColor="#2FA72F"
         android:textStyle="bold|italic"
         android:text="@string/unknown_user"/>

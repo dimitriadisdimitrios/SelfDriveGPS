@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,16 +44,35 @@ public class DialogLogIn extends android.app.DialogFragment {
         tvCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //Create dialog for create account
                 AlertDialog.Builder createAccountBuilder = new AlertDialog.Builder(getActivity());
                 final View createAccountView = inflater.inflate(R.layout.dialog_create_account, nullParent);
+
+                final EditText etEmailSignUp = createAccountView.findViewById(R.id.et_email_sing_up);
+                final EditText etPasswordSignUp = createAccountView.findViewById(R.id.et_password_sing_up);
+                EditText etReEnterPasswordSignUp = createAccountView.findViewById(R.id.et_enter_again_password_sing_up);
+
+
                 createAccountBuilder.setView(createAccountView)
                         .setMessage("Create an account")
                         .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                //create user
+                                mAuth.createUserWithEmailAndPassword(etEmailSignUp.getText().toString(), etPasswordSignUp.getText().toString())
+                                        .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                // If sign in fails, display a message to the user. If sign in succeeds
+                                                // the auth state listener will be notified and logic to handle the
+                                                // signed in user can be handled in the listener.
+                                                if (!task.isSuccessful()) {
+                                                    Log.d(TAG, " Authentication failed.");
+                                                }else{
+                                                    Log.d(TAG, " Authentication is successfully.");
+                                                }
+                                            }
+                                        });
                             }
                         })
                 .show();

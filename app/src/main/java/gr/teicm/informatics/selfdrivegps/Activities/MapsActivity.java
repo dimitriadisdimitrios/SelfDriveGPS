@@ -236,6 +236,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !
+        mMap.clear();
         controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD); //Reset the mode. Need a lot more but start from here
         super.onBackPressed();
     }

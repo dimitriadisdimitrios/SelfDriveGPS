@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,20 +35,23 @@ public class RetrieveDataActivity extends Activity {
     private ArrayList<LatLng> mPointsForLine = new ArrayList<>();
     private Controller controller = new Controller();
     private Context context;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieve_data);
         context = this.getApplicationContext();
+        mAuth = FirebaseAuth.getInstance();
 
-        final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        //Secured. Use Uid to get data
+        final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users/" + mAuth.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
                 //Get child names from FireBase to show it on ListView
-                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                for(DataSnapshot child : dataSnapshot.child("users/" + mAuth.getUid()).getChildren()) {
                     String id = child.getKey();
                     fList.add(id);
                 }
@@ -70,25 +74,29 @@ public class RetrieveDataActivity extends Activity {
                         controller.setIdOfListView(childName); //In case that user want to delete an item
 
                         for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polygon").getChildren()) {
-                            Double latitude = childCount.child("latitude").getValue(Double.class);
-                            Double longitude = childCount.child("longitude").getValue(Double.class);
-                            if(latitude!=null && longitude!=null) {
-                                LatLng latLng = new LatLng(latitude, longitude);
-                                mPointsForField.add(latLng);
-                                controller.setArrayListForField(mPointsForField);
+                            if(mAuth.getUid() != null){
+                                Double latitude = childCount.child(mAuth.getUid()).child("latitude").getValue(Double.class);
+                                Double longitude = childCount.child(mAuth.getUid()).child("longitude").getValue(Double.class);
+                                if(latitude!=null && longitude!=null) {
+                                    LatLng latLng = new LatLng(latitude, longitude);
+                                    mPointsForField.add(latLng);
+                                    controller.setArrayListForField(mPointsForField);
+                                }
                             }
                         }
                         for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polyline").getChildren()) {
-                            Double latitude = childCount.child("latitude").getValue(Double.class);
-                            Double longitude = childCount.child("longitude").getValue(Double.class);
-                            if(latitude!=null && longitude!=null) {
-                                LatLng latLng = new LatLng(latitude, longitude);
-                                mPointsForLine.add(latLng);
-                                controller.setArrayListForLine(mPointsForLine);
+                            if(mAuth.getUid() != null){
+                                Double latitude = childCount.child(mAuth.getUid()).child("latitude").getValue(Double.class);
+                                Double longitude = childCount.child(mAuth.getUid()).child("longitude").getValue(Double.class);
+                                if(latitude!=null && longitude!=null) {
+                                    LatLng latLng = new LatLng(latitude, longitude);
+                                    mPointsForLine.add(latLng);
+                                    controller.setArrayListForLine(mPointsForLine);
+                                }
                             }
                         }
 
-                        Integer rangeBetweenPolyLines = dataSnapshot.child(childName).child("Meter").getValue(Integer.class);
+                        Integer rangeBetweenPolyLines = dataSnapshot.child(mAuth.getUid()).child(childName).child("Meter").getValue(Integer.class);
                         if (rangeBetweenPolyLines != null){
                             int rangeBetweenLines = rangeBetweenPolyLines;
                             controller.setMeterOfRange(rangeBetweenLines);

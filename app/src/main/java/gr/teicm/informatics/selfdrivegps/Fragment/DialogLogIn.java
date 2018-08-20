@@ -1,11 +1,11 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,9 +28,10 @@ public class DialogLogIn extends android.app.DialogFragment {
     private EditText etEmailToLogIn, etPasswordToLogIn;
 
     private FirebaseAuth mAuth;
+    private AlertDialog mDialog;
 
     @Override
-    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(final Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
@@ -55,7 +56,7 @@ public class DialogLogIn extends android.app.DialogFragment {
 
                 createAccountBuilder.setView(createAccountView)
                         .setMessage("Create an account")
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //create user
@@ -75,7 +76,12 @@ public class DialogLogIn extends android.app.DialogFragment {
                                         });
                             }
                         })
-                .show();
+                        .setPositiveButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -94,7 +100,35 @@ public class DialogLogIn extends android.app.DialogFragment {
                         startSignIn();
                     }
                 });
-        return builder.create();
+        mDialog = builder.create();
+        mDialog.show();
+        mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mEmail = etEmailToLogIn.getText().toString();
+                String mPassword = etPasswordToLogIn.getText().toString();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (TextUtils.isEmpty(mEmail) || TextUtils.isEmpty(mPassword)) {
+                        Toast.makeText(getContext(), "Fill is empty !", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mAuth.signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(getContext(), "You're email/password isn't correct", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(), "You are logged in", Toast.LENGTH_SHORT).show();
+                                    mDialog.dismiss();
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        return mDialog;
     }
 
     //Start to sign in. If you signed in then you must sign out because account stay in app

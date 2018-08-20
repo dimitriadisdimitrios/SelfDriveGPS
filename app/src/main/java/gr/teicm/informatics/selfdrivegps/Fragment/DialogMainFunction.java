@@ -116,9 +116,9 @@ public class DialogMainFunction extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
-                                    //Add ArrayList for PolyLine on same child
-                                    databaseReference.child(mAuth.getUid()).child(controller.getIdOfListView()).child("Polyline").setValue(pointsForLine);
-                                    databaseReference.child(mAuth.getUid()).child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
+                                    //Add ArrayList for PolyLine on same child "users/" + mAuth.getUid() + "/" + nameOfDataBaseKey + "/
+                                    databaseReference.child("users/" + mAuth.getUid() + "/" + controller.getIdOfListView() + "/Polyline").setValue(pointsForLine);
+                                    databaseReference.child("users/" + mAuth.getUid() + "/" + controller.getIdOfListView() + "/Meter").setValue(controller.getMeterOfRange());
                                     controller.setProgramStatus(Controller.MODE_3_DRIVING);
                                     MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
 

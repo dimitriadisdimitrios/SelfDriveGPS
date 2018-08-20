@@ -1,6 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,8 @@ import gr.teicm.informatics.selfdrivegps.R;
 public class MainActivity extends AppCompatActivity {
     private final static String VERSION_OF_APP = "v0.84";
     private Controller controller = new Controller();
+    private static Handler handler = new Handler();
+    private static Runnable runnableForAccountIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         //Set the version of App on this variable
         tvVersionOfApp.setText(VERSION_OF_APP);
 
+        counterToRefreshAccount(iBtnLogIn);
+
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,12 +48,14 @@ public class MainActivity extends AppCompatActivity {
         loadPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                handler.removeCallbacks(runnableForAccountIcon);
                 startActivity(new Intent(MainActivity.this, RetrieveDataActivity.class));
             }
         });
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                handler.removeCallbacks(runnableForAccountIcon);
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
@@ -74,5 +81,20 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         //Back Btn do nothing !
 //        super.onBackPressed();
+    }
+
+    private void counterToRefreshAccount(final ImageButton imageButton){
+        runnableForAccountIcon = new Runnable() {
+            @Override
+            public void run() {
+                    if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        imageButton.setImageResource(R.drawable.green_log_in);
+                    }else{
+                        imageButton.setImageResource(R.drawable.user_log_in);
+                    }
+                handler.postDelayed(runnableForAccountIcon, 500);
+            }
+        };
+        handler.postDelayed(runnableForAccountIcon, 500);
     }
 }

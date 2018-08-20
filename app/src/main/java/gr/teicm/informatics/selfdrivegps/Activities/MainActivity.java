@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogShowAccount;
 import gr.teicm.informatics.selfdrivegps.Fragment.DialogLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
     private final static String VERSION_OF_APP = "v0.84";
+    private Controller controller = new Controller();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     dialogShowAccount.setCancelable(false);
 
                 }else{
+                    controller.setAppFragmentManager(getFragmentManager());
                     DialogLogIn dialogLogIn = new DialogLogIn();
                     dialogLogIn.show(getFragmentManager(), "Log In");
                     dialogLogIn.setCancelable(false);

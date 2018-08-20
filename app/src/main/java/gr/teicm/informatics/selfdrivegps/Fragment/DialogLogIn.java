@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class DialogLogIn extends android.app.DialogFragment {
@@ -27,12 +28,13 @@ public class DialogLogIn extends android.app.DialogFragment {
 
     private EditText etEmailToLogIn, etPasswordToLogIn;
 
+    private Controller controller = new Controller();
     private FirebaseAuth mAuth;
     private AlertDialog mDialog;
 
     @Override
     public AlertDialog onCreateDialog(final Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
         final View mView = inflater.inflate(R.layout.dialog_log_in, nullParent);
@@ -42,55 +44,25 @@ public class DialogLogIn extends android.app.DialogFragment {
         mAuth = FirebaseAuth.getInstance();
 
         TextView tvCreateAccount = mView.findViewById(R.id.tv_create_account);
+
+        //Open dialog to create new account !
         tvCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Create dialog for create account
-                AlertDialog.Builder createAccountBuilder = new AlertDialog.Builder(getActivity());
-                final View createAccountView = inflater.inflate(R.layout.dialog_create_account, nullParent);
-
-                final EditText etEmailSignUp = createAccountView.findViewById(R.id.et_email_sing_up);
-                final EditText etPasswordSignUp = createAccountView.findViewById(R.id.et_password_sing_up);
-                EditText etReEnterPasswordSignUp = createAccountView.findViewById(R.id.et_enter_again_password_sing_up);
-
-
-                createAccountBuilder.setView(createAccountView)
-                        .setMessage("Create an account")
-                        .setNegativeButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //create user
-                                mAuth.createUserWithEmailAndPassword(etEmailSignUp.getText().toString(), etPasswordSignUp.getText().toString())
-                                        .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                // If sign in fails, display a message to the user. If sign in succeeds
-                                                // the auth state listener will be notified and logic to handle the
-                                                // signed in user can be handled in the listener.
-                                                if (!task.isSuccessful()) {
-                                                    Log.d(TAG, " Authentication failed.");
-                                                }else{
-                                                    Log.d(TAG, " Authentication is successfully.");
-                                                }
-                                            }
-                                        });
-                            }
-                        })
-                        .setPositiveButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
-                        })
-                        .show();
+                DialogCreateAccount dialogCreateAccount = new DialogCreateAccount();
+                dialogCreateAccount.show(controller.getAppFragmentManager(), "Create Account");
+                dialogCreateAccount.setCancelable(false);
+                mDialog.dismiss();
             }
         });
 
+        //Dialog to Log In to an account
         builder.setView(mView)
                 .setMessage("Log in")
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mAuth.signOut();
+//                        mAuth.signOut();
                         dialogInterface.dismiss();
                     }
                 })

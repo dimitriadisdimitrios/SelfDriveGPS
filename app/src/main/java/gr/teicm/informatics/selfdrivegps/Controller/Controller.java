@@ -1,5 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Controller;
 
+import android.app.FragmentManager;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class Controller {
     private static GoogleMap gMap;
     private static Boolean mNameExist;
     private static Double mBearing;
+    private static FragmentManager mFragmentManager;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
@@ -115,5 +118,13 @@ public class Controller {
     }
     public Double getBearingForNavigationPurpose(){
         return mBearing;
+    }
+
+    //Setter/Getter for bearing to use it for the navigationAlgorithm
+    public void setAppFragmentManager(FragmentManager fragManager){
+        mFragmentManager = fragManager;
+    }
+    public FragmentManager getAppFragmentManager(){
+        return mFragmentManager;
     }
 }

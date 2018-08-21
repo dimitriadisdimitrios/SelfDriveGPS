@@ -1,6 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
@@ -238,7 +239,11 @@ public class MapsActivity extends FragmentActivity
         //Back Btn do nothing !
         mMap.clear();
         controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD); //Reset the mode. Need a lot more but start from here
-        super.onBackPressed();
+        if(getIntent().getExtras() == null){
+            startActivity(new Intent(MapsActivity.this, MainActivity.class));
+        }else{
+            super.onBackPressed();
+        }
     }
 
     public void createGoogleApiClient(){

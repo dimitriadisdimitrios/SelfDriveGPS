@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,8 +87,11 @@ public class DialogCreateAccount extends  android.app.DialogFragment {
                         Toast.makeText(getContext(), "Please confirm password !", Toast.LENGTH_SHORT).show();
                     }else if(!allChecksToBeSureThatAllFillIsNotEmpty && !checkIfUserUsePasswordWithMoreThanFiveElements){
                         Toast.makeText(getContext(), "Password must be more than 6 characters !", Toast.LENGTH_SHORT).show();
-                    }else if(!checkIfPasswordAndReEnterMatch){
+                    }else if(!checkIfPasswordAndReEnterMatch) {
                         Toast.makeText(getContext(), "Password and re-enter of password isn't the same ! ", Toast.LENGTH_SHORT).show();
+                    }else if(!Patterns.EMAIL_ADDRESS.matcher(etEmailSignUp.getText().toString()).matches()){
+                        //To be sure that email is in right Form
+                        Toast.makeText(getContext(), "Email form is wrong !", Toast.LENGTH_SHORT).show();
                     }else{
                         //create user
                         mAuth.createUserWithEmailAndPassword(etEmailSignUp.getText().toString(), etPasswordSignUp.getText().toString())

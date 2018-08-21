@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -41,21 +42,29 @@ public class MainActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                    handler.removeCallbacks(runnableForAccountIcon);
+                    startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                }else{
+                    Toast.makeText(getApplicationContext(), "You need to Log-In, first !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         loadPlanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handler.removeCallbacks(runnableForAccountIcon);
-                startActivity(new Intent(MainActivity.this, RetrieveDataActivity.class));
+                if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                    handler.removeCallbacks(runnableForAccountIcon);
+                    startActivity(new Intent(MainActivity.this, RetrieveDataActivity.class));
+                }else{
+                    Toast.makeText(getApplicationContext(), "You need to Log-In, first !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handler.removeCallbacks(runnableForAccountIcon);
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
@@ -65,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 if(FirebaseAuth.getInstance().getCurrentUser() != null){
                     DialogShowAccount dialogShowAccount = new DialogShowAccount();
                     dialogShowAccount.show(getFragmentManager(),"Show Account");
-                    dialogShowAccount.setCancelable(false);
-
                 }else{
                     controller.setAppFragmentManager(getFragmentManager());
                     DialogLogIn dialogLogIn = new DialogLogIn();

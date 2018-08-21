@@ -46,12 +46,7 @@ public class DialogShowAccount extends android.app.DialogFragment{
         });
 
         builder.setView(mView)
-                .setMessage("You logged in, as:").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dismiss();
-            }
-        });
+                .setMessage("You logged in, as:");
         return builder.create();
     }
 }

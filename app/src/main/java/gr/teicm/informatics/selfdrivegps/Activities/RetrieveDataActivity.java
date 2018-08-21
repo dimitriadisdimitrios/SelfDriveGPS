@@ -139,6 +139,7 @@ public class RetrieveDataActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        startActivity(new Intent(RetrieveDataActivity.this, MainActivity.class));
+//        super.onBackPressed();
     }
 }

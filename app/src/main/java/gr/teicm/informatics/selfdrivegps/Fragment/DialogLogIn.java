@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,10 @@ public class DialogLogIn extends android.app.DialogFragment {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (TextUtils.isEmpty(mEmail) || TextUtils.isEmpty(mPassword)) {
                         Toast.makeText(getContext(), "Fill is empty !", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }else if (!Patterns.EMAIL_ADDRESS.matcher(etEmailToLogIn.getText().toString()).matches()) {
+                        //To be sure that email is in right Form
+                        Toast.makeText(getContext(), "Email form is wrong !", Toast.LENGTH_SHORT).show();
+                    }else{
                         mAuth.signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @RequiresApi(api = Build.VERSION_CODES.M)
                             @Override

@@ -16,8 +16,8 @@ import android.widget.Toast;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 
-public class DialogFragmentRadio extends  android.app.DialogFragment {
-    private static final String TAG = "DialogFragmentRadio";
+public class DialogChangeTerrain extends  android.app.DialogFragment {
+    private static final String TAG = "DialogChangeTerrain";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class DialogFragmentRadio extends  android.app.DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.activity_dialog_radio, nullParent); // Inflate the layout to interact with xml
+        final View mView = inflater.inflate(R.layout.dialog_change_terrain, nullParent); // Inflate the layout to interact with xml
 
         builder.setView(mView)
                 .setMessage("Change terrain of map")

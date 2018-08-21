@@ -1,6 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
@@ -85,7 +86,7 @@ public class MapsActivity extends FragmentActivity
 
         MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
 
-        //Call the DialogFragmentRadio /layout to set terrain on map
+        //Call the DialogChangeTerrain /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +94,7 @@ public class MapsActivity extends FragmentActivity
             }
         });
 
-        //Call the DialogFragment /layout to set FieldName and RangeMeter
+        //Call the DialogMainFunction /layout to set FieldName and RangeMeter
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,8 +237,13 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !
+        mMap.clear();
         controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD); //Reset the mode. Need a lot more but start from here
-        super.onBackPressed();
+        if(getIntent().getExtras() == null){
+            startActivity(new Intent(MapsActivity.this, MainActivity.class));
+        }else{
+            super.onBackPressed();
+        }
     }
 
     public void createGoogleApiClient(){

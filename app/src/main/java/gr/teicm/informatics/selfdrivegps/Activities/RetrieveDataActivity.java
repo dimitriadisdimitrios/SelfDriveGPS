@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,8 +41,10 @@ public class RetrieveDataActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retrieve_data);
         context = this.getApplicationContext();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-        final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        //Secured. Use Uid to get data
+        final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("users/" + mAuth.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -136,6 +139,7 @@ public class RetrieveDataActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        startActivity(new Intent(RetrieveDataActivity.this, MainActivity.class));
+//        super.onBackPressed();
     }
 }

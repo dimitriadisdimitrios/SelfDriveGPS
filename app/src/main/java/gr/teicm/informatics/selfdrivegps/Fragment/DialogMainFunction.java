@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -23,10 +24,11 @@ import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 
-public class DialogFragment extends android.app.DialogFragment {
+public class DialogMainFunction extends android.app.DialogFragment {
     private Controller controller = new Controller();
-    private final static String TAG = "DialogFragment";
+    private final static String TAG = "DialogMainFunction";
     private AlertDialog mDialog;
+    private FirebaseAuth mAuth;
 
     @Override
     public AlertDialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,9 +39,10 @@ public class DialogFragment extends android.app.DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.activity_dialog, nullParent); // Inflate the layout to interact with xml
+        final View mView = inflater.inflate(R.layout.dialog_main_function, nullParent); // Inflate the layout to interact with xml
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
+        mAuth = FirebaseAuth.getInstance();
 
         switch (controller.getProgramStatus()) {
             case Controller.MODE_1_RECORD_FIELD:
@@ -77,12 +80,12 @@ public class DialogFragment extends android.app.DialogFragment {
 
 //                        DialogUtilities.checkNameIfExistInBase(nameOfDataBaseKey);
 
-                        if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
                             //Create child with specific name which include LatLng for field
                             Log.d(TAG, String.valueOf(controller.getIfFoundMatchOnFireBase()));
                             //TODO: Under constructed
 //                            if(!controller.getIfFoundMatchOnFireBase()){
-                                databaseReference.child(nameOfDataBaseKey).child("Polygon").setValue(pointsForField);
+                                databaseReference.child("users/" + mAuth.getUid() + "/" + nameOfDataBaseKey + "/Polygon").setValue(pointsForField);
                                 Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
                                 controller.setIdOfListView(nameOfDataBaseKey);
                                 controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
@@ -112,10 +115,10 @@ public class DialogFragment extends android.app.DialogFragment {
                         .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    //Add ArrayList for PolyLine on same child
-                                    databaseReference.child(controller.getIdOfListView()).child("Polyline").setValue(pointsForLine);
-                                    databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
+                                    //Add ArrayList for PolyLine on same child "users/" + mAuth.getUid() + "/" + nameOfDataBaseKey + "/
+                                    databaseReference.child("users/" + mAuth.getUid() + "/" + controller.getIdOfListView() + "/Polyline").setValue(pointsForLine);
+                                    databaseReference.child("users/" + mAuth.getUid() + "/" + controller.getIdOfListView() + "/Meter").setValue(controller.getMeterOfRange());
                                     controller.setProgramStatus(Controller.MODE_3_DRIVING);
                                     MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
 
@@ -151,9 +154,9 @@ public class DialogFragment extends android.app.DialogFragment {
                         .setMessage(R.string.label_on_dialog_driving)
                         .setPositiveButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
                                     //Add ArrayList for PolyLine on same child
-                                    databaseReference.child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
+                                    databaseReference.child(mAuth.getUid()).child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
                                     Toast.makeText(getContext(), "Range between lines, changed", Toast.LENGTH_SHORT).show();
                                     MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
                                 }

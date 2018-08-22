@@ -1,12 +1,15 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +35,13 @@ public class MainActivity extends AppCompatActivity {
         Button loadPlanBtn =  findViewById(R.id.load_plans_btn);
         Button settingBtn =  findViewById(R.id.setting_btn);
         TextView tvVersionOfApp = findViewById(R.id.tv_app_version);
+        LinearLayout llLocationModeWarning = findViewById(R.id.ll_warning_about_location_mode);
         ImageButton iBtnLogIn = findViewById(R.id.iBtn_account_log_in);
 
         //Set the version of App on this variable
         tvVersionOfApp.setText(VERSION_OF_APP);
 
-        counterToRefreshAccount(iBtnLogIn);
+        counterToRefreshAccount(iBtnLogIn, llLocationModeWarning);
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
 //        super.onBackPressed();
     }
 
-    private void counterToRefreshAccount(final ImageButton imageButton){
+    private void counterToRefreshAccount(final ImageButton imageButton, final LinearLayout tvLocationWarning){
         runnableForAccountIcon = new Runnable() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void run() {
                     if(FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -99,9 +104,24 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         imageButton.setImageResource(R.drawable.user_log_in);
                     }
+
+                try {
+                    int idMode = getLocationMode();
+                    if(idMode == 3){ // If Location mode is High Accuracy set it invisible
+                        tvLocationWarning.setVisibility(View.INVISIBLE);
+                    }else { //Else, show warning message
+                        tvLocationWarning.setVisibility(View.VISIBLE);
+                    }
+                } catch (Settings.SettingNotFoundException e) {
+                    e.printStackTrace();
+                }
                 handler.postDelayed(runnableForAccountIcon, 500);
             }
         };
         handler.postDelayed(runnableForAccountIcon, 500);
+    }
+
+    private int getLocationMode() throws Settings.SettingNotFoundException {
+        return Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
     }
 }

@@ -42,4 +42,7 @@
     <string name="repeat_password">Repeat password</string>
     <string name="unknown_user">Unknown User</string>
     <string name="log_out">Log Out</string>
+    <string name="warning_message">Please change Location Mode to high accuracy through Settings</string>
+    <string name="warning">Warning :</string>
+    <string name="location_unknown_mode">Location Mode: Unknown Mode</string>
 </resources>

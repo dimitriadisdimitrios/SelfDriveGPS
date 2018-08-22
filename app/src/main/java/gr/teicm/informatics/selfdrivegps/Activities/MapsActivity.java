@@ -54,7 +54,6 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> pointsForField = new ArrayList<>();
     private ArrayList<LatLng> pointsForLine = new ArrayList<>();
-    private ArrayList<LatLng> pointsForPassedPlaces = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
 

@@ -32,6 +32,8 @@ public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
     private static final int setTimeForCheckSpeedAccuracy = 1500; /*1.5 sec*/
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
+    public static ArrayList<LatLng> mInner = new ArrayList<>();
+    public static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed, runnableForTBtnClickAbility;
@@ -85,6 +87,13 @@ public class MapsUtilities {
                 .strokeWidth(5)
                 .addAll(directionPoints);
         googleMap.addPolygon(polygonOptions);
+    } //Draw the polygon for field
+    public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(20)
+                .color(Color.parseColor("#2FA72F"))
+                .addAll(directionPoints);
+        googleMap.addPolyline(polylineOptions);
     } //Draw the polygon for field
 
     public static void getSpecsForStatusBar(float speed, float accuracy, TextView mSpeed, TextView mAccuracy, Context context){
@@ -215,13 +224,28 @@ public class MapsUtilities {
         }
     }
 
+    public static void createCoverRouteUserPass(LatLng mLocation){
+        if(FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
+            mInner.add(mLocation);
+            placePassedPlace(mInner, controller.getGoogleMap());
+        }else if(mInner != null && !FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
+            ArrayList<LatLng> myTemp = new ArrayList<>(mInner);
+            mOuter.add(myTemp);
+            controller.setArrayListOfPassedPolyLines(mOuter);
+            mInner.clear();
+        }
+    }
     // Re-draw the map. Use it as default function
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
         if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
         }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
-
+            if(controller.getArrayListOfPlacedPolyLines() != null){
+                for(int j=0; j < controller.getArrayListOfPlacedPolyLines().size(); j++){
+                    placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
+                }
+            }
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
             MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
             for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){

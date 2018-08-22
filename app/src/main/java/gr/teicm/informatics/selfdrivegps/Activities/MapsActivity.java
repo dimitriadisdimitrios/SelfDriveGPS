@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> pointsForField = new ArrayList<>();
     private ArrayList<LatLng> pointsForLine = new ArrayList<>();
+    private ArrayList<LatLng> pointsForPassedPlaces = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
 
@@ -161,9 +162,9 @@ public class MapsActivity extends FragmentActivity
     public void onLocationChanged(Location location) {
         MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //Set the counter so i can reset speed/accuracy meter to 0 when it need it
 
-        LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude());
-        float speedOfUser = location.getSpeed();
-        float accuracyOfGps = location.getAccuracy();
+        LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude()); //Make location to LatLng
+        float speedOfUser = location.getSpeed(); //Get speed of user
+        float accuracyOfGps = location.getAccuracy(); //Get accuracy of user
         MapsUtilities.getSpecsForStatusBar(speedOfUser, accuracyOfGps, mSpeed, mAccuracy, context); // Show speed and accuracy of GPS up-right on map
 
         float userLocationBearing = location.getBearing(); //Get bearing so i can use it to follow the user with the right direction
@@ -176,8 +177,8 @@ public class MapsActivity extends FragmentActivity
                 .tilt(MapsUtilities.changeTiltOfCameraBasedOnMode())                          // Sets the tilt of the camera to 30 degrees
                 .build();                                                                     // Creates a CameraPosition from the builder
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-        mMap.animateCamera(cameraUpdate);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition); //Set camera
+        mMap.animateCamera(cameraUpdate); //Animate camera
 
         //Necessary converting from float (userLocationBearing) to double (convertedBearing) so it will be pass on the next functions
         Double convertedBearing = Double.parseDouble(String.valueOf(userLocationBearing));
@@ -185,9 +186,15 @@ public class MapsActivity extends FragmentActivity
 
         //Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
-            MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 );
+            MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 ); ////It has the job to not rotate whole arrow based on rotation because camera mode change
             FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
             MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube); //Interact with backLight of NavigationBar
+            MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime);
+            if(controller.getArrayListOfPlacedPolyLines() != null) {
+                for (int j = 0; j < controller.getArrayListOfPlacedPolyLines().size(); j++) {
+                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
+                }
+            }
         }else{
             MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, userLocationBearing);//It has the job to rotate whole arrow based on user bearing
         }

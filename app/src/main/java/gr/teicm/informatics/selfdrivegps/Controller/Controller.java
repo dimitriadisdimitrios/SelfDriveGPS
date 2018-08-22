@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus;
-    private static ArrayList<ArrayList<LatLng>> lineTest;
+    private static ArrayList<ArrayList<LatLng>> lineTest, mPassedLine;
     private static String idOfList, mLocationStatus, mStatus ="Record field selected";
     private static Integer mRange;
     private static GoogleMap gMap;
@@ -63,6 +63,13 @@ public class Controller {
     }
     public ArrayList<ArrayList<LatLng>> getArrayListOfMultipliedPolyLines(){
         return lineTest;
+    }
+    //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines
+    public void setArrayListOfPassedPolyLines(ArrayList<ArrayList<LatLng>> passedLine){
+        mPassedLine = passedLine;
+    }
+    public ArrayList<ArrayList<LatLng>> getArrayListOfPlacedPolyLines(){
+        return mPassedLine;
     }
 
     //Setter/Getter to change between "create field" and "create polyline"

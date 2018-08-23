@@ -69,7 +69,7 @@ public class MapsUtilities {
     public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
-                .color(Color.RED)
+                .color(Color.parseColor("#a90404"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the main\multi lines
@@ -113,7 +113,7 @@ public class MapsUtilities {
                 break;
             case Controller.MODE_3_DRIVING:
                 label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
-                startStopTBtn.setVisibility(View.INVISIBLE);
+                startStopTBtn.setVisibility(View.GONE);
                 rlNavBar.setVisibility(View.VISIBLE);
                 iBtnRangeMeter.setVisibility(View.VISIBLE);
                 break;

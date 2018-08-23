@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -69,6 +70,8 @@ public class MapsActivity extends FragmentActivity
 
         final ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+
 
         imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
         relativeLayoutForNavigationBar = findViewById(R.id.rl_navigation_bar);

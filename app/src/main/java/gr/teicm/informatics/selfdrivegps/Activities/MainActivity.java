@@ -21,7 +21,7 @@ import gr.teicm.informatics.selfdrivegps.Fragment.DialogLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String VERSION_OF_APP = "v0.88";
+    private final static String VERSION_OF_APP = "v0.89";
     private Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForAccountIcon;

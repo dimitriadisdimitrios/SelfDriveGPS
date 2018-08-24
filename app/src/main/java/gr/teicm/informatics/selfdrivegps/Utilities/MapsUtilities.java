@@ -3,6 +3,7 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -32,8 +33,8 @@ public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
     private static final int setTimeForCheckSpeedAccuracy = 1500; /*1.5 sec*/
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
-    public static ArrayList<LatLng> mInner = new ArrayList<>();
-    public static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
+    private static ArrayList<LatLng> mInner = new ArrayList<>();
+    private static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed, runnableForTBtnClickAbility;
@@ -102,7 +103,7 @@ public class MapsUtilities {
         mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
     }
 
-    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, RelativeLayout rlNavBar, ImageButton iBtnRangeMeter){
+    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, RelativeLayout rlNavBar, ImageView iBtnRangeMeter){
         String modeOfApp = controller.getProgramStatus();
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
@@ -149,7 +150,7 @@ public class MapsUtilities {
     }
 
     //Counters for speed, gps-accuracy, to check which mode is enabled
-    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar, final ImageButton iBtnRangeMeter){
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar, final ImageView iBtnRangeMeter){
         runnableForModes = new Runnable() {
             @Override
             public void run() {

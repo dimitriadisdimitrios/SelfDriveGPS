@@ -60,7 +60,7 @@ public class MapsActivity extends FragmentActivity
 
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
     private RelativeLayout relativeLayoutForNavigationBar, relativeLayoutWholeArrowForUserLocation;
-    private ImageButton imageButtonForChangeRangeMeter;
+    private ImageView imageButtonForChangeRangeMeter;
     private ImageView rightCube, leftCube, midCube;
 
     @Override
@@ -69,7 +69,7 @@ public class MapsActivity extends FragmentActivity
         setContentView(R.layout.activity_maps);
 
         final ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
-        ImageButton imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
+        ImageView imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
 
 

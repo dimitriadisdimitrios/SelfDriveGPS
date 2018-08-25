@@ -92,7 +92,7 @@ public class MapsUtilities {
     public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(20)
-                .color(Color.parseColor("#2FA72F"))
+                .color(Color.parseColor("#992FA72F"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the polygon for field

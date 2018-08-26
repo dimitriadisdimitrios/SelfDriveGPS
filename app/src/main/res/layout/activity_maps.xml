@@ -37,41 +37,41 @@
             android:rotation="45"/>
     </RelativeLayout>
 
+
+
     <LinearLayout
+        android:id="@+id/ll_mode_speed_accuracy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="end|bottom">
+        android:layout_gravity="end|bottom"
+        android:orientation="vertical">
 
-
-        <ToggleButton
-            android:id="@+id/start_calculations"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            style="@style/toggleButton"
-            android:background="@drawable/ic_toggle_bg"
-            android:padding="10dp" />
         <TextView
             android:id="@+id/tv_accuracy_of_gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:textColor="#000000"
-            android:text="@string/accuracy_of_gps_default" />
+            android:layout_marginEnd="3dp"
+            android:text="@string/accuracy_of_gps_default"
+            android:textColor="#000000" />
+
         <TextView
             android:id="@+id/tv_speed_of_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:textColor="#000000"
-            android:text="@string/speed_counter_default" />
+            android:layout_marginEnd="3dp"
+            android:text="@string/speed_counter_default"
+            android:textColor="#000000" />
+
         <TextView
             android:id="@+id/tv_label_for_toggle_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:textColor="#000000"
-            android:text="@string/mode_unknown" />
+            android:layout_marginBottom="3dp"
+            android:layout_marginEnd="3dp"
+            android:text="@string/mode_unknown"
+            android:textColor="#000000" />
     </LinearLayout>
 </fragment>

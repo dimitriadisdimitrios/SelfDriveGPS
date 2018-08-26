@@ -70,7 +70,7 @@ public class MapsUtilities {
     public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
-                .color(Color.parseColor("#a90404"))
+                .color(Color.parseColor("#000000"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the main\multi lines

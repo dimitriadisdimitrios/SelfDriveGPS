@@ -116,6 +116,7 @@ public class FieldFunctionsUtilities {
     }
 
     //Check every arrayList if has place to add more points to fill the space
+    //TODO: Recode this function
     public static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, LatLng latLngToCheck, double bearingOfPolyline, Boolean isTheEndOfArray){
 
         LatLng pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(latLngToCheck, bearingOfPolyline, 1);

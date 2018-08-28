@@ -104,7 +104,7 @@ public class RetrieveDataActivity extends Activity {
                             Log.d(TAG, String.valueOf(controller.getMeterOfRange()));
                         }
 
-                        //TODO: work on here to be sure tha information you need is completed
+                        //See if get from DB all that app requirements and if doesn't send a message before delete it
                         if(mPointsForLine != null && mPointsForField != null && rangeBetweenPolyLines != null){
                             Intent strMaps = new Intent(context, MapsActivity.class);
                             strMaps.putParcelableArrayListExtra("Field", mPointsForField);

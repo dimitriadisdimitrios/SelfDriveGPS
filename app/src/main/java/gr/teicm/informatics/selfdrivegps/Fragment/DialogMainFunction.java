@@ -1,9 +1,11 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -76,7 +81,7 @@ public class DialogMainFunction extends android.app.DialogFragment {
                         Boolean isNameBeenAccepted = false; //Is a measure to control when the name for FireBase is acceptable
 
                         EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
-                        String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
+                        final String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
 
 //                        DialogUtilities.checkNameIfExistInBase(nameOfDataBaseKey);
 
@@ -84,22 +89,31 @@ public class DialogMainFunction extends android.app.DialogFragment {
                             //Create child with specific name which include LatLng for field
                             Log.d(TAG, String.valueOf(controller.getIfFoundMatchOnFireBase()));
                             //TODO: Under constructed
-//                            if(!controller.getIfFoundMatchOnFireBase()){
-                                databaseReference.child("users/" + mAuth.getUid() + "/" + nameOfDataBaseKey + "/Polygon").setValue(pointsForField);
-                                Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
-                                controller.setIdOfListView(nameOfDataBaseKey);
-                                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
-                                MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
-                                isNameBeenAccepted = true;
-//                            }else{
-//                                controller.setIfFoundMatchOnFireBase(false);
-//                                Toast.makeText(getContext(), "This name already used. Try Again!", Toast.LENGTH_SHORT).show();
-//                            }
+
+                            databaseReference.child("users/" + mAuth.getUid() + "/" + nameOfDataBaseKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @TargetApi(Build.VERSION_CODES.M)
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        // Field "name" already exists
+                                        // Let the user know he needs to pick another username.
+                                        Toast.makeText(getContext(), "Error: Field name already used", Toast.LENGTH_SHORT).show();
+
+                                    } else {
+                                        databaseReference.child("users/" + mAuth.getUid() + "/" + nameOfDataBaseKey + "/Polygon").setValue(pointsForField);
+                                        Toast.makeText(getContext(), "LatLng for Field: Have been added", Toast.LENGTH_SHORT).show();
+                                        controller.setIdOfListView(nameOfDataBaseKey);
+                                        controller.setProgramStatus(Controller.MODE_2_CREATE_LINE);
+                                        MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
+                                        mDialog.dismiss(); //If is name has not any problem . Dismiss the dialog
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {}
+                            });
+
                         } else if (nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 Toast.makeText(getContext(), "Name of Key is empty !", Toast.LENGTH_SHORT).show();
-                        }
-                        if(isNameBeenAccepted){
-                            mDialog.dismiss();
                         }
                     }
                 });

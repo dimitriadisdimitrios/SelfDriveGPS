@@ -88,8 +88,8 @@ public class DialogMainFunction extends android.app.DialogFragment {
                         if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
                             //Create child with specific name which include LatLng for field
                             Log.d(TAG, String.valueOf(controller.getIfFoundMatchOnFireBase()));
-                            //TODO: Under constructed
 
+                            //Check if name that user gave to field
                             databaseReference.child("users/" + mAuth.getUid() + "/" + nameOfDataBaseKey).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @TargetApi(Build.VERSION_CODES.M)
                                 @Override

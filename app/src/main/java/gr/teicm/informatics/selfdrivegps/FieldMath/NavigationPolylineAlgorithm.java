@@ -19,8 +19,7 @@ public class NavigationPolylineAlgorithm {
 
         ArrayList<ArrayList<LatLng>> outerArrayListForMultiPolyline = new ArrayList<>();
 
-        FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(0),mBearing+180,false);
-        FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(mArray.size()-1), mBearing,true);
+        FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mBearing);
 
         outerArrayListForMultiPolyline.add(createTwoInvisiblePolyLinesForNavigation(mArray, bearingForLeftSide));
         outerArrayListForMultiPolyline.add(createTwoInvisiblePolyLinesForNavigation(mArray, bearingForRightSide));

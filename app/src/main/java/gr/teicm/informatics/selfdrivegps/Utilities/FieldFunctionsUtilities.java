@@ -116,19 +116,18 @@ public class FieldFunctionsUtilities {
     }
 
     //Check every arrayList if has place to add more points to fill the space
-    //TODO: Recode this function
-    public static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, LatLng latLngToCheck, double bearingOfPolyline, Boolean isTheEndOfArray){
+    public static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, double bearingOfPolyline){
 
-        LatLng pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(latLngToCheck, bearingOfPolyline, 1);
+        LatLng pointOfmArrayToCheck;
+        do{
+            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(baseArrayListToAddExtraLatLng.get(baseArrayListToAddExtraLatLng.size()-1), bearingOfPolyline, 1); // 1m ahead of main line to fill spaces
+            baseArrayListToAddExtraLatLng.add(pointOfmArrayToCheck); // Add to arrayList the new LatLng
+        }while(FieldFunctionsUtilities.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField()));
 
-        while(FieldFunctionsUtilities.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField())){
-            if(isTheEndOfArray){
-                baseArrayListToAddExtraLatLng.add(pointOfmArrayToCheck);
-            }else{
-                baseArrayListToAddExtraLatLng.add(0, pointOfmArrayToCheck);
-            }
-            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(pointOfmArrayToCheck, bearingOfPolyline, 1);
-        }
+        do{ //Function that do the reverse of above to fill spots below of line
+            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(baseArrayListToAddExtraLatLng.get(0), bearingOfPolyline+180, 1); // 1m ahead of main line to fill spaces
+            baseArrayListToAddExtraLatLng.add(pointOfmArrayToCheck); // Add to arrayList the new LatLng
+        }while(FieldFunctionsUtilities.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField()));
     }
     //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field (#2) (It used on MultiPolyline Algorithm)
     public static boolean checkIfNextPolylineIsInsideOfField(ArrayList<LatLng> givenArrayListToCheck, double mBearing, double mMeter){

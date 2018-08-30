@@ -21,11 +21,11 @@ public class MultiPolylineAlgorithm {
         double bearingForLeftSide = (FieldFunctionsUtilities.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1))) + 270; // Get Bearing for left side
         double mBearing = FieldFunctionsUtilities.calculateBearing(mArray.get(0), mArray.get(mArray.size()-1));
 
+        //TODO: Revision of loopToMultiPolyLines function
         loopToMultiPolyLines(mArray, bearingForRightSide, mBearing, mArray.size()-1, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline); //#1
         loopToMultiPolyLines(mArray, bearingForLeftSide, mBearing, mArray.size()-1, innerArrayListForMultiPolyline, outerArrayListForMultiPolyline);  //#1
 
-        FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(0),mBearing+180,false);
-        FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(mArray, mArray.get(mArray.size()-1),mBearing,true);
+        FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(mArray,mBearing); //Function that fill the blank spots
 
         //Set on controller the value of outerArrayList for polyLines
         controller.setArrayListOfMultipliedPolyLines(outerArrayListForMultiPolyline);
@@ -45,8 +45,7 @@ public class MultiPolylineAlgorithm {
                     inner.add(FieldFunctionsUtilities.calculateLocationFewMetersAhead(mArrayToCheck.get(i), mBearingWithTheRightSide, distanceBetweenLines));
                 }
             }
-            FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(inner, inner.get(0), mBearing+180, false);
-            FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(inner, inner.get(inner.size()-1), mBearing, true);
+            FieldFunctionsUtilities.checkIfEveryPolylineMatchToTheEndOfBorder(inner,mBearing);
 
             ArrayList<LatLng> myTemp = new ArrayList<>(inner);
             outer.add(myTemp);

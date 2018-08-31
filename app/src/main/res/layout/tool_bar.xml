@@ -77,13 +77,25 @@
             android:contentDescription="@string/main_description_on_settings_btn_on_map"
             android:src="@drawable/maps_icon_button"
             android:id="@+id/bt_map_terrain_change"/>
-        <ToggleButton
-            android:id="@+id/start_calculations"
-            style="@style/toggleButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="3dp"
-            android:background="@drawable/ic_toggle_bg" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ToggleButton
+                android:id="@+id/start_calculations"
+                style="@style/toggleButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="3dp"
+                android:background="@drawable/ic_toggle_bg" />
+            <ToggleButton
+                android:id="@+id/tBtn_cover_passed_places"
+                style="@style/toggleButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="3dp"
+                android:background="@drawable/ic_toggle_bg"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>

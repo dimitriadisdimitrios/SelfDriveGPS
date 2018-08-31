@@ -116,17 +116,19 @@ public class FieldFunctionsUtilities {
     }
 
     //Check every arrayList if has place to add more points to fill the space
-    public static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, LatLng latLngToCheck, double bearingOfPolyline, Boolean isTheEndOfArray){
+    public static void checkIfEveryPolylineMatchToTheEndOfBorder(ArrayList<LatLng> baseArrayListToAddExtraLatLng, double bearingOfPolyline){
 
-        LatLng pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(latLngToCheck, bearingOfPolyline, 1);
-
+        LatLng pointOfmArrayToCheck;
+        pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(baseArrayListToAddExtraLatLng.get(baseArrayListToAddExtraLatLng.size()-1), bearingOfPolyline, 1); // 1m ahead of main line to fill spaces;
         while(FieldFunctionsUtilities.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField())){
-            if(isTheEndOfArray){
-                baseArrayListToAddExtraLatLng.add(pointOfmArrayToCheck);
-            }else{
-                baseArrayListToAddExtraLatLng.add(0, pointOfmArrayToCheck);
-            }
-            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(pointOfmArrayToCheck, bearingOfPolyline, 1);
+            baseArrayListToAddExtraLatLng.add(pointOfmArrayToCheck); // Add to arrayList the new LatLng
+            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(pointOfmArrayToCheck, bearingOfPolyline, 1); // 1m ahead of main line to fill spaces
+        }
+
+        pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(baseArrayListToAddExtraLatLng.get(0), bearingOfPolyline+180, 1); // 1m ahead of main line to fill spaces
+        while(FieldFunctionsUtilities.PointIsInRegion(pointOfmArrayToCheck, controller.getArrayListForField())){ //Function that do the reverse of above to fill spots below of line
+            baseArrayListToAddExtraLatLng.add(0, pointOfmArrayToCheck); // Add to arrayList the new LatLng
+            pointOfmArrayToCheck = FieldFunctionsUtilities.calculateLocationFewMetersAhead(pointOfmArrayToCheck, bearingOfPolyline+180, 1); // 1m ahead of main line to fill spaces
         }
     }
     //Take 1 ArrayList<LatLng> and finds if the point(size/2) belongs to field (#2) (It used on MultiPolyline Algorithm)
@@ -136,6 +138,7 @@ public class FieldFunctionsUtilities {
         //Check every spot (x meter away with specific bearing) and if found at least one inside (stops) and return true
         for(int i=0; i<givenArrayListToCheck.size(); i++){
             LatLng tempSpot = FieldFunctionsUtilities.calculateLocationFewMetersAhead(givenArrayListToCheck.get(i), mBearing, mMeter);
+            //TODO: Need more test before place the next multiPolyline
             if(FieldFunctionsUtilities.PointIsInRegion(tempSpot, controller.getArrayListForField())){
                 resultForCheckingIfPointIsInsideOfField = true;
                 i = givenArrayListToCheck.size();

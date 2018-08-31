@@ -5,92 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="gr.teicm.informatics.selfdrivegps.Activities.MapsActivity" >
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="top">
-
-        <Space
-            android:layout_width="32dp"
-            android:layout_height="25dp" />
-
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center"
-            android:id="@+id/rl_navigation_bar"
-            android:visibility="invisible">
-            <ImageView
-                android:id="@+id/iv_center_green_cube"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_margin="10dp"
-                android:layout_centerInParent="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/main_description_for_nav_bar"
-                android:visibility="invisible"
-                android:src="@drawable/green_cube"/>
-            <ImageView
-                android:id="@+id/iv_left_green_cube"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_alignBottom="@+id/iv_main_nav_bar"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="6dp"
-                android:layout_marginStart="28dp"
-                android:contentDescription="@string/main_description_for_nav_bar"
-                android:visibility="invisible"
-                android:src="@drawable/green_cube" />
-            <ImageView
-                android:id="@+id/iv_right_green_cube"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_alignBottom="@+id/iv_main_nav_bar"
-                android:layout_alignEnd="@+id/iv_main_nav_bar"
-                android:layout_marginBottom="6dp"
-                android:layout_marginEnd="28dp"
-                android:contentDescription="@string/main_description_for_nav_bar"
-                android:visibility="invisible"
-                android:src="@drawable/green_cube" />
-            <ImageView
-                android:id="@+id/iv_main_nav_bar"
-                android:layout_width="270dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/nav_bar"
-                android:contentDescription="@string/main_description_for_nav_bar"
-                android:layout_marginTop="4dp"/>
-        </RelativeLayout>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/tool_bar"/>
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:orientation="vertical"
-        android:layout_margin="8dp">
-        <TextView
-            android:id="@+id/tv_speed_of_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textColor="#a90404"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="2"
-            android:shadowRadius="5"
-            android:text="@string/speed_counter_default" />
-        <TextView
-            android:id="@+id/tv_accuracy_of_gps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textColor="#a90404"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="2"
-            android:shadowRadius="5"
-            android:text="@string/accuracy_of_gps_default" />
-    </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -112,53 +37,41 @@
             android:rotation="45"/>
     </RelativeLayout>
 
+
+
     <LinearLayout
+        android:id="@+id/ll_mode_speed_accuracy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_accuracy_of_gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="3dp"
+            android:text="@string/accuracy_of_gps_default"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tv_speed_of_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="3dp"
+            android:text="@string/speed_counter_default"
+            android:textColor="#000000" />
+
         <TextView
             android:id="@+id/tv_label_for_toggle_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:textColor="#a90404"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="2"
-            android:shadowRadius="5"
-            android:text="@string/mode_unknown" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end">
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ToggleButton
-                    android:id="@+id/start_calculations"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textOn="@string/stop"
-                    android:textOff="@string/start"
-                    android:padding="10dp" />
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:contentDescription="@string/main_description_on_settings_btn_on_map"
-                    android:src="@drawable/change_range_meter_icon"
-                    android:layout_alignEnd="@id/start_calculations"
-                    android:id="@+id/bt_change_range_meter"
-                    android:visibility="invisible"/>
-            </RelativeLayout>
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/main_description_on_settings_btn_on_map"
-                android:src="@drawable/maps_icon_button"
-                android:id="@+id/bt_map_terrain_change"/>
-        </LinearLayout>
-
+            android:layout_gravity="start"
+            android:layout_marginBottom="3dp"
+            android:layout_marginEnd="3dp"
+            android:text="@string/mode_unknown"
+            android:textColor="#000000" />
     </LinearLayout>
 </fragment>

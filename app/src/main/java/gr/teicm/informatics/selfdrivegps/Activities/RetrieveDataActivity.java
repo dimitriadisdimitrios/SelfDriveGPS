@@ -68,10 +68,15 @@ public class RetrieveDataActivity extends Activity {
                 //When you click Items on ListView it send you to maps Activity and make buttons there, invisible
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    public void onItemClick(final AdapterView<?> adapterView, View view, final int i, long l) {
                         String childName = (String) adapterView.getItemAtPosition(i);
                         controller.setIdOfListView(childName); //In case that user want to delete an item
 
+                        //Secure that if user press backPress he will take the right information
+                        mPointsForField.clear();
+                        mPointsForLine.clear();
+
+                        //Get the main frame of field
                         for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polygon").getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
                             Double longitude = childCount.child("longitude").getValue(Double.class);
@@ -81,6 +86,7 @@ public class RetrieveDataActivity extends Activity {
                                 controller.setArrayListForField(mPointsForField);
                             }
                         }
+                        //Get the main line from DB
                         for (DataSnapshot childCount: dataSnapshot.child(childName).child("Polyline").getChildren()) {
                             Double latitude = childCount.child("latitude").getValue(Double.class);
                             Double longitude = childCount.child("longitude").getValue(Double.class);
@@ -90,7 +96,7 @@ public class RetrieveDataActivity extends Activity {
                                 controller.setArrayListForLine(mPointsForLine);
                             }
                         }
-
+                        //Get rangeMeters for lines from DB
                         Integer rangeBetweenPolyLines = dataSnapshot.child(childName).child("Meter").getValue(Integer.class);
                         if (rangeBetweenPolyLines != null){
                             int rangeBetweenLines = rangeBetweenPolyLines;
@@ -98,11 +104,28 @@ public class RetrieveDataActivity extends Activity {
                             Log.d(TAG, String.valueOf(controller.getMeterOfRange()));
                         }
 
-                        Intent strMaps = new Intent(context, MapsActivity.class);
-                        strMaps.putParcelableArrayListExtra("Field", mPointsForField);
-                        strMaps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(strMaps);
+                        //See if get from DB all that app requirements and if doesn't send a message before delete it
+                        if(mPointsForLine != null && mPointsForField != null && rangeBetweenPolyLines != null){
+                            Intent strMaps = new Intent(context, MapsActivity.class);
+                            strMaps.putParcelableArrayListExtra("Field", mPointsForField);
+                            strMaps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(strMaps);
+                        }else{
+                            //Alert Dialog which ask confirmation before delete a field with not sufficient data
+                            AlertDialog.Builder adb =new AlertDialog.Builder(RetrieveDataActivity.this);
+                            adb.setTitle("Error !");
+                            adb.setMessage("While recording something went wrong and your field is going to be deleted");
+                            adb.setNegativeButton("Ok", new AlertDialog.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String childNameHoldClick = (String) adapterView.getItemAtPosition(i);
+                                    dataSnapshot.child(childNameHoldClick).getRef().removeValue();
+                                    adapter.clear();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                            adb.show();
                         }
+                    }
                     });
                 listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override

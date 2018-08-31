@@ -3,6 +3,7 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -32,8 +33,8 @@ public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
     private static final int setTimeForCheckSpeedAccuracy = 1500; /*1.5 sec*/
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
-    public static ArrayList<LatLng> mInner = new ArrayList<>();
-    public static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
+    private static ArrayList<LatLng> mInner = new ArrayList<>();
+    private static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForModes, runnableForSpeed, runnableForTBtnClickAbility;
@@ -69,7 +70,7 @@ public class MapsUtilities {
     public static void placePolylineForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
-                .color(Color.RED)
+                .color(Color.parseColor("#000000"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the main\multi lines
@@ -91,7 +92,7 @@ public class MapsUtilities {
     public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(20)
-                .color(Color.parseColor("#2FA72F"))
+                .color(Color.parseColor("#992FA72F"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the polygon for field
@@ -102,7 +103,7 @@ public class MapsUtilities {
         mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
     }
 
-    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, RelativeLayout rlNavBar, ImageButton iBtnRangeMeter){
+    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, ToggleButton coverPassedTBtn, RelativeLayout rlNavBar, ImageView iBtnRangeMeter){
         String modeOfApp = controller.getProgramStatus();
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
@@ -113,7 +114,8 @@ public class MapsUtilities {
                 break;
             case Controller.MODE_3_DRIVING:
                 label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
-                startStopTBtn.setVisibility(View.INVISIBLE);
+                coverPassedTBtn.setVisibility(View.VISIBLE);
+                startStopTBtn.setVisibility(View.GONE);
                 rlNavBar.setVisibility(View.VISIBLE);
                 iBtnRangeMeter.setVisibility(View.VISIBLE);
                 break;
@@ -149,11 +151,11 @@ public class MapsUtilities {
     }
 
     //Counters for speed, gps-accuracy, to check which mode is enabled
-    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton toggleButton, final RelativeLayout rlNavBar, final ImageButton iBtnRangeMeter){
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton startStopTBtn, final ToggleButton coverPassedTBtn, final RelativeLayout rlNavBar, final ImageView iBtnRangeMeter){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
-                changeLabelAboutMode(textView, toggleButton, rlNavBar, iBtnRangeMeter);
+                changeLabelAboutMode(textView, startStopTBtn, coverPassedTBtn, rlNavBar, iBtnRangeMeter);
                 if(!controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
                     handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
                 }else{
@@ -224,11 +226,11 @@ public class MapsUtilities {
         }
     }
 
-    public static void createCoverRouteUserPass(LatLng mLocation){
-        if(FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
+    public static void createCoverRouteUserPass(LatLng mLocation, Boolean toggleButton){
+        if(toggleButton && FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
             mInner.add(mLocation);
             placePassedPlace(mInner, controller.getGoogleMap());
-        }else if(mInner != null && !FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
+        }else if(mInner != null && (!FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField()) || !toggleButton)){
             ArrayList<LatLng> myTemp = new ArrayList<>(mInner);
             mOuter.add(myTemp);
             controller.setArrayListOfPassedPolyLines(mOuter);
@@ -246,6 +248,7 @@ public class MapsUtilities {
                     placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
                 }
             }
+
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
             MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
             for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){

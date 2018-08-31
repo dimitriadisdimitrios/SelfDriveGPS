@@ -138,6 +138,7 @@ public class FieldFunctionsUtilities {
         //Check every spot (x meter away with specific bearing) and if found at least one inside (stops) and return true
         for(int i=0; i<givenArrayListToCheck.size(); i++){
             LatLng tempSpot = FieldFunctionsUtilities.calculateLocationFewMetersAhead(givenArrayListToCheck.get(i), mBearing, mMeter);
+            //TODO: Need more test before place the next multiPolyline
             if(FieldFunctionsUtilities.PointIsInRegion(tempSpot, controller.getArrayListForField())){
                 resultForCheckingIfPointIsInsideOfField = true;
                 i = givenArrayListToCheck.size();

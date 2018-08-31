@@ -14,13 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,6 +48,7 @@ public class MapsActivity extends FragmentActivity
     private static final long MIN_DISTANCE = 1;
 
     private boolean btn_haveBeenClicked = false;
+    private boolean tBtn_coverPassedHaveBeenClicked = false;
     private GoogleApiClient googleApiClient = null;
 
     private GoogleMap mMap;
@@ -62,16 +61,14 @@ public class MapsActivity extends FragmentActivity
     private RelativeLayout relativeLayoutForNavigationBar, relativeLayoutWholeArrowForUserLocation;
     private ImageView imageButtonForChangeRangeMeter;
     private ImageView rightCube, leftCube, midCube;
+    private ToggleButton mainStartBtn, coverRouteTBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        final ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         ImageView imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-
 
         imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
         relativeLayoutForNavigationBar = findViewById(R.id.rl_navigation_bar);
@@ -82,12 +79,14 @@ public class MapsActivity extends FragmentActivity
         rightCube = findViewById(R.id.iv_right_green_cube);
         leftCube = findViewById(R.id.iv_left_green_cube);
         midCube = findViewById(R.id.iv_center_green_cube);
+        mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
+        coverRouteTBtn = findViewById(R.id.tBtn_cover_passed_places);
 
         context = getApplicationContext(); //Set GetApplicationContext to use it all over the class
 
         createGoogleApiClient();
 
-        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
+        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, coverRouteTBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
 
         //Call the DialogChangeTerrain /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +130,12 @@ public class MapsActivity extends FragmentActivity
                 }
             }
         });
+        coverRouteTBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                tBtn_coverPassedHaveBeenClicked = isChecked;
+            }
+        });
     }
 
     @Override
@@ -155,9 +160,8 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        ToggleButton mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
 
-        checkToGetDataFromAnotherActivity(mainStartBtn);
+        checkToGetDataFromAnotherActivity(mainStartBtn, coverRouteTBtn);
     }
 
     @Override
@@ -191,7 +195,7 @@ public class MapsActivity extends FragmentActivity
             MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 ); ////It has the job to not rotate whole arrow based on rotation because camera mode change
             FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
             MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube); //Interact with backLight of NavigationBar
-            MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime);
+            MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime, tBtn_coverPassedHaveBeenClicked);
             if(controller.getArrayListOfPlacedPolyLines() != null) {
                 for (int j = 0; j < controller.getArrayListOfPlacedPolyLines().size(); j++) {
                     MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
@@ -274,13 +278,14 @@ public class MapsActivity extends FragmentActivity
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
-    public void checkToGetDataFromAnotherActivity(ToggleButton mainBtn){
+    public void checkToGetDataFromAnotherActivity(ToggleButton mainCalculationTBtn, ToggleButton coverPassedPlacesTBtn){
         // When load field from "load btn" draw the necessary lines to show it and
         if(getIntent().getExtras()!=null) {
             controller.setProgramStatus(Controller.MODE_3_DRIVING); //Set the Driving mode to use app
 
             MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Draw the map to work
-            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter); //Show the mode and hide tBtn
+            //Show the mode and hide tBtn
+            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainCalculationTBtn, coverPassedPlacesTBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
         }else{
             controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
             Log.d("modes",Controller.MODE_1_RECORD_FIELD);

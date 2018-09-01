@@ -45,4 +45,7 @@
     <string name="warning_message">Please change Location Mode to high accuracy through Settings</string>
     <string name="warning">Warning :</string>
     <string name="location_unknown_mode">Location Mode: Unknown Mode</string>
+    <string name="search_field">Search Field\.\.\.</string>
+    <string name="range_between_lines">Range between lines</string>
+    <string name="you_are_going_to_save_this_field_on_database">You are going to save this field on Database</string>
 </resources>

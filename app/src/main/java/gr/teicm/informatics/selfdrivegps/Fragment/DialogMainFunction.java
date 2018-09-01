@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -52,7 +51,7 @@ public class DialogMainFunction extends android.app.DialogFragment {
         switch (controller.getProgramStatus()) {
             case Controller.MODE_1_RECORD_FIELD:
                 Log.d(TAG, "Record field selected");
-                DialogUtilities.chooseWhichDialogWillAppear(0, 4, mView); //Set through function visibility
+                DialogUtilities.chooseWhichDialogWillAppear(0, 8, mView); //Set through function visibility
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_create_field)
@@ -78,16 +77,12 @@ public class DialogMainFunction extends android.app.DialogFragment {
                 mDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Boolean isNameBeenAccepted = false; //Is a measure to control when the name for FireBase is acceptable
 
                         EditText collectionOfLatLng = mView.findViewById(R.id.et_pop_name_DB_ET); //Set Button from layout_pop
                         final String nameOfDataBaseKey = collectionOfLatLng.getText().toString(); //Get text from editBox
 
-//                        DialogUtilities.checkNameIfExistInBase(nameOfDataBaseKey);
-
                         if (!nameOfDataBaseKey.matches("") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
                             //Create child with specific name which include LatLng for field
-                            Log.d(TAG, String.valueOf(controller.getIfFoundMatchOnFireBase()));
 
                             //Check if name that user gave to field
                             databaseReference.child("users/" + mAuth.getUid() + "/" + nameOfDataBaseKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -121,18 +116,16 @@ public class DialogMainFunction extends android.app.DialogFragment {
 
             case Controller.MODE_2_CREATE_LINE:
                 Log.d(TAG, "Create route line");
-                DialogUtilities.chooseWhichDialogWillAppear(4, 0, mView); //Set through function visibility
-                DialogUtilities.enableRangeMeter(mView, getActivity().getApplication().getBaseContext()); //Call the range meter for dialog
+                DialogUtilities.chooseWhichDialogWillAppear(8, 0, mView); //Set through function visibility
 
                 builder.setView(mView)
-                        .setMessage(R.string.label_on_dialog_create_line)
+                        .setMessage("Are you sure?")
                         .setNegativeButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
                                     //Add ArrayList for PolyLine on same child "users/" + mAuth.getUid() + "/" + nameOfDataBaseKey + "/
                                     databaseReference.child("users/" + mAuth.getUid() + "/" + controller.getIdOfListView() + "/Polyline").setValue(pointsForLine);
-                                    databaseReference.child("users/" + mAuth.getUid() + "/" + controller.getIdOfListView() + "/Meter").setValue(controller.getMeterOfRange());
                                     controller.setProgramStatus(Controller.MODE_3_DRIVING);
                                     MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
 
@@ -158,22 +151,19 @@ public class DialogMainFunction extends android.app.DialogFragment {
 
             case Controller.MODE_3_DRIVING:
                 Log.d(TAG, "Driving mode");
-                DialogUtilities.chooseWhichDialogWillAppear(4, 0, mView); //Set through function visibility
-                DialogUtilities.enableRangeMeter(mView, getActivity().getApplication().getBaseContext()); //Call the range meter for dialog
+                DialogUtilities.chooseWhichDialogWillAppear(8, 0, mView); //Set through function visibility
 
-                TextView tvRangeMeter = mView.findViewById(R.id.tv_range_of_field_meter);
-                tvRangeMeter.setText((""+controller.getMeterOfRange())); // Depict the range of Lines which have
 
                 builder.setView(mView)
                         .setMessage(R.string.label_on_dialog_driving)
                         .setPositiveButton(R.string.bt_on_dialog_send, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
-                                    //Add ArrayList for PolyLine on same child
-                                    databaseReference.child(mAuth.getUid()).child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
-                                    Toast.makeText(getContext(), "Range between lines, changed", Toast.LENGTH_SHORT).show();
-                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
-                                }
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mAuth.getUid()!=null) {
+//                                    //Add ArrayList for PolyLine on same child
+//                                    databaseReference.child(mAuth.getUid()).child(controller.getIdOfListView()).child("Meter").setValue(controller.getMeterOfRange());
+//                                    Toast.makeText(getContext(), "Range between lines, changed", Toast.LENGTH_SHORT).show();
+//                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); //Re-draw the map with necessary resources
+//                                }
                             }
                         });
                 mDialog = builder.create(); // Create the AlertDialog object and return it

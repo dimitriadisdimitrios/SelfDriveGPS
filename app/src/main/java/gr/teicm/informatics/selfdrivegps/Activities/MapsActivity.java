@@ -100,11 +100,7 @@ public class MapsActivity extends FragmentActivity
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){ // Secure the controller.gerArrayList != null
-                    MapsUtilities.showAlertDialog(getFragmentManager());
-                }else{
-                    Toast.makeText(context,"You don't have draw any field !", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 

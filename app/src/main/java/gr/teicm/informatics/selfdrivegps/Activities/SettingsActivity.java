@@ -9,16 +9,20 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.R;
+import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 
 public class SettingsActivity extends AppCompatActivity {
     private static Handler handler = new Handler();
     private static Runnable runnableForModes;
+    private static Controller controller = new Controller();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,9 @@ public class SettingsActivity extends AppCompatActivity {
         TextView tvBluetooth = findViewById(R.id.tv_bluetooth);
         TextView tvLocationMode = findViewById(R.id.tv_location_mode);
         ImageButton iBtnLocationMode = findViewById(R.id.iBtn_location_mode);
+        Button btPlus = findViewById(R.id.btn_plus);
+        Button btSub = findViewById(R.id.btn_sub);
+        final TextView tvRangeBetweenLines = findViewById(R.id.tv_range_of_field_meter);
 
         counterToRefreshLocationMode(tvLocationMode);
 
@@ -78,11 +85,27 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             }
         });
+
+        //For plus btn on range meter
+        btPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                counterForRangeOfField("plus", tvRangeBetweenLines, getApplicationContext());
+            }
+        });
+        //For sub btn on range meter
+        btSub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                counterForRangeOfField("sub", tvRangeBetweenLines, getApplicationContext());
+            }
+        });
     }
 
     private int getLocationMode() throws Settings.SettingNotFoundException {
         return Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.LOCATION_MODE);
     }
+
     private String foundWhichModeReturned(int id){
         switch (id){
             case 0:
@@ -120,5 +143,21 @@ public class SettingsActivity extends AppCompatActivity {
             }
         };
         handler.postDelayed(runnableForModes, 500);
+    }
+
+    private static void counterForRangeOfField(String function, TextView tvRangeOfLines, Context context){
+        int counter = Integer.parseInt(tvRangeOfLines.getText().toString());
+
+        if(function.equals("plus")) {
+            if(counter < 20){
+                counter = counter + 1; //Increase the meter
+            }
+        }else if(function.equals("sub")){
+            if(counter > 6) {
+                counter = counter - 1; //Decrease the meter
+            }
+        }
+        controller.setMeterOfRange(counter); //Set counter to Controller
+        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
     }
 }

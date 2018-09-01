@@ -96,16 +96,9 @@ public class RetrieveDataActivity extends Activity {
                                 controller.setArrayListForLine(mPointsForLine);
                             }
                         }
-                        //Get rangeMeters for lines from DB
-                        Integer rangeBetweenPolyLines = dataSnapshot.child(childName).child("Meter").getValue(Integer.class);
-                        if (rangeBetweenPolyLines != null){
-                            int rangeBetweenLines = rangeBetweenPolyLines;
-                            controller.setMeterOfRange(rangeBetweenLines);
-                            Log.d(TAG, String.valueOf(controller.getMeterOfRange()));
-                        }
 
                         //See if get from DB all that app requirements and if doesn't send a message before delete it
-                        if(mPointsForLine != null && mPointsForField != null && rangeBetweenPolyLines != null){
+                        if(mPointsForLine != null && mPointsForField != null){
                             Intent strMaps = new Intent(context, MapsActivity.class);
                             strMaps.putParcelableArrayListExtra("Field", mPointsForField);
                             strMaps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

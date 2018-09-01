@@ -12,45 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:inputType="text"
-        android:ems="10"
         android:hint="@string/et_give_name_of_field_you_saved_popActivity">
     </EditText>
-
-    <LinearLayout
-        android:id="@+id/linear_layout_with_range_meter"
+    <TextView
+        android:id="@+id/tv_line_saving"
         android:visibility="invisible"
+        android:textSize="13sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:id="@+id/btn_sub"
-            android:text="@string/sub_btn_settingsActivity"/>
-        <Space
-            android:layout_width="5dp"
-            android:layout_height="0dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_range_of_field_meter"
-            android:text="@string/tv_default_range_field"/>
-        <Space
-            android:layout_width="5dp"
-            android:layout_height="0dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_meter_of_range_for_field_default"/>
-        <Space
-            android:layout_width="5dp"
-            android:layout_height="0dp" />
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:id="@+id/btn_plus"
-            android:text="@string/plus_btn_settingsActivity"/>
-    </LinearLayout>
-
+        android:layout_marginTop="5dp"
+        android:text="@string/you_are_going_to_save_this_field_on_database">
+    </TextView>
 </RelativeLayout>

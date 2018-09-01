@@ -1,37 +1,17 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class DialogUtilities {
     private static Controller controller = new Controller();
-    private static final String TAG = "DialogUtilies";
-
-
-    private static void counterForRangeOfField(String function, TextView tvRangeOfLines, Context context){
-        int counter = Integer.parseInt(tvRangeOfLines.getText().toString());
-
-        if(function.equals("plus")) {
-            if(counter < 20){
-                counter = counter + 1; //Increase the meter
-            }
-        }else if(function.equals("sub")){
-            if(counter > 6) {
-                counter = counter - 1; //Decrease the meter
-            }
-        }
-        controller.setMeterOfRange(counter); //Set counter to Controller
-        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
-    }
+//    private static final String TAG = "DialogUtilities";
 
     public static void chooseTerrainBasedOfRadioBtn(String mName){
         switch (mName) {
@@ -47,32 +27,12 @@ public class DialogUtilities {
         }
     }
 
-    public static void chooseWhichDialogWillAppear(int etFieldName, int llRangeMeter, View mView){
+    public static void chooseWhichDialogWillAppear(int etFieldName, int tvSaveLine, View mView){
         EditText editTextToSaveNameOfField = mView.findViewById(R.id.et_pop_name_DB_ET);
-        LinearLayout linearLayoutIncludeRangeMeter = mView.findViewById(R.id.linear_layout_with_range_meter);
+        TextView textViewToSaveLine = mView.findViewById(R.id.tv_line_saving);
 
         // Visible = 0 || Invisible = 4
         editTextToSaveNameOfField.setVisibility(etFieldName);
-        linearLayoutIncludeRangeMeter.setVisibility(llRangeMeter);
-    }
-
-    public static void enableRangeMeter(View mView, final Context context){
-
-        Button btPlus = mView.findViewById(R.id.btn_plus);
-        Button btSub = mView.findViewById(R.id.btn_sub);
-        final TextView tvRangeBetweenLines = mView.findViewById(R.id.tv_range_of_field_meter);
-
-        btPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogUtilities.counterForRangeOfField("plus", tvRangeBetweenLines, context);
-            }
-        });
-        btSub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogUtilities.counterForRangeOfField("sub", tvRangeBetweenLines, context);
-            }
-        });
+        textViewToSaveLine.setVisibility(tvSaveLine);
     }
 }

@@ -4,15 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
     android:layout_weight="1"
     tools:context="gr.teicm.informatics.selfdrivegps.Activities.RetrieveDataActivity">
 
 
+    <EditText
+        android:id="@+id/et_search_fields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/search_field" />
     <ListView
         android:id="@+id/list_view_main_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
+        android:layout_below="@+id/et_search_fields"
         android:clickable="true"
         android:focusable="true">
     </ListView>

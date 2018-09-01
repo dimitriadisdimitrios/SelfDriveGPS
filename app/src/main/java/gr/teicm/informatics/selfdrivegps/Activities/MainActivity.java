@@ -2,6 +2,7 @@ package gr.teicm.informatics.selfdrivegps.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -86,12 +87,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
+        //to use it as implementation in whole app through controller
+        SharedPreferences spf = getSharedPreferences("pref", MODE_PRIVATE);
+        if(spf.contains("rangeMeterValue")){
+            controller.setMeterOfRange(spf.getInt("rangeMeterValue", 8));
+        }
     }
 
     @Override
     public void onBackPressed() {
         //Back Btn do nothing !
-//        super.onBackPressed();
+        super.onBackPressed();
     }
 
     private void counterToRefreshAccount(final ImageButton imageButton, final LinearLayout tvLocationWarning){

@@ -3,6 +3,7 @@ package gr.teicm.informatics.selfdrivegps.Activities;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.provider.Settings;
@@ -17,12 +18,12 @@ import android.widget.ToggleButton;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.R;
-import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 
 public class SettingsActivity extends AppCompatActivity {
     private static Handler handler = new Handler();
     private static Runnable runnableForModes;
     private static Controller controller = new Controller();
+    static SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,13 @@ public class SettingsActivity extends AppCompatActivity {
         Button btPlus = findViewById(R.id.btn_plus);
         Button btSub = findViewById(R.id.btn_sub);
         final TextView tvRangeBetweenLines = findViewById(R.id.tv_range_of_field_meter);
+
+        //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
+        sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        if(sharedPreferences.contains("rangeMeterValue")){
+            tvRangeBetweenLines.setText(getApplication().getString(R.string.tv_meter_of_range_for_field, sharedPreferences.getInt("rangeMeterValue", 8)));
+        }
+
 
         counterToRefreshLocationMode(tvLocationMode);
 
@@ -159,5 +167,10 @@ public class SettingsActivity extends AppCompatActivity {
         }
         controller.setMeterOfRange(counter); //Set counter to Controller
         tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
+
+        //Implement SharedPreferences to set value. So it can been accessed after a restart of app
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("rangeMeterValue", counter);
+        editor.apply();
     }
 }

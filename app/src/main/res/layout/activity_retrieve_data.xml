@@ -9,19 +9,20 @@
     android:layout_weight="1"
     tools:context="gr.teicm.informatics.selfdrivegps.Activities.RetrieveDataActivity">
 
-
-    <EditText
-        android:id="@+id/et_search_fields"
+    <SearchView
+        android:id="@+id/sv_search_fields"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search Here"
         android:hint="@string/search_field" />
     <ListView
         android:id="@+id/list_view_main_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        android:layout_below="@+id/et_search_fields"
+        android:layout_below="@+id/sv_search_fields"
         android:clickable="true"
         android:focusable="true">
     </ListView>

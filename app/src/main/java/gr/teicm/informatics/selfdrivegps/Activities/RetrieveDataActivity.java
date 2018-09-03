@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,10 @@ public class RetrieveDataActivity extends Activity {
     private Controller controller = new Controller();
     private Context context;
 
+    private ArrayAdapter<String> adapter;
+    private ListView listView;
+    private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +62,27 @@ public class RetrieveDataActivity extends Activity {
                 ProgressBar progressBarOfWaitingFireBase = findViewById(R.id.pb_waiting_fireBase);
                 progressBarOfWaitingFireBase.setVisibility(View.INVISIBLE);
 
-
                 //Create ListView to show data from FireBase
-                ListView listView =  findViewById(R.id.list_view_main_frame);
+                listView =  findViewById(R.id.list_view_main_frame);
                 listView.setVisibility(View.VISIBLE);
                 listView.setClickable(true);
-                final ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
+                adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_view, R.id.list_view_sample, fList);
                 listView.setAdapter(adapter);
+
+                //Set SearchView for function of searching in RetrieveDataActivity
+                searchView = findViewById(R.id.sv_search_fields);
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        adapter.getFilter().filter(s);
+                        return false;
+                    }
+                });
 
                 //When you click Items on ListView it send you to maps Activity and make buttons there, invisible
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:descendantFocusability="beforeDescendants"
     android:layout_weight="1"
     tools:context="gr.teicm.informatics.selfdrivegps.Activities.RetrieveDataActivity">
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillEnabled="true"
+    android:fillAfter="true"
+    android:fillBefore="true"
+    android:repeatMode="restart"
+    android:shareInterpolator="true">
+
+    <translate
+        android:fromYDelta="0"
+        android:toYDelta="0%"
+        android:fromXDelta="-100%"
+        android:toXDelta="170%"
+        android:duration="1000"
+        android:repeatCount="-1"/>
+
+</set>

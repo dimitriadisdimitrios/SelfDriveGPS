@@ -117,7 +117,7 @@ public class RetrieveDataActivity extends Activity {
                         }
 
                         //See if get from DB all that app requirements and if doesn't send a message before delete it
-                        if(mPointsForLine != null && mPointsForField != null){
+                        if(mPointsForLine.size() != 0 && mPointsForField.size() != 0){
                             Intent strMaps = new Intent(context, MapsActivity.class);
                             strMaps.putParcelableArrayListExtra("Field", mPointsForField);
                             strMaps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

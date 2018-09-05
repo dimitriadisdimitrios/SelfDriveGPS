@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;

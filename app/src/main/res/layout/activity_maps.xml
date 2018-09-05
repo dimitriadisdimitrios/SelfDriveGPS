@@ -24,14 +24,14 @@
         android:orientation="vertical"
         android:id="@+id/rl_user_arrow_image">
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/arrow_vector"
             android:contentDescription="@string/arrow_imageView"
             android:rotation="270" />
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/black_line_range"
             android:contentDescription="@string/line_rage_imageView"
             android:rotation="45"/>

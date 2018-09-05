@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
 
@@ -19,19 +18,6 @@ import static java.lang.Math.sin;
 public class FieldFunctionsUtilities {
 //    private static final String TAG = "FieldFunctionsUtilities";
     private static Controller controller = new Controller();
-
-    //It find the center of polygon
-    public static LatLng getPolygonCenterPoint(ArrayList<LatLng> polygonPointsList) {
-        LatLng centerLatLng;
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (int i = 0; i < polygonPointsList.size(); i++) {
-            builder.include(polygonPointsList.get(i));
-        }
-        LatLngBounds bounds = builder.build();
-        centerLatLng = bounds.getCenter();
-
-        return centerLatLng;
-    }
 
     //Function to know if user is in polygon or not
     public static boolean PointIsInRegion(LatLng mLatLng, ArrayList<LatLng> thePath) {

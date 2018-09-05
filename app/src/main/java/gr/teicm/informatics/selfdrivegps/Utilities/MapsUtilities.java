@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -106,9 +108,11 @@ public class MapsUtilities {
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
                 label.setText(String.format("Mode: %s", Controller.MODE_1_RECORD_FIELD));
+                rlNavBar.setVisibility(View.GONE);
                 break;
             case Controller.MODE_2_CREATE_LINE:
                 label.setText(String.format("Mode: %s", Controller.MODE_2_CREATE_LINE));
+                rlNavBar.setVisibility(View.GONE);
                 break;
             case Controller.MODE_3_DRIVING:
                 label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
@@ -199,27 +203,48 @@ public class MapsUtilities {
         handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
 
-    public static void turnOnOffLightBehindNavigationBarToSetCourse(ImageView rightCube, ImageView leftCube, ImageView midCube){
+    public static void turnOnOffLightForNavigationBarToSetCourse(ImageView rightWay, ImageView leftWay, ImageView midPoint, Context context){
+        Animation rightAnim = AnimationUtils.loadAnimation(context, R.anim.nav_arrow_right_mode);
+        Animation leftAnim = AnimationUtils.loadAnimation(context, R.anim.nav_arrow_left_mode);
+        Animation centerAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in_out_center);
+
+
         switch(controller.getLocationOfUserForNavigationBar()){
             case Controller.LEFT:
-                rightCube.setVisibility(View.INVISIBLE);
-                leftCube.setVisibility(View.VISIBLE);
-                midCube.setVisibility(View.INVISIBLE);
+                rightWay.setVisibility(View.GONE);
+                leftWay.setVisibility(View.VISIBLE);
+                midPoint.setVisibility(View.GONE);
+
+                rightWay.clearAnimation();
+                midPoint.clearAnimation();
+                leftWay.startAnimation(leftAnim);
                 break;
             case Controller.RIGHT:
-                rightCube.setVisibility(View.VISIBLE);
-                leftCube.setVisibility(View.INVISIBLE);
-                midCube.setVisibility(View.INVISIBLE);
+                rightWay.setVisibility(View.VISIBLE);
+                leftWay.setVisibility(View.GONE);
+                midPoint.setVisibility(View.GONE);
+
+                leftWay.clearAnimation();
+                midPoint.clearAnimation();
+                rightWay.startAnimation(rightAnim);
                 break;
             case Controller.MID:
-                rightCube.setVisibility(View.INVISIBLE);
-                leftCube.setVisibility(View.INVISIBLE);
-                midCube.setVisibility(View.VISIBLE);
+                rightWay.setVisibility(View.GONE);
+                leftWay.setVisibility(View.GONE);
+                midPoint.setVisibility(View.VISIBLE);
+
+                rightWay.clearAnimation();
+                leftWay.clearAnimation();
+                midPoint.startAnimation(centerAnim);
                 break;
             case Controller.NONE:
-                rightCube.setVisibility(View.INVISIBLE);
-                leftCube.setVisibility(View.INVISIBLE);
-                midCube.setVisibility(View.INVISIBLE);
+                rightWay.setVisibility(View.GONE);
+                leftWay.setVisibility(View.GONE);
+                midPoint.setVisibility(View.GONE);
+
+                midPoint.clearAnimation();
+                leftWay.clearAnimation();
+                rightWay.clearAnimation();
                 break;
         }
     }

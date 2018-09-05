@@ -58,9 +58,8 @@ public class MapsActivity extends FragmentActivity
     private Controller controller = new Controller();
 
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
-    private RelativeLayout relativeLayoutForNavigationBar, relativeLayoutWholeArrowForUserLocation;
-    private ImageView imageButtonForChangeRangeMeter;
-    private ImageView rightCube, leftCube, midCube;
+    private RelativeLayout relativeLayoutWholeArrowForUserLocation, relativeLayoutForNavigationBar;
+    private ImageView imageButtonForChangeRangeMeter, ivRightMark, ivLeftMark, ivCenterMark;
     private ToggleButton mainStartBtn, coverRouteTBtn;
 
     @Override
@@ -71,16 +70,16 @@ public class MapsActivity extends FragmentActivity
         ImageView imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
 
         imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
-        relativeLayoutForNavigationBar = findViewById(R.id.rl_navigation_bar);
         relativeLayoutWholeArrowForUserLocation = findViewById(R.id.rl_user_arrow_image);
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
         mAccuracy = findViewById(R.id.tv_accuracy_of_gps); //Initialize view for MapsUtilities.getSpecsForStatusBar
-        rightCube = findViewById(R.id.iv_right_green_cube);
-        leftCube = findViewById(R.id.iv_left_green_cube);
-        midCube = findViewById(R.id.iv_center_green_cube);
         mainStartBtn = findViewById(R.id.start_calculations); //Initialize view to make it invisible accordingly to mode
         coverRouteTBtn = findViewById(R.id.tBtn_cover_passed_places);
+        relativeLayoutForNavigationBar = findViewById(R.id.rl_nav_bar);
+        ivRightMark = findViewById(R.id.iv_right_way);
+        ivLeftMark = findViewById(R.id.iv_left_way);
+        ivCenterMark = findViewById(R.id.iv_center_way);
 
         context = getApplicationContext(); //Set GetApplicationContext to use it all over the class
 
@@ -190,7 +189,7 @@ public class MapsActivity extends FragmentActivity
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
             MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 ); ////It has the job to not rotate whole arrow based on rotation because camera mode change
             FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
-            MapsUtilities.turnOnOffLightBehindNavigationBarToSetCourse(rightCube, leftCube, midCube); //Interact with backLight of NavigationBar
+            MapsUtilities.turnOnOffLightForNavigationBarToSetCourse(ivRightMark, ivLeftMark, ivCenterMark, context); //Interact with backLight of NavigationBar
             MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime, tBtn_coverPassedHaveBeenClicked);
             if(controller.getArrayListOfPlacedPolyLines() != null) {
                 for (int j = 0; j < controller.getArrayListOfPlacedPolyLines().size(); j++) {

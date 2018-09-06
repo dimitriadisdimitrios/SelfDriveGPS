@@ -10,7 +10,7 @@ public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus;
     private static ArrayList<ArrayList<LatLng>> lineTest, mPassedLine;
     private static String idOfList, mLocationStatus, mStatus ="Record field selected";
-    private static Integer mRange ; //TODO: Fix issue with default m on rangeMeter
+    private static Integer mRange ;
     private static GoogleMap gMap;
     private static Double mBearing;
     private static FragmentManager mFragmentManager;

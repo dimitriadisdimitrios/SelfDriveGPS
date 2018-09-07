@@ -18,6 +18,7 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -34,6 +35,7 @@ public class MapsUtilities {
     private static final int setTimeForCheckSpeedAccuracy = 1500; /*1.5 sec*/
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static ArrayList<LatLng> mInner = new ArrayList<>();
+    private static ArrayList<LatLng> mPointForMainLine = new ArrayList<>();
     private static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
@@ -150,6 +152,29 @@ public class MapsUtilities {
         }else{
             return 0;
         }
+    }
+
+    public static void listenerForTouchAddOfMainLine(){
+        final GoogleMap mMap = controller.getGoogleMap();
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng point) {
+
+                if (mPointForMainLine.size() < 2 && controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)) {
+                    MarkerOptions marker = new MarkerOptions().position(
+                            new LatLng(point.latitude, point.longitude)).title("New Marker");
+                    Log.d("etc", String.valueOf(mPointForMainLine));
+                    mPointForMainLine.add(point);
+                    controller.setArrayListForLine(mPointForMainLine);
+                    if (controller.getArrayListForLine().size() >= 2) {
+                        MapsUtilities.placePolylineForRoute(controller.getArrayListForLine(), mMap);
+                    }
+                    mMap.addMarker(marker);
+                }
+            }
+        });
+
     }
 
     //Counters for speed, gps-accuracy, to check which mode is enabled

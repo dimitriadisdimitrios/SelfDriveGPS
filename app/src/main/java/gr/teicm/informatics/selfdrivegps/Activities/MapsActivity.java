@@ -157,6 +157,10 @@ public class MapsActivity extends FragmentActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         checkToGetDataFromAnotherActivity(mainStartBtn, coverRouteTBtn);
+
+        //Listener for touchLong to add 2 spots for Main line
+        MapsUtilities.listenerForTouchAddOfMainLine();
+
     }
 
     @Override

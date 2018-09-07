@@ -20,6 +20,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import java.util.Objects;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.R;
@@ -96,7 +99,6 @@ public class DialogCreateAccount extends  android.app.DialogFragment {
                         //create user
                         mAuth.createUserWithEmailAndPassword(etEmailSignUp.getText().toString(), etPasswordSignUp.getText().toString())
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-
                                     @RequiresApi(api = Build.VERSION_CODES.M)
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -104,7 +106,16 @@ public class DialogCreateAccount extends  android.app.DialogFragment {
                                         // the auth state listener will be notified and logic to handle the
                                         // signed in user can be handled in the listener.
                                         if (!task.isSuccessful()) {
-                                            Toast.makeText(getContext(), " Authentication failed.", Toast.LENGTH_SHORT).show();
+                                            try {
+                                                throw Objects.requireNonNull(task.getException());
+                                            }// if user enters same email.
+                                            catch (FirebaseAuthUserCollisionException existEmail) {
+                                                Toast.makeText(getContext(), "Account with this email, already exist !", Toast.LENGTH_SHORT).show();
+                                            }
+                                            catch (Exception e) {
+                                                Log.d(TAG, "onComplete: " + e.getMessage());
+                                            }
+//                                            Toast.makeText(getContext(), " Authentication failed.", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(getContext(), " Authentication is successfully.", Toast.LENGTH_SHORT).show();
                                             Log.d(TAG, "Creation of account was succeed");

@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class Controller {
-    private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus;
+    private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus, mMarkerPosition;
     private static ArrayList<ArrayList<LatLng>> lineTest, mPassedLine;
     private static String idOfList, mLocationStatus, mStatus ="Record field selected";
     private static Integer mRange ;
@@ -54,6 +54,13 @@ public class Controller {
     }
     public ArrayList<LatLng> getSecondLineThatActivated(){
         return secondLineFocus;
+    }
+    //Setter/Getter for ArrayList which refer on Markers position
+    public void setMarkerPosition(ArrayList<LatLng> markerSpot){
+        mMarkerPosition = markerSpot;
+    }
+    public ArrayList<LatLng> getMarkerPosition(){
+        return mMarkerPosition;
     }
 
     //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines

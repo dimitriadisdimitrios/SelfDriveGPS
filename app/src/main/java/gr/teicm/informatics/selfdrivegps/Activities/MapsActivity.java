@@ -41,7 +41,7 @@ import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "MapsActivity";
     private static final long MIN_TIME = 5;
@@ -99,7 +99,11 @@ public class MapsActivity extends FragmentActivity
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
+                    for(int i=0; i<2; i++){
+                        Log.d("eet", String.valueOf(controller.getArrayListForField().get(i)));
+                    }
+                }
             }
         });
 
@@ -152,6 +156,7 @@ public class MapsActivity extends FragmentActivity
         mMap.setMyLocationEnabled(false);
 //        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
 //        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -160,7 +165,8 @@ public class MapsActivity extends FragmentActivity
 
         //Listener for touchLong to add 2 spots for Main line
         MapsUtilities.listenerForTouchAddOfMainLine();
-
+        //Listener for click on a marker
+        MapsUtilities.listenerForClickOnMarkers();
     }
 
     @Override

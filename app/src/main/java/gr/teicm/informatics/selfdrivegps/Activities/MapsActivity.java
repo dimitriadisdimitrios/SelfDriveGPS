@@ -99,11 +99,7 @@ public class MapsActivity extends FragmentActivity
         imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
-                    for(int i=0; i<2; i++){
-                        Log.d("eet", String.valueOf(controller.getArrayListForField().get(i)));
-                    }
-                }
+//                Log.d(TAG, String.valueOf(controller.getMainLinePolylineOptions().getPoints()));
             }
         });
 

@@ -167,9 +167,9 @@ public class MapsUtilities {
                 if (mPointForMainLine.size() < 2 /*&& controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)*/) {
                     //TODO: Remove comments
 
-                    MarkerOptions marker = new MarkerOptions().position(new LatLng(point.latitude, point.longitude)).title("New Marker");
+                    MarkerOptions marker = new MarkerOptions().position(new LatLng(point.latitude, point.longitude));
                     mPointForMainLine.add(point);
-                    controller.setMarkerPosition(mPointForMainLine);
+                    controller.setMarkerPosition(mPointForMainLine); //To save the spots of Marker
 
                     if (controller.getMarkerPosition().size() >= 2) {
                         MapsUtilities.placePolylineForRoute(controller.getMarkerPosition(), mMap);
@@ -187,12 +187,12 @@ public class MapsUtilities {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 //Remove the lat/lng from controller
-                mArrayForRefreshMarkerPoints.clear();
-                mArrayForRefreshMarkerPoints.add(controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition())));
-                Log.d("eee", String.valueOf(mArrayForRefreshMarkerPoints));
+                mArrayForRefreshMarkerPoints.clear(); // Clear the array to fill it next
+                mArrayForRefreshMarkerPoints.add(controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition()))); //Save the left lat/lng to array
+//                controller.setMarkerPosition(mArrayForRefreshMarkerPoints); // To inst-remove the spot
                 marker.remove(); //Remove Marker
                 recreateFieldWithMultiPolyline(controller.getGoogleMap());
-                return false;
+                return true; // True to not re-enter
             }
         });
     }

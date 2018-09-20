@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.ArrayList;
 
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogCreateAccount;
 import gr.teicm.informatics.selfdrivegps.Utilities.FieldFunctionsUtilities;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
@@ -100,6 +101,7 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onClick(View view) {
                 FieldFunctionsUtilities.algorithmForTouchMainLine(controller.getMarkerPosition());
+                MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
 //                Log.d(TAG, String.valueOf(controller.getMainLinePolylineOptions().getPoints()));
             }
         });

@@ -22,7 +22,7 @@ import gr.teicm.informatics.selfdrivegps.Fragment.DialogLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String VERSION_OF_APP = "v0.9";
+    private final static String VERSION_OF_APP = "v0.905";
     private Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForAccountIcon;
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Set the version of App on this variable
         tvVersionOfApp.setText(VERSION_OF_APP);
+        //Set fragmentManager on controller to open dialogs
+        controller.setAppFragmentManager(getFragmentManager());
 
         counterToRefreshAccount(iBtnLogIn, llLocationModeWarning);
 
@@ -80,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                     DialogShowAccount dialogShowAccount = new DialogShowAccount();
                     dialogShowAccount.show(getFragmentManager(),"Show Account");
                 }else{
-                    controller.setAppFragmentManager(getFragmentManager());
                     DialogLogIn dialogLogIn = new DialogLogIn();
                     dialogLogIn.show(getFragmentManager(), "Log In");
                     dialogLogIn.setCancelable(false);

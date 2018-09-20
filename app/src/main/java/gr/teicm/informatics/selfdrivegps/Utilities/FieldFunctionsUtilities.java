@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogCreateAccount;
 
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.Math.PI;
@@ -250,17 +251,22 @@ public class FieldFunctionsUtilities {
             distanceThatAlgorithmCovered = distanceThatAlgorithmCovered + 3;
         }while (distanceThatAlgorithmCovered < distanceOfTwoSpots);
 
-        //TODO: Check which spot are inside of field
-        //TODO: save it
+        //Take the arrayList which create from touchLine an check every spot individual
         for(int i=0; i<mArrayListForMainLineBeforeCheck.size(); i++){
+            //Check which one point is inside of field. If return true, it place the spot on ArrayList to create the main Line
             if(FieldFunctionsUtilities.PointIsInRegion(mArrayListForMainLineBeforeCheck.get(i), controller.getArrayListForField())){
                 mArrayListForMainLineAfterCheck.add(mArrayListForMainLineBeforeCheck.get(i));
             }
         }
-        MapsUtilities.placePolylineParallel(mArrayListForMainLineAfterCheck, controller.getGoogleMap());
 
-        controller.setProgramStatus(Controller.MODE_3_DRIVING);
-        controller.setArrayListForLine(mArrayListForMainLineAfterCheck);
-        MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
+        //Check if arrayList for main line is empty
+        if(mArrayListForMainLineAfterCheck.size() > 1 ){
+
+//            MapsUtilities.showAlertDialog(controller.getAppFragmentManager());//Set listener on button to transfer data to database
+            //Set the controller for main line so i could continue the  flow of app action
+            controller.setArrayListForLine(mArrayListForMainLineAfterCheck);
+            //Reset the front-end map without markers
+            MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
+        }
     }
 }

@@ -164,7 +164,8 @@ public class MapsUtilities {
             @Override
             public void onMapLongClick(LatLng point) {
 
-                if (mPointForMainLine.size() < 2 /*&& controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)*/) {
+                //Check if markers are 1 or 0 and the program is in right mode
+                if (mPointForMainLine.size() < 2 && controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)) {
                     //TODO: Remove comments
 
                     MarkerOptions marker = new MarkerOptions().position(new LatLng(point.latitude, point.longitude));
@@ -186,6 +187,8 @@ public class MapsUtilities {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                Log.d(TAG, String.valueOf(controller.getMarkerPosition()));
+
                 //Remove the lat/lng from controller
                 mArrayForRefreshMarkerPoints.clear(); // Clear the array to fill it next
                 mArrayForRefreshMarkerPoints.add(controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition()))); //Save the left lat/lng to array
@@ -313,6 +316,13 @@ public class MapsUtilities {
 
         if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
+
+            if(controller.getMarkerPosition() != null){
+                for(int i=0; i<controller.getMarkerPosition().size(); i++){
+                    MarkerOptions marker = new MarkerOptions().position(new LatLng(controller.getMarkerPosition().get(i).latitude, controller.getMarkerPosition().get(i).longitude));
+                    mMap.addMarker(marker);
+                }
+            }
         }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
             if(controller.getArrayListOfPlacedPolyLines() != null){
                 for(int j=0; j < controller.getArrayListOfPlacedPolyLines().size(); j++){

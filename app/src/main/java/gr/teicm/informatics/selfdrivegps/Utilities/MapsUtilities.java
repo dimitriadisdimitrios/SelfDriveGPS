@@ -37,7 +37,6 @@ public class MapsUtilities {
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static ArrayList<LatLng> mInner = new ArrayList<>();
     private static ArrayList<LatLng> mPointForMainLine = new ArrayList<>();
-    private static ArrayList<LatLng> mArrayForRefreshMarkerPoints =  new ArrayList<>();
     private static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
@@ -187,15 +186,14 @@ public class MapsUtilities {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Log.d(TAG, String.valueOf(controller.getMarkerPosition()));
-
                 //Remove the lat/lng from controller
-                mArrayForRefreshMarkerPoints.clear(); // Clear the array to fill it next
-                mArrayForRefreshMarkerPoints.add(controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition()))); //Save the left lat/lng to array
-//                controller.setMarkerPosition(mArrayForRefreshMarkerPoints); // To inst-remove the spot
-                marker.remove(); //Remove Marker
+                controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition()));
+                //Remove Marker
+                marker.remove();
+                //Re-draw the map
                 recreateFieldWithMultiPolyline(controller.getGoogleMap());
-                return true; // True to not re-enter
+                // True to not re-enter
+                return true;
             }
         });
     }

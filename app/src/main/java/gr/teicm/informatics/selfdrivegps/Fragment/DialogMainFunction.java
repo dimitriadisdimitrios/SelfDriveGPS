@@ -62,7 +62,7 @@ public class DialogMainFunction extends android.app.DialogFragment {
                                     pointsForField.clear(); //Empty ArrayList<LatLng> from the controller
                                     controller.setArrayListForField(pointsForField); //Set the cleared arrayList to Controller.java
                                     Toast.makeText(getContext(), "Preparation for sending Canceled, try again!", Toast.LENGTH_SHORT).show();
-                                    controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
+                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap()); // Clear the map to re-draw the polyLines
                                 }
                             }
                         })
@@ -139,11 +139,9 @@ public class DialogMainFunction extends android.app.DialogFragment {
                             public void onClick(DialogInterface dialog, int id) {
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    pointsForLine.clear(); //Empty ArrayList<LatLng> from the controller
-                                    controller.setArrayListForLine(pointsForLine);
-                                    controller.getGoogleMap().clear(); // Clear the map to re-draw the polyLines
-                                    MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), controller.getGoogleMap());
-
+                                    controller.getArrayListForLine().clear(); //Empty ArrayList<LatLng> from the controller
+                                    controller.getMarkerPosition().clear();
+                                    MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
                                     Toast.makeText(getContext(), "Preparation for line Canceled !", Toast.LENGTH_SHORT).show();
                                 }
                             }

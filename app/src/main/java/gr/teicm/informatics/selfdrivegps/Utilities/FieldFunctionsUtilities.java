@@ -1,5 +1,9 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.Log;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -220,5 +224,43 @@ public class FieldFunctionsUtilities {
             controller.setLocationOfUserForNavigationBar(Controller.NONE);
         }
 
+    }
+
+    public static void algorithmForTouchMainLine(ArrayList<LatLng> mArray){
+        Location firstTempLocation = new Location(LocationManager.GPS_PROVIDER);
+        Location secondTempLocation = new Location(LocationManager.GPS_PROVIDER);
+        ArrayList<LatLng> mArrayListForMainLineBeforeCheck = new ArrayList<>(); //ArrayList to save spots of created main line
+        ArrayList<LatLng> mArrayListForMainLineAfterCheck = new ArrayList<>(); //ArrayList to save spots of created main line
+        LatLng tempSpotForFillMainLine = mArray.get(0); //Temp spot in every loop
+        int distanceThatAlgorithmCovered = 0, distanceOfTwoSpots ;
+
+        Double mBearing = calculateBearing(mArray.get(0), mArray.get(1)); // To Calculate bearing of 2 spots
+
+        firstTempLocation.setLatitude(mArray.get(0).latitude);     //Initialize with values the 2 locations
+        firstTempLocation.setLongitude(mArray.get(0).longitude);   //So I could take the distance
+        secondTempLocation.setLatitude(mArray.get(1).latitude);
+        secondTempLocation.setLongitude(mArray.get(1).longitude);
+
+        distanceOfTwoSpots = (int) firstTempLocation.distanceTo(secondTempLocation); //Calculate the distance of 2 spots
+
+        do{ // Loop to calculate the main line based on
+            tempSpotForFillMainLine = calculateLocationFewMetersAhead(tempSpotForFillMainLine, mBearing, distanceThatAlgorithmCovered);
+            mArrayListForMainLineBeforeCheck.add(tempSpotForFillMainLine);
+
+            distanceThatAlgorithmCovered = distanceThatAlgorithmCovered + 3;
+        }while (distanceThatAlgorithmCovered < distanceOfTwoSpots);
+
+        //TODO: Check which spot are inside of field
+        //TODO: save it
+        for(int i=0; i<mArrayListForMainLineBeforeCheck.size(); i++){
+            if(FieldFunctionsUtilities.PointIsInRegion(mArrayListForMainLineBeforeCheck.get(i), controller.getArrayListForField())){
+                mArrayListForMainLineAfterCheck.add(mArrayListForMainLineBeforeCheck.get(i));
+            }
+        }
+        MapsUtilities.placePolylineParallel(mArrayListForMainLineAfterCheck, controller.getGoogleMap());
+
+        controller.setProgramStatus(Controller.MODE_3_DRIVING);
+        controller.setArrayListForLine(mArrayListForMainLineAfterCheck);
+        MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
     }
 }

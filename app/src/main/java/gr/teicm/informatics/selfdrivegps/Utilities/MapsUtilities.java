@@ -248,6 +248,7 @@ public class MapsUtilities {
         handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
 
+    //Show the right animation for navigation purpose
     public static void turnOnOffLightForNavigationBarToSetCourse(ImageView rightWay, ImageView leftWay, ImageView midPoint, Context context){
         Animation rightAnim = AnimationUtils.loadAnimation(context, R.anim.nav_arrow_right_mode);
         Animation leftAnim = AnimationUtils.loadAnimation(context, R.anim.nav_arrow_left_mode);
@@ -294,6 +295,7 @@ public class MapsUtilities {
         }
     }
 
+    //Draw the route of user pass
     public static void createCoverRouteUserPass(LatLng mLocation, Boolean toggleButton){
         if(toggleButton && FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
             mInner.add(mLocation);
@@ -309,14 +311,6 @@ public class MapsUtilities {
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
 
-        //TODO: Add this if in above if after finish it
-        //After remove a Marker re-draw the map
-        if(controller.getMarkerPosition() != null) {
-            if(controller.getMarkerPosition().size() >= 1){
-                MarkerOptions mMarker = new MarkerOptions().position(controller.getMarkerPosition().get(0)).title("New Marker");
-                mMap.addMarker(mMarker);
-            }
-        }
         if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
         }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){

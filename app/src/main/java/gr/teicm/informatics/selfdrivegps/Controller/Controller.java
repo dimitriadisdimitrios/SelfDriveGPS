@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 public class Controller {
@@ -14,6 +15,7 @@ public class Controller {
     private static GoogleMap gMap;
     private static Double mBearing;
     private static FragmentManager mFragmentManager;
+    private static PolylineOptions mPolylineOptions;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
@@ -61,6 +63,14 @@ public class Controller {
     }
     public ArrayList<LatLng> getMarkerPosition(){
         return mMarkerPosition;
+    }
+
+    //Setter/Getter for Polyline option so i will be able to get LatLng of main Line
+    public void setMainLinePolylineOptions(PolylineOptions mPol){
+        mPolylineOptions = mPol;
+    }
+    public PolylineOptions getMainLinePolylineOptions(){
+        return mPolylineOptions;
     }
 
     //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines

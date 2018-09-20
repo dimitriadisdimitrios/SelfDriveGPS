@@ -2,7 +2,6 @@ package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.NavigationPolylineAlgorithm;
-import gr.teicm.informatics.selfdrivegps.Fragment.DialogCreateAccount;
 
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.Math.PI;
@@ -21,7 +19,6 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class FieldFunctionsUtilities {
-//    private static final String TAG = "FieldFunctionsUtilities";
     private static Controller controller = new Controller();
 
     //Function to know if user is in polygon or not
@@ -227,7 +224,7 @@ public class FieldFunctionsUtilities {
 
     }
 
-    public static void algorithmForTouchMainLine(ArrayList<LatLng> mArray){
+    public static Boolean algorithmForTouchMainLine(ArrayList<LatLng> mArray){
         Location firstTempLocation = new Location(LocationManager.GPS_PROVIDER);
         Location secondTempLocation = new Location(LocationManager.GPS_PROVIDER);
         ArrayList<LatLng> mArrayListForMainLineBeforeCheck = new ArrayList<>(); //ArrayList to save spots of created main line
@@ -261,12 +258,14 @@ public class FieldFunctionsUtilities {
 
         //Check if arrayList for main line is empty
         if(mArrayListForMainLineAfterCheck.size() > 1 ){
-
 //            MapsUtilities.showAlertDialog(controller.getAppFragmentManager());//Set listener on button to transfer data to database
             //Set the controller for main line so i could continue the  flow of app action
             controller.setArrayListForLine(mArrayListForMainLineAfterCheck);
             //Reset the front-end map without markers
             MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
+            return true;
+        }else{
+            return false;
         }
     }
 }

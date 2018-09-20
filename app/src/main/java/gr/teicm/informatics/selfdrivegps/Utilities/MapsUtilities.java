@@ -315,6 +315,7 @@ public class MapsUtilities {
         mMap.clear(); //clear the map
 
         if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
+
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
 
             if(controller.getMarkerPosition() != null){

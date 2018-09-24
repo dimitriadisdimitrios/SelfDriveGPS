@@ -4,7 +4,6 @@
     android:layout_height="40dp"
     android:background="#992FA72F">
 
-
     <RelativeLayout
         android:id="@+id/rl_nav_bar"
         android:layout_width="120dp"
@@ -16,7 +15,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:contentDescription="@string/main_description_for_nav_bar"
-            android:src="@drawable/nav_arrows" />
+            android:src="@drawable/nav_arrows"
+            android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_center_way"
             android:layout_width="60dp"
@@ -24,7 +24,8 @@
             android:layout_centerInParent="true"
             android:rotation="180"
             android:contentDescription="@string/main_description_for_nav_bar"
-            android:src="@drawable/nav_center_point" />
+            android:src="@drawable/nav_center_point"
+            android:visibility="gone"/>
         <ImageView
             android:id="@+id/iv_left_way"
             android:layout_width="60dp"
@@ -32,23 +33,23 @@
             android:layout_alignParentEnd="true"
             android:rotation="180"
             android:contentDescription="@string/main_description_for_nav_bar"
-            android:src="@drawable/nav_arrows" />
+            android:src="@drawable/nav_arrows"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end">
-        <ImageView
+        <ToggleButton
+            android:id="@+id/bt_change_range_meter"
+            style="@style/toggleButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:contentDescription="@string/main_description_on_settings_btn_on_map"
-            android:src="@drawable/change_range_meter_icon"
             android:layout_gravity="center"
             android:layout_margin="3dp"
-            android:id="@+id/bt_change_range_meter"
-            android:focusable="true"
-            android:visibility="visible"/>
+            android:background="@drawable/ic_toggle_touch_bg"
+            android:visibility="gone"/>
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -60,7 +61,16 @@
             android:id="@+id/bt_map_terrain_change"/>
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <ImageView
+                android:id="@+id/iv_touch_main_line_calculation"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="3dp"
+                android:contentDescription="@string/main_description_for_nav_bar"
+                android:src="@drawable/touch_line_calculation"
+                android:visibility="gone"/>
             <ToggleButton
                 android:id="@+id/start_calculations"
                 style="@style/toggleButton"

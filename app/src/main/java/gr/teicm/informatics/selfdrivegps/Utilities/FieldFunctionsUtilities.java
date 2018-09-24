@@ -1,5 +1,10 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -16,7 +21,6 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class FieldFunctionsUtilities {
-//    private static final String TAG = "FieldFunctionsUtilities";
     private static Controller controller = new Controller();
 
     //Function to know if user is in polygon or not
@@ -220,5 +224,60 @@ public class FieldFunctionsUtilities {
             controller.setLocationOfUserForNavigationBar(Controller.NONE);
         }
 
+    }
+
+    //Algorithm to make touch line feature available
+    public static Boolean algorithmForTouchMainLine(ArrayList<LatLng> mArray, Context context){
+
+        if(mArray.size() == 2){ // Check if user set 2 markers
+
+            Location firstTempLocation = new Location(LocationManager.GPS_PROVIDER);
+            Location secondTempLocation = new Location(LocationManager.GPS_PROVIDER);
+            ArrayList<LatLng> mArrayListForMainLineBeforeCheck = new ArrayList<>(); //ArrayList to save spots of created main line
+            ArrayList<LatLng> mArrayListForMainLineAfterCheck = new ArrayList<>(); //ArrayList to save spots of created main line
+            LatLng tempSpotForFillMainLine = mArray.get(0); //Temp spot in every loop
+            int distanceThatAlgorithmCovered = 0, distanceOfTwoSpots ;
+
+            Double mBearing = calculateBearing(mArray.get(0), mArray.get(1)); // To Calculate bearing of 2 spots
+
+            firstTempLocation.setLatitude(mArray.get(0).latitude);     //Initialize with values the 2 locations
+            firstTempLocation.setLongitude(mArray.get(0).longitude);   //So I could take the distance
+            secondTempLocation.setLatitude(mArray.get(1).latitude);
+            secondTempLocation.setLongitude(mArray.get(1).longitude);
+
+            distanceOfTwoSpots = (int) firstTempLocation.distanceTo(secondTempLocation); //Calculate the distance of 2 spots
+
+            do{ // Loop to calculate the main line based on
+                tempSpotForFillMainLine = calculateLocationFewMetersAhead(tempSpotForFillMainLine, mBearing, distanceThatAlgorithmCovered);
+                mArrayListForMainLineBeforeCheck.add(tempSpotForFillMainLine);
+
+                distanceThatAlgorithmCovered = distanceThatAlgorithmCovered + 3;
+            }while (distanceThatAlgorithmCovered < distanceOfTwoSpots);
+
+            //Take the arrayList which create from touchLine an check every spot individual
+            for(int i=0; i<mArrayListForMainLineBeforeCheck.size(); i++){
+                //Check which one point is inside of field. If return true, it place the spot on ArrayList to create the main Line
+                if(FieldFunctionsUtilities.PointIsInRegion(mArrayListForMainLineBeforeCheck.get(i), controller.getArrayListForField())){
+                    mArrayListForMainLineAfterCheck.add(mArrayListForMainLineBeforeCheck.get(i));
+                }
+            }
+
+            //Check if arrayList for main line is empty
+            if(mArrayListForMainLineAfterCheck.size() > 1 ){
+                //Set the controller for main line so i could continue the  flow of app action
+                controller.setArrayListForLine(mArrayListForMainLineAfterCheck);
+                //Reset the front-end map without markers
+                MapsUtilities.recreateFieldWithMultiPolyline(controller.getGoogleMap());
+                return true;
+            }else{
+                Toast.makeText(context, "The line is out of field border !", Toast.LENGTH_SHORT).show();
+                controller.setProgramStatus(Controller.MODE_0_TOUCH_LISTENER); //Re-set mode to 'Create Line' to show the right buttons on toolbar to
+                return false;
+            }
+        }else{ // If user hasn't set 2 marker show the message below
+            Toast.makeText(context, "You must add 2 point to create the main line !", Toast.LENGTH_SHORT).show();
+            controller.setProgramStatus(Controller.MODE_0_TOUCH_LISTENER); //Re-set mode to 'Create Line' to show the right buttons on toolbar to
+            return false;
+        }
     }
 }

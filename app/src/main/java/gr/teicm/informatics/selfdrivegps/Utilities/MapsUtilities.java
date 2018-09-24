@@ -17,7 +17,10 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -31,9 +34,10 @@ import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
-    private static final int setTimeForCheckSpeedAccuracy = 1500; /*1.5 sec*/
+    private static final int setTimeForCheckSpeedAccuracy = 800; /*1.5 sec*/
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
     private static ArrayList<LatLng> mInner = new ArrayList<>();
+    private static ArrayList<LatLng> mPointForMainLine = new ArrayList<>();
     private static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
     private static Controller controller = new Controller();
     private static Handler handler = new Handler();
@@ -81,7 +85,7 @@ public class MapsUtilities {
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the parallel lines
-    public static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
+    private static void placePolygonForRoute(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolygonOptions polygonOptions = new PolygonOptions()
                 .fillColor(Color.TRANSPARENT)
                 .strokeColor(Color.GREEN)
@@ -103,23 +107,37 @@ public class MapsUtilities {
         mAccuracy.setText(context.getString(R.string.accuracy_of_gps, accuracy));
     }
 
-    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, ToggleButton coverPassedTBtn, RelativeLayout rlNavBar, ImageView iBtnRangeMeter){
+    public static void changeLabelAboutMode(TextView label, ToggleButton startStopTBtn, ToggleButton coverPassedTBtn, RelativeLayout rlNavBar, ToggleButton tBtnRangeMeter, ImageView ivTouchLineCalc){
         String modeOfApp = controller.getProgramStatus();
         switch (modeOfApp){
             case Controller.MODE_1_RECORD_FIELD:
                 label.setText(String.format("Mode: %s", Controller.MODE_1_RECORD_FIELD));
                 rlNavBar.setVisibility(View.GONE);
+                tBtnRangeMeter.setVisibility(View.GONE);
+                ivTouchLineCalc.setVisibility(View.GONE);
                 break;
             case Controller.MODE_2_CREATE_LINE:
                 label.setText(String.format("Mode: %s", Controller.MODE_2_CREATE_LINE));
                 rlNavBar.setVisibility(View.GONE);
+                tBtnRangeMeter.setVisibility(View.VISIBLE);
+                ivTouchLineCalc.setVisibility(View.GONE);
+                startStopTBtn.setVisibility(View.VISIBLE);
                 break;
             case Controller.MODE_3_DRIVING:
                 label.setText(String.format("Mode: %s", Controller.MODE_3_DRIVING));
                 coverPassedTBtn.setVisibility(View.VISIBLE);
+                tBtnRangeMeter.setVisibility(View.GONE);
                 startStopTBtn.setVisibility(View.GONE);
                 rlNavBar.setVisibility(View.VISIBLE);
-                iBtnRangeMeter.setVisibility(View.VISIBLE);
+                ivTouchLineCalc.setVisibility(View.GONE);
+                break;
+            case Controller.MODE_0_TOUCH_LISTENER:
+                label.setText(String.format("Mode: %s", Controller.MODE_0_TOUCH_LISTENER));
+                coverPassedTBtn.setVisibility(View.GONE);
+                tBtnRangeMeter.setVisibility(View.VISIBLE);
+                startStopTBtn.setVisibility(View.GONE);
+                rlNavBar.setVisibility(View.GONE);
+                ivTouchLineCalc.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -152,12 +170,55 @@ public class MapsUtilities {
         }
     }
 
+    //Listener for long touch on map
+    public static void listenerForTouchAddOfMainLine(){
+        final GoogleMap mMap = controller.getGoogleMap();
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng point) {
+
+                //Check if markers are 1 or 0 and the program is in right mode
+                if (mPointForMainLine.size() < 2 && controller.getProgramStatus().equals(Controller.MODE_0_TOUCH_LISTENER) && controller.getTouchLineListener()) {
+
+                    MarkerOptions marker = new MarkerOptions().position(new LatLng(point.latitude, point.longitude));
+                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_spot_marker)); // Set custom marker
+                    mPointForMainLine.add(point);
+                    controller.setMarkerPosition(mPointForMainLine); //To save the spots of Marker
+
+                    if (controller.getMarkerPosition().size() >= 2) {
+                        MapsUtilities.placePolylineForRoute(controller.getMarkerPosition(), mMap);
+                    }
+                    mMap.addMarker(marker);
+                }
+            }
+        });
+    }
+    //Listener for clicking a Marker to add line on field
+    public static void listenerForClickOnMarkers(){
+        final GoogleMap mMap = controller.getGoogleMap();
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //Remove the lat/lng from controller
+                controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition()));
+                //Remove Marker
+                marker.remove();
+                //Re-draw the map
+                recreateFieldWithMultiPolyline(controller.getGoogleMap());
+                // True to not re-enter
+                return true;
+            }
+        });
+    }
+
     //Counters for speed, gps-accuracy, to check which mode is enabled
-    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton startStopTBtn, final ToggleButton coverPassedTBtn, final RelativeLayout rlNavBar, final ImageView iBtnRangeMeter){
+    public static void counterToCheckIfModeChanged(final TextView textView, final ToggleButton startStopTBtn, final ToggleButton coverPassedTBtn, final RelativeLayout rlNavBar, final ToggleButton tBtnRangeMeter, final ImageView ivTouchLineCalc){
         runnableForModes = new Runnable() {
             @Override
             public void run() {
-                changeLabelAboutMode(textView, startStopTBtn, coverPassedTBtn, rlNavBar, iBtnRangeMeter);
+                changeLabelAboutMode(textView, startStopTBtn, coverPassedTBtn, rlNavBar, tBtnRangeMeter, ivTouchLineCalc);
                 if(!controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
                     handler.postDelayed(runnableForModes, setTimeForCheckSpeedAccuracy);
                 }else{
@@ -203,6 +264,7 @@ public class MapsUtilities {
         handler.postDelayed(runnableForTBtnClickAbility, setTimeOnCounterForChecks);
     }
 
+    //Show the right animation for navigation purpose
     public static void turnOnOffLightForNavigationBarToSetCourse(ImageView rightWay, ImageView leftWay, ImageView midPoint, Context context){
         Animation rightAnim = AnimationUtils.loadAnimation(context, R.anim.nav_arrow_right_mode);
         Animation leftAnim = AnimationUtils.loadAnimation(context, R.anim.nav_arrow_left_mode);
@@ -249,6 +311,7 @@ public class MapsUtilities {
         }
     }
 
+    //Draw the route of user pass
     public static void createCoverRouteUserPass(LatLng mLocation, Boolean toggleButton){
         if(toggleButton && FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
             mInner.add(mLocation);
@@ -263,8 +326,18 @@ public class MapsUtilities {
     // Re-draw the map. Use it as default function
     public static void recreateFieldWithMultiPolyline(GoogleMap mMap){
         mMap.clear(); //clear the map
-        if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE)){
+
+        if(controller.getProgramStatus().equals(Controller.MODE_2_CREATE_LINE) || controller.getProgramStatus().equals(Controller.MODE_0_TOUCH_LISTENER)){
+
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
+
+            if(controller.getMarkerPosition() != null){
+                for(int i=0; i<controller.getMarkerPosition().size(); i++){
+                    MarkerOptions marker = new MarkerOptions().position(new LatLng(controller.getMarkerPosition().get(i).latitude, controller.getMarkerPosition().get(i).longitude));
+                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_spot_marker)); // Set custom marker
+                    mMap.addMarker(marker);
+                }
+            }
         }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
             if(controller.getArrayListOfPlacedPolyLines() != null){
                 for(int j=0; j < controller.getArrayListOfPlacedPolyLines().size(); j++){

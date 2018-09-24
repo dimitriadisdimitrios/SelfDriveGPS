@@ -41,7 +41,7 @@ import gr.teicm.informatics.selfdrivegps.Utilities.MapsUtilities;
 import gr.teicm.informatics.selfdrivegps.Utilities.PermissionUtilities;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "MapsActivity";
     private static final long MIN_TIME = 5;
@@ -59,8 +59,8 @@ public class MapsActivity extends FragmentActivity
 
     private TextView mSpeed, mAccuracy, labelAboveToggleBtn;
     private RelativeLayout relativeLayoutWholeArrowForUserLocation, relativeLayoutForNavigationBar;
-    private ImageView imageButtonForChangeRangeMeter, ivRightMark, ivLeftMark, ivCenterMark;
-    private ToggleButton mainStartBtn, coverRouteTBtn;
+    private ImageView ivRightMark, ivLeftMark, ivCenterMark, ivTouchMainLineCalculation;
+    private ToggleButton mainStartBtn, coverRouteTBtn, imageToggleButtonForActivationTouchListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public class MapsActivity extends FragmentActivity
 
         ImageView imageButtonForChangeMapTerrain = findViewById(R.id.bt_map_terrain_change);
 
-        imageButtonForChangeRangeMeter = findViewById(R.id.bt_change_range_meter);
+        imageToggleButtonForActivationTouchListener = findViewById(R.id.bt_change_range_meter);
         relativeLayoutWholeArrowForUserLocation = findViewById(R.id.rl_user_arrow_image);
         labelAboveToggleBtn = findViewById(R.id.tv_label_for_toggle_button); //Initialize view to change it accordingly to mode
         mSpeed = findViewById(R.id.tv_speed_of_user); //Initialize view for MapsUtilities.getSpecsForStatusBar
@@ -80,12 +80,13 @@ public class MapsActivity extends FragmentActivity
         ivRightMark = findViewById(R.id.iv_right_way);
         ivLeftMark = findViewById(R.id.iv_left_way);
         ivCenterMark = findViewById(R.id.iv_center_way);
+        ivTouchMainLineCalculation = findViewById(R.id.iv_touch_main_line_calculation);
 
         context = getApplicationContext(); //Set GetApplicationContext to use it all over the class
 
         createGoogleApiClient();
 
-        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, coverRouteTBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
+        MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, coverRouteTBtn, relativeLayoutForNavigationBar, imageToggleButtonForActivationTouchListener, ivTouchMainLineCalculation);
 
         //Call the DialogChangeTerrain /layout to set terrain on map
         imageButtonForChangeMapTerrain.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +96,36 @@ public class MapsActivity extends FragmentActivity
             }
         });
 
-        //Call the DialogMainFunction /layout to set FieldName and RangeMeter
-        imageButtonForChangeRangeMeter.setOnClickListener(new View.OnClickListener() {
+        ivTouchMainLineCalculation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                controller.setProgramStatus(Controller.MODE_2_CREATE_LINE); //Re-set mode to 'Create Line' before execute the algorithm
 
+                if (FieldFunctionsUtilities.algorithmForTouchMainLine(controller.getMarkerPosition(), context)) {
+                    MapsUtilities.showAlertDialog(getFragmentManager());//Set listener on button to transfer data to database
+                }
+            }
+        });
+
+        //Set listener on button to start store LatLng on array
+        imageToggleButtonForActivationTouchListener.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    controller.setTouchLineListener(true); //Set it true to make available feature to add points
+                    controller.setProgramStatus(Controller.MODE_0_TOUCH_LISTENER); //Set mode to 'touch listener' to show the right buttons on toolbar
+                    ivTouchMainLineCalculation.setVisibility(View.GONE);
+                    Toast.makeText(context, "Hold on map to add the main line, through two points", Toast.LENGTH_SHORT).show();
+                }else{
+                    //TODO: When disable touch feature remove the line and values of main line to reset correctly the mode
+                    controller.setProgramStatus(Controller.MODE_2_CREATE_LINE); //Re-set mode to 'Create Line' to show the right buttons on toolbar to
+                    controller.setTouchLineListener(false); //Set it false to make disable feature to add points
+                    Toast.makeText(context, "Touch line feature, disabled. Values for main line have been reset", Toast.LENGTH_SHORT).show();
+                    if(controller.getMarkerPosition() != null){
+                        controller.getMarkerPosition().clear(); //Reset Values of main line
+                    }
+                    MapsUtilities.recreateFieldWithMultiPolyline(mMap);
+                }
             }
         });
 
@@ -110,7 +136,11 @@ public class MapsActivity extends FragmentActivity
                 if (isChecked) {
                     Log.d(TAG, controller.getProgramStatus());
                     mainStartBtn.setTextColor(Color.parseColor("#a90404"));
-                    Toast.makeText(context, "Start saving LatLng", Toast.LENGTH_SHORT).show();
+                    if(controller.getProgramStatus().equals(Controller.MODE_1_RECORD_FIELD)){
+                        Toast.makeText(context, "Start saving LatLng for field border", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(context, "Start saving LatLng for main line", Toast.LENGTH_SHORT).show();
+                    }
                     btn_haveBeenClicked = true;
                     mainStartBtn.setClickable(false); //Unable to press it again until run the below command
                     MapsUtilities.counterToCheckIfArrayListIsEmpty(mainStartBtn);
@@ -150,13 +180,22 @@ public class MapsActivity extends FragmentActivity
         PermissionUtilities.enableLoc(googleApiClient,this);
 
         mMap.setMyLocationEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+//        mMap.setPadding(0,0,0, 100);
 //        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
 //        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         checkToGetDataFromAnotherActivity(mainStartBtn, coverRouteTBtn);
+
+        //Listener for touchLong to add 2 spots for Main line
+        MapsUtilities.listenerForTouchAddOfMainLine();
+        //Listener for click on a marker
+        MapsUtilities.listenerForClickOnMarkers();
     }
 
     @Override
@@ -280,7 +319,7 @@ public class MapsActivity extends FragmentActivity
 
             MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Draw the map to work
             //Show the mode and hide tBtn
-            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainCalculationTBtn, coverPassedPlacesTBtn, relativeLayoutForNavigationBar, imageButtonForChangeRangeMeter);
+            MapsUtilities.changeLabelAboutMode(labelAboveToggleBtn, mainCalculationTBtn, coverPassedPlacesTBtn, relativeLayoutForNavigationBar, imageToggleButtonForActivationTouchListener, ivTouchMainLineCalculation);
         }else{
             controller.setProgramStatus(Controller.MODE_1_RECORD_FIELD);
             Log.d("modes",Controller.MODE_1_RECORD_FIELD);

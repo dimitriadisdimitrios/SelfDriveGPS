@@ -316,7 +316,7 @@ public class MapsUtilities {
         if(toggleButton && FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
             mInner.add(mLocation);
             placePassedPlace(mInner, controller.getGoogleMap());
-        }else if(mInner != null && (!FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField()) || !toggleButton)){
+        }else if(mInner != null && (FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField()) || toggleButton)){
             ArrayList<LatLng> myTemp = new ArrayList<>(mInner);
             mOuter.add(myTemp);
             controller.setArrayListOfPassedPolyLines(mOuter);

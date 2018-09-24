@@ -180,8 +180,8 @@ public class MapsActivity extends FragmentActivity
         PermissionUtilities.enableLoc(googleApiClient,this);
 
         mMap.setMyLocationEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-
+//        mMap.getUiSettings().setZoomControlsEnabled(true);
+//
 //        mMap.setPadding(0,0,0, 100);
 //        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
 //        mMap.getUiSettings().setScrollGesturesEnabled(false);

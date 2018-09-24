@@ -16,10 +16,12 @@ public class Controller {
     private static Double mBearing;
     private static FragmentManager mFragmentManager;
     private static PolylineOptions mPolylineOptions;
+    private static Boolean touchLineListener = false;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
     public static final String MODE_2_CREATE_LINE = "Create Line";
     public static final String MODE_3_DRIVING = "Driving";
+    public static final String MODE_0_TOUCH_LISTENER = "Touch Listener activated";
     public static final String LEFT = "left";
     public static final String RIGHT= "right";
     public static final String MID = "mid";
@@ -63,6 +65,14 @@ public class Controller {
     }
     public ArrayList<LatLng> getMarkerPosition(){
         return mMarkerPosition;
+    }
+
+    //Setter/Getter for ArrayList which refer on Markers position
+    public void setTouchLineListener(Boolean isActivated){
+        touchLineListener = isActivated;
+    }
+    public Boolean getTouchLineListener(){
+        return touchLineListener;
     }
 
     //Setter/Getter for Polyline option so i will be able to get LatLng of main Line

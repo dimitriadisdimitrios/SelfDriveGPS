@@ -1,11 +1,14 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -279,5 +282,16 @@ public class FieldFunctionsUtilities {
             controller.setProgramStatus(Controller.MODE_0_TOUCH_LISTENER); //Re-set mode to 'Create Line' to show the right buttons on toolbar to
             return false;
         }
+    }
+
+    public static void calculationOfWidthForCoverRoute(LatLng mLocation){
+        float requiredWidth = controller.getMeterOfRange(); // in meters
+        Projection projection = controller.getGoogleMap().getProjection();
+        Point pointCenter = projection.toScreenLocation(mLocation); // point in pixels
+        LatLng neighbor = projection.fromScreenLocation(new Point(pointCenter.x + 1000, pointCenter.y));
+        float[] distance = new float[1];
+        Location.distanceBetween(mLocation.latitude, mLocation.longitude, neighbor.latitude, neighbor.longitude, distance); // return distance in meters
+        float pixelsWidth = requiredWidth / (distance[0] / 1000f); // 10 meters converted to pixels
+        controller.setValueForCoverPolyline(pixelsWidth); //Set it on Controller
     }
 }

@@ -180,8 +180,8 @@ public class MapsActivity extends FragmentActivity
         PermissionUtilities.enableLoc(googleApiClient,this);
 
         mMap.setMyLocationEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-
+//        mMap.getUiSettings().setZoomControlsEnabled(true);
+//
 //        mMap.setPadding(0,0,0, 100);
 //        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
 //        mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -203,6 +203,7 @@ public class MapsActivity extends FragmentActivity
         MapsUtilities.counterToCheckIfUserStandStill(mSpeed,mAccuracy,context); //Set the counter so i can reset speed/accuracy meter to 0 when it need it
 
         LatLng latLngOfCurrentTime = new LatLng(location.getLatitude(), location.getLongitude()); //Make location to LatLng
+        controller.setCurrentLocation(latLngOfCurrentTime);
         float speedOfUser = location.getSpeed(); //Get speed of user
         float accuracyOfGps = location.getAccuracy(); //Get accuracy of user
         MapsUtilities.getSpecsForStatusBar(speedOfUser, accuracyOfGps, mSpeed, mAccuracy, context); // Show speed and accuracy of GPS up-right on map
@@ -229,10 +230,11 @@ public class MapsActivity extends FragmentActivity
             MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 ); ////It has the job to not rotate whole arrow based on rotation because camera mode change
             FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
             MapsUtilities.turnOnOffLightForNavigationBarToSetCourse(ivRightMark, ivLeftMark, ivCenterMark, context); //Interact with backLight of NavigationBar
-            MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime, tBtn_coverPassedHaveBeenClicked);
+            MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime, tBtn_coverPassedHaveBeenClicked); //TODO: Fix issue with infinite repaint of map with polyline
+            FieldFunctionsUtilities.calculationOfWidthForCoverRoute(controller.getCurrentLocation()); //Algorithm from FieldFunctionsUtilities to calculate the width for polyline on coverRout
             if(controller.getArrayListOfPlacedPolyLines() != null) {
                 for (int j = 0; j < controller.getArrayListOfPlacedPolyLines().size(); j++) {
-                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
+                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap(), latLngOfCurrentTime);
                 }
             }
         }else{

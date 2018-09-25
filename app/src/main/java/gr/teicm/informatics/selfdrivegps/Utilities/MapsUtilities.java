@@ -93,9 +93,9 @@ public class MapsUtilities {
                 .addAll(directionPoints);
         googleMap.addPolygon(polygonOptions);
     } //Draw the polygon for field
-    public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
+    public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap, LatLng mLocation){
         PolylineOptions polylineOptions = new PolylineOptions()
-                .width(20)
+                .width(controller.getValueForCoverPolyline())
                 .color(Color.parseColor("#992FA72F"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
@@ -315,7 +315,7 @@ public class MapsUtilities {
     public static void createCoverRouteUserPass(LatLng mLocation, Boolean toggleButton){
         if(toggleButton && FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
             mInner.add(mLocation);
-            placePassedPlace(mInner, controller.getGoogleMap());
+            placePassedPlace(mInner, controller.getGoogleMap(), mLocation);
         }else if(mInner != null && (FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField()) || toggleButton)){
             ArrayList<LatLng> myTemp = new ArrayList<>(mInner);
             mOuter.add(myTemp);
@@ -341,7 +341,7 @@ public class MapsUtilities {
         }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
             if(controller.getArrayListOfPlacedPolyLines() != null){
                 for(int j=0; j < controller.getArrayListOfPlacedPolyLines().size(); j++){
-                    placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
+                    placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap(), controller.getCurrentLocation());
                 }
             }
 

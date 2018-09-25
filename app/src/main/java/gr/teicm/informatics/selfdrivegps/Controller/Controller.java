@@ -4,18 +4,18 @@ import android.app.FragmentManager;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 public class Controller {
     private static ArrayList<LatLng> fieldArrayList, lineArrayList, mainLineFocus, secondLineFocus, mMarkerPosition;
     private static ArrayList<ArrayList<LatLng>> lineTest, mPassedLine;
     private static String idOfList, mLocationStatus, mStatus ="Record field selected";
+    private static Float mPixelsFromMeters;
+    private static LatLng mLocation;
     private static Integer mRange ;
     private static GoogleMap gMap;
     private static Double mBearing;
     private static FragmentManager mFragmentManager;
-    private static PolylineOptions mPolylineOptions;
     private static Boolean touchLineListener = false;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
@@ -67,20 +67,28 @@ public class Controller {
         return mMarkerPosition;
     }
 
+    //Setter/Getter for width of polyline for cover route
+    public void setValueForCoverPolyline(Float mMeters){
+        mPixelsFromMeters = mMeters;
+    }
+    public Float getValueForCoverPolyline(){
+        return mPixelsFromMeters;
+    }
+
+    //Setter/Getter for ArrayList which refer on Markers position
+    public void setCurrentLocation(LatLng currentLocation){
+        mLocation = currentLocation;
+    }
+    public LatLng getCurrentLocation(){
+        return mLocation;
+    }
+
     //Setter/Getter for ArrayList which refer on Markers position
     public void setTouchLineListener(Boolean isActivated){
         touchLineListener = isActivated;
     }
     public Boolean getTouchLineListener(){
         return touchLineListener;
-    }
-
-    //Setter/Getter for Polyline option so i will be able to get LatLng of main Line
-    public void setMainLinePolylineOptions(PolylineOptions mPol){
-        mPolylineOptions = mPol;
-    }
-    public PolylineOptions getMainLinePolylineOptions(){
-        return mPolylineOptions;
     }
 
     //Setter/Getter for ArrayList<ArrayList<LatLng>> of multiplied polyLines

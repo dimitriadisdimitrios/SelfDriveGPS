@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -293,5 +292,16 @@ public class FieldFunctionsUtilities {
         Location.distanceBetween(mLocation.latitude, mLocation.longitude, neighbor.latitude, neighbor.longitude, distance); // return distance in meters
         float pixelsWidth = requiredWidth / (distance[0] / 1000f); // 10 meters converted to pixels
         controller.setValueForCoverPolyline(pixelsWidth); //Set it on Controller
+    }
+
+    //TODO: Testing new algorithm
+    public static LatLng algorithmForDifferentCenterPoint(LatLng mCurrentLocation, Float mBearingOfUser){
+        LatLng mNewCenterPointForNavigationPurpose;
+        //
+        Float mds = mBearingOfUser + 90; //Every case has different bearing
+        Integer mMeter = 5; //Meters away of choose distance away of center
+        mNewCenterPointForNavigationPurpose = FieldFunctionsUtilities.calculateLocationFewMetersAhead(mCurrentLocation, mds, mMeter);
+
+        return mNewCenterPointForNavigationPurpose;
     }
 }

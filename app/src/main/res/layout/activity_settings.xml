@@ -17,18 +17,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tBtn_wifi"/>
+
+    <Space
+        android:layout_width="32dp"
+        android:layout_height="15dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tv_bluetooth_switch_settingsActivity"
-        android:id="@+id/tv_bluetooth"
+        android:text="@string/center_of_antenna"
         android:layout_gravity="center"
         android:textSize="18sp"
         android:textStyle="bold|italic"/>
-    <ToggleButton
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tBtn_bluetooth"/>
+        android:text="@string/edit"
+        android:id="@+id/btn_edit_center_of_antenna"/>
 
     <Space
         android:layout_width="32dp"

@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //Back Btn do nothing !
-        super.onBackPressed();
+//        Back Btn do nothing !
+//        super.onBackPressed();
     }
 
     private void counterToRefreshAccount(final ImageButton imageButton, final LinearLayout tvLocationWarning){

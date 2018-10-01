@@ -31,6 +31,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAllCaps="false"
         android:text="@string/edit"
         android:id="@+id/btn_edit_center_of_antenna"/>
 
@@ -58,8 +59,9 @@
             android:layout_width="5dp"
             android:layout_height="0dp" />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="18dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:id="@+id/tv_range_of_field_meter"
             android:text="@string/tv_default_range_field"/>
         <Space
@@ -105,8 +107,9 @@
             android:layout_width="5dp"
             android:layout_height="0dp" />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="210dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:id="@+id/tv_location_mode"
             android:text="@string/location_unknown_mode"/>
     </LinearLayout>

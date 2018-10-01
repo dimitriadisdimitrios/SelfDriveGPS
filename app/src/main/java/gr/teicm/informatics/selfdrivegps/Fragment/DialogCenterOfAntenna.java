@@ -2,7 +2,9 @@ package gr.teicm.informatics.selfdrivegps.Fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,21 @@ public class DialogCenterOfAntenna extends android.app.DialogFragment{
         DialogUtilities.setListenerForClickBtn(btLeftSub, tvFront, tvBack, tvRight, tvLeft);
 
         builder.setView(mView)
-                .setMessage("Choose antenna distance");
+                .setMessage("Choose antenna distance")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Save the changed settings
+                        DialogUtilities.setUpAntennaNewPosition(true, tvFront, tvBack, tvLeft, tvRight, getActivity());
+                    }
+                })
+                .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Set all sides to 0
+                        DialogUtilities.setUpAntennaNewPosition(false, tvFront, tvBack, tvLeft, tvRight, getActivity());
+                    }
+                });
 
         return builder.create();
     }

@@ -1,5 +1,8 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +13,6 @@ import gr.teicm.informatics.selfdrivegps.R;
 
 public class DialogUtilities {
     private static Controller controller = new Controller();
-//    private static final String TAG = "DialogUtilities";
 
     public static void chooseTerrainBasedOfRadioBtn(String mName){
         switch (mName) {
@@ -34,7 +36,6 @@ public class DialogUtilities {
         editTextToSaveNameOfField.setVisibility(etFieldName);
         textViewToSaveLine.setVisibility(tvSaveLine);
     }
-
 
     //Click Listener for buttons of DialogCenterOfAntenna to make counter works
     public static void setListenerForClickBtn(final Button button, final TextView front, final TextView back, final TextView right, final TextView left){
@@ -69,7 +70,7 @@ public class DialogUtilities {
     //Give an number and id of button and increase or decrease the number
     private static int counterMeterForAntenna(int mCounter, int idButton) {
         if((idButton == R.id.btn_antenna_front_plus || idButton == R.id.btn_antenna_back_plus ||
-                idButton == R.id.btn_antenna_left_plus || idButton == R.id.btn_antenna_right_plus) && mCounter < 9){
+                idButton == R.id.btn_antenna_left_plus || idButton == R.id.btn_antenna_right_plus) && mCounter < 10){
             mCounter = mCounter + 1; //Increase it
 
         }else if((idButton == R.id.btn_antenna_front_sub || idButton == R.id.btn_antenna_back_sub ||
@@ -77,5 +78,16 @@ public class DialogUtilities {
             mCounter = mCounter - 1; //Decrease it
         }
         return mCounter;
+    }
+
+    //Set antenna sides from settings with SharePreferences
+    public static void setUpAntennaNewPosition(Boolean chooseReset, TextView mFront, TextView mBack, TextView mLeft, TextView mRight, Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("front", chooseReset ? 0 : Integer.parseInt(mFront.getText().toString()));
+        editor.putInt("back", chooseReset ? 0 : Integer.parseInt(mBack.getText().toString()));
+        editor.putInt("left", chooseReset ? 0 :Integer.parseInt(mLeft.getText().toString()));
+        editor.putInt("right", chooseReset ? 0 : Integer.parseInt(mRight.getText().toString()));
+        editor.apply();
     }
 }

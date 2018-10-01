@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -91,14 +92,27 @@ public class MainActivity extends AppCompatActivity {
 
         //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
         //to use it as implementation in whole app through controller
-        SharedPreferences spf = getSharedPreferences("pref", MODE_PRIVATE);
-        if(spf.contains("rangeMeterValue")){
-            controller.setMeterOfRange(spf.getInt("rangeMeterValue", 8));
+        SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        if(sharedPreferences.contains("rangeMeterValue")){
+            controller.setMeterOfRange(sharedPreferences.getInt("rangeMeterValue", 8));
+//        if(sharedPreferences.contains("front") && sharedPreferences.contains("back")
+//                &&sharedPreferences.contains("left") && sharedPreferences.contains("right")){
+            controller.setAntennaFront(sharedPreferences.getInt("front", 0));
+            controller.setAntennaFront(sharedPreferences.getInt("back", 0));
+            controller.setAntennaFront(sharedPreferences.getInt("left", 0));
+            controller.setAntennaFront(sharedPreferences.getInt("right", 0));
+            Log.d("eer", String.valueOf(controller.getMeterOfRange()));
+            Log.d("eer", "Front "+controller.getAntennaFront());
+            Log.d("eer", "Back "+controller.getAntennaBack());
+            Log.d("eer", "Left "+controller.getAntennaLeft());
+            Log.d("eer", "Right "+controller.getAntennaRight());
         }
+//        }
     }
 
     @Override
     public void onBackPressed() {
+
 //        Back Btn do nothing !
 //        super.onBackPressed();
     }

@@ -1,6 +1,5 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -154,7 +153,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
         controller.setMeterOfRange(counter); //Set counter to Controller
-        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
+        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field, counter)); //Show counter to textView as result
 
         //Implement SharedPreferences to set value. So it can been accessed after a restart of app
         SharedPreferences.Editor editor = sharedPreferences.edit();

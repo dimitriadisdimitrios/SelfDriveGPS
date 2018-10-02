@@ -40,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
         sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        controller.setSharePreferences(sharedPreferences); //Set sharePreferences to use it on DialogCenterOfAntenna
         if(sharedPreferences.contains("rangeMeterValue")){
             tvRangeBetweenLines.setText(getApplication().getString(R.string.tv_meter_of_range_for_field, sharedPreferences.getInt("rangeMeterValue", 8)));
         }

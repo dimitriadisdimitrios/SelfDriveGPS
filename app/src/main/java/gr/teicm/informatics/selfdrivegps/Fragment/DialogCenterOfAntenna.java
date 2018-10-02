@@ -4,17 +4,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.R;
 import gr.teicm.informatics.selfdrivegps.Utilities.DialogUtilities;
 
 public class DialogCenterOfAntenna extends android.app.DialogFragment{
+    Controller controller = new Controller();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -45,20 +46,27 @@ public class DialogCenterOfAntenna extends android.app.DialogFragment{
         DialogUtilities.setListenerForClickBtn(btLeftPlus, tvFront, tvBack, tvRight, tvLeft);
         DialogUtilities.setListenerForClickBtn(btLeftSub, tvFront, tvBack, tvRight, tvLeft);
 
+        if(controller.getSharePreferences().contains("front")){ //Set the values as previously had been set
+            tvFront.setText(String.valueOf(controller.getSharePreferences().getInt("front", 8)));
+            tvBack.setText(String.valueOf(controller.getSharePreferences().getInt("back", 8)));
+            tvLeft.setText(String.valueOf(controller.getSharePreferences().getInt("left", 8)));
+            tvRight.setText(String.valueOf(controller.getSharePreferences().getInt("right", 8)));
+        }
+
         builder.setView(mView)
                 .setMessage("Choose antenna distance")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Save the changed settings
-                        DialogUtilities.setUpAntennaNewPosition(true, tvFront, tvBack, tvLeft, tvRight, getActivity());
+                        DialogUtilities.setUpAntennaNewPosition(true, tvFront, tvBack, tvLeft, tvRight);
                     }
                 })
-                .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Set all sides to 0
-                        DialogUtilities.setUpAntennaNewPosition(false, tvFront, tvBack, tvLeft, tvRight, getActivity());
+                        DialogUtilities.setUpAntennaNewPosition(false, tvFront, tvBack, tvLeft, tvRight);
                     }
                 });
 

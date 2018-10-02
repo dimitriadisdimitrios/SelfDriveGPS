@@ -23,7 +23,7 @@ import gr.teicm.informatics.selfdrivegps.Fragment.DialogLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String VERSION_OF_APP = "v0.909";
+    private final static String VERSION_OF_APP = "v0.999";
     private Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForAccountIcon;
@@ -95,24 +95,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
         if(sharedPreferences.contains("rangeMeterValue")){
             controller.setMeterOfRange(sharedPreferences.getInt("rangeMeterValue", 8));
-//        if(sharedPreferences.contains("front") && sharedPreferences.contains("back")
-//                &&sharedPreferences.contains("left") && sharedPreferences.contains("right")){
             controller.setAntennaFront(sharedPreferences.getInt("front", 0));
-            controller.setAntennaFront(sharedPreferences.getInt("back", 0));
-            controller.setAntennaFront(sharedPreferences.getInt("left", 0));
-            controller.setAntennaFront(sharedPreferences.getInt("right", 0));
-            Log.d("eer", String.valueOf(controller.getMeterOfRange()));
-            Log.d("eer", "Front "+controller.getAntennaFront());
-            Log.d("eer", "Back "+controller.getAntennaBack());
-            Log.d("eer", "Left "+controller.getAntennaLeft());
-            Log.d("eer", "Right "+controller.getAntennaRight());
+            controller.setAntennaBack(sharedPreferences.getInt("back", 0));
+            controller.setAntennaLeft(sharedPreferences.getInt("left", 0));
+            controller.setAntennaRight(sharedPreferences.getInt("right", 0));
         }
-//        }
     }
 
     @Override
     public void onBackPressed() {
-
 //        Back Btn do nothing !
 //        super.onBackPressed();
     }

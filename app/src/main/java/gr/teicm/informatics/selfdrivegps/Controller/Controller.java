@@ -1,6 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Controller;
 
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,6 +17,7 @@ public class Controller {
     private static GoogleMap gMap;
     private static Double mBearing;
     private static FragmentManager mFragmentManager;
+    private static SharedPreferences mSharePreferences;
     private static Boolean touchLineListener = false;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
@@ -104,6 +106,12 @@ public class Controller {
     }
     public ArrayList<ArrayList<LatLng>> getArrayListOfPlacedPolyLines(){
         return mPassedLine;
+    }
+    public void setSharePreferences(SharedPreferences spf){
+        mSharePreferences = spf;
+    }
+    public SharedPreferences getSharePreferences(){
+        return mSharePreferences;
     }
 
     //Setter/Getter to change between "create field" and "create polyline"

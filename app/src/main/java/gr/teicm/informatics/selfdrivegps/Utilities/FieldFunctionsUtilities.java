@@ -283,6 +283,7 @@ public class FieldFunctionsUtilities {
         }
     }
 
+
     public static void calculationOfWidthForCoverRoute(LatLng mLocation){
         float requiredWidth = controller.getMeterOfRange(); // in meters
         Projection projection = controller.getGoogleMap().getProjection();
@@ -294,14 +295,30 @@ public class FieldFunctionsUtilities {
         controller.setValueForCoverPolyline(pixelsWidth); //Set it on Controller
     }
 
-    //TODO: Testing new algorithm
+    //Every scenario of changed antenna
     public static LatLng algorithmForDifferentCenterPoint(LatLng mCurrentLocation, Float mBearingOfUser){
         LatLng mNewCenterPointForNavigationPurpose;
-        //
-        Float mds = mBearingOfUser + 90; //Every case has different bearing
-        Integer mMeter = 5; //Meters away of choose distance away of center
-        mNewCenterPointForNavigationPurpose = FieldFunctionsUtilities.calculateLocationFewMetersAhead(mCurrentLocation, mds, mMeter);
+        Float changeAntennaBearing; //Every case has different bearing
+        Integer mMeter; //Meters away of choose distance away of center
 
+        if(controller.getAntennaFront() != 0){ //Front
+            changeAntennaBearing = mBearingOfUser + 0;
+            mMeter = controller.getAntennaFront();
+        }else if(controller.getAntennaBack() != 0){ //Back
+            changeAntennaBearing = mBearingOfUser + 180;
+            mMeter = controller.getAntennaBack();
+        }else if(controller.getAntennaLeft() !=0){ //Left
+            changeAntennaBearing = mBearingOfUser + 270;
+            mMeter = controller.getAntennaLeft();
+        }else if(controller.getAntennaRight() !=0){ //Right
+            changeAntennaBearing = mBearingOfUser + 90;
+            mMeter = controller.getAntennaRight();
+        }else{
+            changeAntennaBearing = mBearingOfUser;
+            mMeter = 0;
+        }
+        //Base on values from above calculate new position of antenna center
+        mNewCenterPointForNavigationPurpose = FieldFunctionsUtilities.calculateLocationFewMetersAhead(mCurrentLocation, changeAntennaBearing, mMeter);
         return mNewCenterPointForNavigationPurpose;
     }
 }

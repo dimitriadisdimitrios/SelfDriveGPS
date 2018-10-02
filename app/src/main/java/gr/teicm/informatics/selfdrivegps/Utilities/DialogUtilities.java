@@ -1,8 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Utilities;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,13 +43,13 @@ public class DialogUtilities {
             public void onClick(View view) {
 
                 if(mId == R.id.btn_antenna_front_plus || mId == R.id.btn_antenna_front_sub) {
-                    DialogUtilities.composeFunctionOfAntennaCounter(mId, back, right, left, front);
+                    composeFunctionOfAntennaCounter(mId, back, right, left, front);
                 }else if(mId == R.id.btn_antenna_back_plus || mId == R.id.btn_antenna_back_sub) {
-                    DialogUtilities.composeFunctionOfAntennaCounter(mId, front, right, left, back);
+                    composeFunctionOfAntennaCounter(mId, front, right, left, back);
                 }else if(mId == R.id.btn_antenna_left_plus || mId == R.id.btn_antenna_left_sub) {
-                    DialogUtilities.composeFunctionOfAntennaCounter(mId, back, right, front, left);
+                    composeFunctionOfAntennaCounter(mId, back, right, front, left);
                 }else if(mId == R.id.btn_antenna_right_plus || mId == R.id.btn_antenna_right_sub){
-                    DialogUtilities.composeFunctionOfAntennaCounter(mId, back, front, left, right);
+                    composeFunctionOfAntennaCounter(mId, back, front, left, right);
                 }
             }
         });
@@ -81,13 +79,18 @@ public class DialogUtilities {
     }
 
     //Set antenna sides from settings with SharePreferences
-    public static void setUpAntennaNewPosition(Boolean chooseReset, TextView mFront, TextView mBack, TextView mLeft, TextView mRight, Context context){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+    public static void setUpAntennaNewPosition(Boolean chooseReset, TextView mFront, TextView mBack, TextView mLeft, TextView mRight){
+
+        SharedPreferences.Editor editor = controller.getSharePreferences().edit();
         editor.putInt("front", chooseReset ? 0 : Integer.parseInt(mFront.getText().toString()));
         editor.putInt("back", chooseReset ? 0 : Integer.parseInt(mBack.getText().toString()));
         editor.putInt("left", chooseReset ? 0 :Integer.parseInt(mLeft.getText().toString()));
         editor.putInt("right", chooseReset ? 0 : Integer.parseInt(mRight.getText().toString()));
         editor.apply();
+
+        controller.setAntennaFront(chooseReset ? 0 : Integer.parseInt(mFront.getText().toString()));
+        controller.setAntennaBack(chooseReset ? 0 : Integer.parseInt(mBack.getText().toString()));
+        controller.setAntennaLeft(chooseReset ? 0 :Integer.parseInt(mLeft.getText().toString()));
+        controller.setAntennaRight(chooseReset ? 0 : Integer.parseInt(mRight.getText().toString()));
     }
 }

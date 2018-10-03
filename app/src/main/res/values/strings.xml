@@ -48,4 +48,11 @@
     <string name="search_field">Search Field\.\.\.</string>
     <string name="range_between_lines">Range between lines</string>
     <string name="you_are_going_to_save_this_field_on_database">You are going to save this field on Database</string>
+    <string name="center_of_antenna">Center of antenna</string>
+    <string name="edit">Edit</string>
+    <string name="front">Front</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="back">Back</string>
+    <string name="default_value_for_antenna">0</string>
 </resources>

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,7 +23,7 @@ import gr.teicm.informatics.selfdrivegps.Fragment.DialogLogIn;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String VERSION_OF_APP = "v0.907";
+    private final static String VERSION_OF_APP = "v0.91";
     private Controller controller = new Controller();
     private static Handler handler = new Handler();
     private static Runnable runnableForAccountIcon;
@@ -91,16 +92,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
         //to use it as implementation in whole app through controller
-        SharedPreferences spf = getSharedPreferences("pref", MODE_PRIVATE);
-        if(spf.contains("rangeMeterValue")){
-            controller.setMeterOfRange(spf.getInt("rangeMeterValue", 8));
+        SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        if(sharedPreferences.contains("rangeMeterValue")){
+            controller.setMeterOfRange(sharedPreferences.getInt("rangeMeterValue", 8));
+            controller.setAntennaFront(sharedPreferences.getInt("front", 0));
+            controller.setAntennaBack(sharedPreferences.getInt("back", 0));
+            controller.setAntennaLeft(sharedPreferences.getInt("left", 0));
+            controller.setAntennaRight(sharedPreferences.getInt("right", 0));
         }
     }
 
     @Override
     public void onBackPressed() {
-        //Back Btn do nothing !
-        super.onBackPressed();
+//        Back Btn do nothing !
+//        super.onBackPressed();
     }
 
     private void counterToRefreshAccount(final ImageButton imageButton, final LinearLayout tvLocationWarning){

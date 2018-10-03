@@ -1,6 +1,5 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
+import gr.teicm.informatics.selfdrivegps.Fragment.DialogCenterOfAntenna;
 import gr.teicm.informatics.selfdrivegps.R;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -31,8 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         final ToggleButton tBtnWifi =  findViewById(R.id.tBtn_wifi);
-        final ToggleButton tBtnBluetooth =  findViewById(R.id.tBtn_bluetooth);
-        TextView tvBluetooth = findViewById(R.id.tv_bluetooth);
+        final Button btnEditAntennaMap =  findViewById(R.id.btn_edit_center_of_antenna);
         TextView tvLocationMode = findViewById(R.id.tv_location_mode);
         ImageButton iBtnLocationMode = findViewById(R.id.iBtn_location_mode);
         Button btPlus = findViewById(R.id.btn_plus);
@@ -41,26 +40,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
         sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        controller.setSharePreferences(sharedPreferences); //Set sharePreferences to use it on DialogCenterOfAntenna
         if(sharedPreferences.contains("rangeMeterValue")){
             tvRangeBetweenLines.setText(getApplication().getString(R.string.tv_meter_of_range_for_field, sharedPreferences.getInt("rangeMeterValue", 8)));
         }
 
-
         counterToRefreshLocationMode(tvLocationMode);
 
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(wifiManager!=null) {
             if (wifiManager.isWifiEnabled()) {
                 tBtnWifi.setChecked(true);
-            }
-
-            if(bluetoothAdapter==null){ //If console doesn't support bluetooth make invisible the toggleBtn and  textView
-                tBtnBluetooth.setVisibility(View.INVISIBLE);
-                tvBluetooth.setVisibility(View.INVISIBLE);
-            }
-            else if(bluetoothAdapter.isEnabled()){
-                tBtnBluetooth.setChecked(true);
             }
         }
 
@@ -75,14 +65,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        tBtnBluetooth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnEditAntennaMap.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) { //What happen when toggleBtn pressed
-                if(isChecked && bluetoothAdapter!=null){
-                    bluetoothAdapter.enable();
-                }else if(!isChecked && bluetoothAdapter!=null){
-                    bluetoothAdapter.disable();
-                }
+            public void onClick(View view) {
+                DialogCenterOfAntenna dialogCenterOfAntenna = new DialogCenterOfAntenna();
+                dialogCenterOfAntenna.show(getFragmentManager(), "Show Tractor Map");
+                dialogCenterOfAntenna.setCancelable(false);
             }
         });
 
@@ -166,7 +154,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
         controller.setMeterOfRange(counter); //Set counter to Controller
-        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field,counter)); //Show counter to textView as result
+        tvRangeOfLines.setText(context.getString(R.string.tv_meter_of_range_for_field, counter)); //Show counter to textView as result
 
         //Implement SharedPreferences to set value. So it can been accessed after a restart of app
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -1,6 +1,7 @@
 package gr.teicm.informatics.selfdrivegps.Controller;
 
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,11 +12,12 @@ public class Controller {
     private static ArrayList<ArrayList<LatLng>> lineTest, mPassedLine;
     private static String idOfList, mLocationStatus, mStatus ="Record field selected";
     private static Float mPixelsFromMeters;
-    private static LatLng mLocation;
-    private static Integer mRange ;
+    private static LatLng mLocation, mAntennaCenter;
+    private static Integer mRange, mFront, mBack, mLeft, mRight ;
     private static GoogleMap gMap;
     private static Double mBearing;
     private static FragmentManager mFragmentManager;
+    private static SharedPreferences mSharePreferences;
     private static Boolean touchLineListener = false;
 
     public static final String MODE_1_RECORD_FIELD = "Record Field";
@@ -82,6 +84,13 @@ public class Controller {
     public LatLng getCurrentLocation(){
         return mLocation;
     }
+    //Setter/Getter to place spot for identification antenna location
+    public void setAntennaLocationForCircle(LatLng asd){
+        mAntennaCenter = asd;
+    }
+    public LatLng getAntennaLocationForCircle(){
+        return mAntennaCenter;
+    }
 
     //Setter/Getter for ArrayList which refer on Markers position
     public void setTouchLineListener(Boolean isActivated){
@@ -104,6 +113,12 @@ public class Controller {
     }
     public ArrayList<ArrayList<LatLng>> getArrayListOfPlacedPolyLines(){
         return mPassedLine;
+    }
+    public void setSharePreferences(SharedPreferences spf){
+        mSharePreferences = spf;
+    }
+    public SharedPreferences getSharePreferences(){
+        return mSharePreferences;
     }
 
     //Setter/Getter to change between "create field" and "create polyline"
@@ -135,6 +150,32 @@ public class Controller {
     }
     public Integer getMeterOfRange(){
         return mRange;
+    }
+
+    //Setter/Getter to save from settingsActivity the center distance for every side
+    public void setAntennaFront(Integer antennaFront){
+        mFront = antennaFront;
+    }
+    public Integer getAntennaFront(){
+        return mFront;
+    }
+    public void setAntennaBack(Integer antennaBack){
+        mBack = antennaBack;
+    }
+    public Integer getAntennaBack(){
+        return mBack;
+    }
+    public void setAntennaRight(Integer antennaRight){
+        mRight = antennaRight;
+    }
+    public Integer getAntennaRight(){
+        return mRight;
+    }
+    public void setAntennaLeft(Integer antennaLeft){
+        mLeft = antennaLeft;
+    }
+    public Integer getAntennaLeft(){
+        return mLeft;
     }
 
     //Setter/Getter to set GoogleMap to work on DialogMainFunction

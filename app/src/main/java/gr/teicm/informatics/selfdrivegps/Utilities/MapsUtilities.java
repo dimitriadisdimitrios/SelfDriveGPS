@@ -18,13 +18,19 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import gr.teicm.informatics.selfdrivegps.Controller.Controller;
 import gr.teicm.informatics.selfdrivegps.FieldMath.MultiPolylineAlgorithm;
@@ -34,8 +40,13 @@ import gr.teicm.informatics.selfdrivegps.R;
 
 public class MapsUtilities {
     private static final String TAG = "MapsUtilities";
-    private static final int setTimeForCheckSpeedAccuracy = 800; /*1.5 sec*/
+    private static final int setTimeForCheckSpeedAccuracy = 800; /*0.8 sec*/
     private static final int setTimeOnCounterForChecks = 4000 /*4 sec*/;
+    private static final int PATTERN_DASH_LENGTH_PX = 15;
+    private static final int PATTERN_GAP_LENGTH_PX = 15;
+    private static final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
+    private static final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
+    private static final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(GAP, DASH);
     private static ArrayList<LatLng> mInner = new ArrayList<>();
     private static ArrayList<LatLng> mPointForMainLine = new ArrayList<>();
     private static ArrayList<ArrayList<LatLng>> mOuter = new ArrayList<>();
@@ -62,7 +73,7 @@ public class MapsUtilities {
             }
         }
     }
-    public static boolean hasPermissions(Context context, String... allPermissionNeeded) {
+    static boolean hasPermissions(Context context, String... allPermissionNeeded) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && context != null && allPermissionNeeded != null)
             for (String permission : allPermissionNeeded)
@@ -75,10 +86,11 @@ public class MapsUtilities {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
                 .color(Color.parseColor("#000000"))
+                .pattern(PATTERN_POLYGON_ALPHA)
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the main\multi lines
-    public static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
+    static void placePolylineParallel(ArrayList<LatLng> directionPoints, GoogleMap googleMap) {
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(5)
                 .color(Color.BLUE)
@@ -93,13 +105,19 @@ public class MapsUtilities {
                 .addAll(directionPoints);
         googleMap.addPolygon(polygonOptions);
     } //Draw the polygon for field
-    public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap, LatLng mLocation){
+    public static void placePassedPlace(ArrayList<LatLng> directionPoints, GoogleMap googleMap){
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(controller.getValueForCoverPolyline())
                 .color(Color.parseColor("#992FA72F"))
                 .addAll(directionPoints);
         googleMap.addPolyline(polylineOptions);
     } //Draw the polygon for field
+    public static void placeSpotOfAntenna(LatLng directionPoints, GoogleMap googleMap){
+        CircleOptions circleOptions = new CircleOptions()
+                .radius(0.3)
+                .center(directionPoints);
+        googleMap.addCircle(circleOptions);
+    } //Draw circle for spot antenna location
 
     public static void getSpecsForStatusBar(float speed, float accuracy, TextView mSpeed, TextView mAccuracy, Context context){
         float kmH = (float) (speed *3.6); //Convert m/s to km/h
@@ -177,7 +195,6 @@ public class MapsUtilities {
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng point) {
-
                 //Check if markers are 1 or 0 and the program is in right mode
                 if (mPointForMainLine.size() < 2 && controller.getProgramStatus().equals(Controller.MODE_0_TOUCH_LISTENER) && controller.getTouchLineListener()) {
 
@@ -202,7 +219,7 @@ public class MapsUtilities {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 //Remove the lat/lng from controller
-                controller.getMarkerPosition().remove(controller.getMarkerPosition().indexOf(marker.getPosition()));
+                controller.getMarkerPosition().remove(marker.getPosition());
                 //Remove Marker
                 marker.remove();
                 //Re-draw the map
@@ -315,7 +332,7 @@ public class MapsUtilities {
     public static void createCoverRouteUserPass(LatLng mLocation, Boolean toggleButton){
         if(toggleButton && FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField())){
             mInner.add(mLocation);
-            placePassedPlace(mInner, controller.getGoogleMap(), mLocation);
+            placePassedPlace(mInner, controller.getGoogleMap());
         }else if(mInner != null && (FieldFunctionsUtilities.PointIsInRegion(mLocation, controller.getArrayListForField()) || toggleButton)){
             ArrayList<LatLng> myTemp = new ArrayList<>(mInner);
             mOuter.add(myTemp);
@@ -339,12 +356,9 @@ public class MapsUtilities {
                 }
             }
         }else if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
-            if(controller.getArrayListOfPlacedPolyLines() != null){
-                for(int j=0; j < controller.getArrayListOfPlacedPolyLines().size(); j++){
-                    placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap(), controller.getCurrentLocation());
-                }
+            if(controller.getAntennaLocationForCircle()!=null){
+                placeSpotOfAntenna(controller.getAntennaLocationForCircle(), controller.getGoogleMap());
             }
-
             MapsUtilities.placePolygonForRoute(controller.getArrayListForField(), mMap); //Create field
             MultiPolylineAlgorithm.algorithmForCreatingPolylineInField(controller.getArrayListForLine()); //Algorithm to create multi-polyLine
             for(int i = 0; i<controller.getArrayListOfMultipliedPolyLines().size(); i++){

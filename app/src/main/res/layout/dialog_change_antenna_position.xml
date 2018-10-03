@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center|top"
+    android:layout_gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/front"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/btn_antenna_front_sub"
+            android:text="@string/sub_btn_settingsActivity"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:layout_width="18dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_antenna_front"
+            android:text="@string/default_value_for_antenna"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_meter_of_range_for_field_default"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/btn_antenna_front_plus"
+            android:text="@string/plus_btn_settingsActivity"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/left"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/btn_antenna_left_sub"
+                    android:text="@string/sub_btn_settingsActivity"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="0dp" />
+
+                <TextView
+                    android:id="@+id/tv_antenna_left"
+                    android:layout_width="18dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/default_value_for_antenna" />
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="0dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_meter_of_range_for_field_default"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="0dp" />
+                <Button
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/btn_antenna_left_plus"
+                    android:text="@string/plus_btn_settingsActivity"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/main_description_for_nav_bar"
+            android:src="@drawable/tractor_design"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/right"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/btn_antenna_right_sub"
+                    android:text="@string/sub_btn_settingsActivity"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="0dp" />
+                <TextView
+                    android:layout_width="18dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/tv_antenna_right"
+                    android:text="@string/default_value_for_antenna"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="0dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_meter_of_range_for_field_default"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="0dp" />
+                <Button
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/btn_antenna_right_plus"
+                    android:text="@string/plus_btn_settingsActivity"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/btn_antenna_back_sub"
+            android:text="@string/sub_btn_settingsActivity"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:layout_width="18dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/tv_antenna_back"
+            android:text="@string/default_value_for_antenna"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_meter_of_range_for_field_default"/>
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="0dp" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/btn_antenna_back_plus"
+            android:text="@string/plus_btn_settingsActivity"/>
+    </LinearLayout>
+</LinearLayout>

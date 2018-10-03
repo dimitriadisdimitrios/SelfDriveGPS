@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> pointsForField = new ArrayList<>();
     private ArrayList<LatLng> pointsForLine = new ArrayList<>();
+    private ArrayList<LatLng> pointsForAntennaLocation = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
 
@@ -210,6 +211,10 @@ public class MapsActivity extends FragmentActivity
 
         float userLocationBearing = location.getBearing(); //Get bearing so i can use it to follow the user with the right direction
 
+        //This variable take latLngOfCurrentTime and see if user change pointOfCenter for navigation purpose.
+        //If user doesn't change something to settingsActivity. App take as center the original center of map
+        LatLng latLngForNavigationPurpose = FieldFunctionsUtilities.algorithmForDifferentCenterPoint(latLngOfCurrentTime, userLocationBearing);
+
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLngOfCurrentTime)                                                  // Sets the center of the map to Mountain View
@@ -227,14 +232,27 @@ public class MapsActivity extends FragmentActivity
 
         //Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
-            MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 ); ////It has the job to not rotate whole arrow based on rotation because camera mode change
-            FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngOfCurrentTime, convertedBearing);
-            MapsUtilities.turnOnOffLightForNavigationBarToSetCourse(ivRightMark, ivLeftMark, ivCenterMark, context); //Interact with backLight of NavigationBar
-            MapsUtilities.createCoverRouteUserPass(latLngOfCurrentTime, tBtn_coverPassedHaveBeenClicked); //TODO: Fix issue with infinite repaint of map with polyline
-            FieldFunctionsUtilities.calculationOfWidthForCoverRoute(controller.getCurrentLocation()); //Algorithm from FieldFunctionsUtilities to calculate the width for polyline on coverRout
+            MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Re draw the map to remove previous spots
+            controller.setAntennaLocationForCircle(latLngForNavigationPurpose);
+            if(pointsForAntennaLocation.size()>1){
+                pointsForAntennaLocation.remove(0);
+                MapsUtilities.recreateFieldWithMultiPolyline(mMap);
+            }
+            MapsUtilities.placeSpotOfAntenna(latLngForNavigationPurpose, mMap);
+            //It has the job to not rotate whole arrow based on rotation because camera mode change
+            MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 );
+            //Takes as input the 'latLngForNavigationPurpose' variable to use it for navigation feature
+            FieldFunctionsUtilities.generateTempLineAndNavigationAlgorithm(mMap, latLngForNavigationPurpose, convertedBearing);
+            //Interact with backLight of NavigationBar
+            MapsUtilities.turnOnOffLightForNavigationBarToSetCourse(ivRightMark, ivLeftMark, ivCenterMark, context);
+            //Takes as input the 'latLngForNavigationPurpose' variable to use it for coverRoute feature
+            MapsUtilities.createCoverRouteUserPass(latLngForNavigationPurpose, tBtn_coverPassedHaveBeenClicked);
+            //Algorithm from FieldFunctionsUtilities to calculate the width for polyline on coverRoute
+            FieldFunctionsUtilities.calculationOfWidthForCoverRoute(controller.getCurrentLocation());
+            //TODO: Fix polyline passed issue
             if(controller.getArrayListOfPlacedPolyLines() != null) {
                 for (int j = 0; j < controller.getArrayListOfPlacedPolyLines().size(); j++) {
-                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap(), latLngOfCurrentTime);
+                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
                 }
             }
         }else{

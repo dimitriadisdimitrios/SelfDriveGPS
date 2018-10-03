@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -284,6 +283,7 @@ public class FieldFunctionsUtilities {
         }
     }
 
+
     public static void calculationOfWidthForCoverRoute(LatLng mLocation){
         float requiredWidth = controller.getMeterOfRange(); // in meters
         Projection projection = controller.getGoogleMap().getProjection();
@@ -293,5 +293,32 @@ public class FieldFunctionsUtilities {
         Location.distanceBetween(mLocation.latitude, mLocation.longitude, neighbor.latitude, neighbor.longitude, distance); // return distance in meters
         float pixelsWidth = requiredWidth / (distance[0] / 1000f); // 10 meters converted to pixels
         controller.setValueForCoverPolyline(pixelsWidth); //Set it on Controller
+    }
+
+    //Every scenario of changed antenna
+    public static LatLng algorithmForDifferentCenterPoint(LatLng mCurrentLocation, Float mBearingOfUser){
+        LatLng mNewCenterPointForNavigationPurpose;
+        Float changeAntennaBearing; //Every case has different bearing
+        Integer mMeter; //Meters away of choose distance away of center
+
+        if(controller.getAntennaFront() != 0){ //Front
+            changeAntennaBearing = mBearingOfUser + 0;
+            mMeter = controller.getAntennaFront();
+        }else if(controller.getAntennaBack() != 0){ //Back
+            changeAntennaBearing = mBearingOfUser + 180;
+            mMeter = controller.getAntennaBack();
+        }else if(controller.getAntennaLeft() !=0){ //Left
+            changeAntennaBearing = mBearingOfUser + 270;
+            mMeter = controller.getAntennaLeft();
+        }else if(controller.getAntennaRight() !=0){ //Right
+            changeAntennaBearing = mBearingOfUser + 90;
+            mMeter = controller.getAntennaRight();
+        }else{
+            changeAntennaBearing = mBearingOfUser;
+            mMeter = 0;
+        }
+        //Base on values from above calculate new position of antenna center
+        mNewCenterPointForNavigationPurpose = FieldFunctionsUtilities.calculateLocationFewMetersAhead(mCurrentLocation, changeAntennaBearing, mMeter);
+        return mNewCenterPointForNavigationPurpose;
     }
 }

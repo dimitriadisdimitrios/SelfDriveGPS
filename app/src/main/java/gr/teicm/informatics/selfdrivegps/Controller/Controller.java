@@ -12,7 +12,7 @@ public class Controller {
     private static ArrayList<ArrayList<LatLng>> lineTest, mPassedLine;
     private static String idOfList, mLocationStatus, mStatus ="Record field selected";
     private static Float mPixelsFromMeters;
-    private static LatLng mLocation;
+    private static LatLng mLocation, mAntennaCenter;
     private static Integer mRange, mFront, mBack, mLeft, mRight ;
     private static GoogleMap gMap;
     private static Double mBearing;
@@ -83,6 +83,13 @@ public class Controller {
     }
     public LatLng getCurrentLocation(){
         return mLocation;
+    }
+    //Setter/Getter to place spot for identification antenna location
+    public void setAntennaLocationForCircle(LatLng asd){
+        mAntennaCenter = asd;
+    }
+    public LatLng getAntennaLocationForCircle(){
+        return mAntennaCenter;
     }
 
     //Setter/Getter for ArrayList which refer on Markers position

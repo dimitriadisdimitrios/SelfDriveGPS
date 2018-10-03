@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private ArrayList<LatLng> pointsForField = new ArrayList<>();
     private ArrayList<LatLng> pointsForLine = new ArrayList<>();
+    private ArrayList<LatLng> pointsForAntennaLocation = new ArrayList<>();
     private Context context = null;
     private Controller controller = new Controller();
 
@@ -231,6 +232,13 @@ public class MapsActivity extends FragmentActivity
 
         //Use it to locate when user come close to polyline !!!
         if(controller.getProgramStatus().equals(Controller.MODE_3_DRIVING)){
+            MapsUtilities.recreateFieldWithMultiPolyline(mMap); //Re draw the map to remove previous spots
+            controller.setAntennaLocationForCircle(latLngForNavigationPurpose);
+            if(pointsForAntennaLocation.size()>1){
+                pointsForAntennaLocation.remove(0);
+                MapsUtilities.recreateFieldWithMultiPolyline(mMap);
+            }
+            MapsUtilities.placeSpotOfAntenna(latLngForNavigationPurpose, mMap);
             //It has the job to not rotate whole arrow based on rotation because camera mode change
             MapsUtilities.changeRotationOnUserLocationArrow(relativeLayoutWholeArrowForUserLocation, (float) 0 );
             //Takes as input the 'latLngForNavigationPurpose' variable to use it for navigation feature
@@ -244,7 +252,7 @@ public class MapsActivity extends FragmentActivity
             //TODO: Fix polyline passed issue
             if(controller.getArrayListOfPlacedPolyLines() != null) {
                 for (int j = 0; j < controller.getArrayListOfPlacedPolyLines().size(); j++) {
-                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap(), latLngOfCurrentTime);
+                    MapsUtilities.placePassedPlace(controller.getArrayListOfPlacedPolyLines().get(j), controller.getGoogleMap());
                 }
             }
         }else{

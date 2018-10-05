@@ -93,13 +93,12 @@ public class MainActivity extends AppCompatActivity {
         //Implement SharedPreferences to get the last value of rangeMeter before app stop on previous use
         //to use it as implementation in whole app through controller
         SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
-        if(sharedPreferences.contains("rangeMeterValue")){
-            controller.setMeterOfRange(sharedPreferences.getInt("rangeMeterValue", 8));
-            controller.setAntennaFront(sharedPreferences.getInt("front", 0));
-            controller.setAntennaBack(sharedPreferences.getInt("back", 0));
-            controller.setAntennaLeft(sharedPreferences.getInt("left", 0));
-            controller.setAntennaRight(sharedPreferences.getInt("right", 0));
-        }
+        controller.setMeterOfRange(sharedPreferences.getInt("rangeMeterValue", 7));
+        controller.setAntennaFront(sharedPreferences.getInt("front", 0));
+        controller.setAntennaBack(sharedPreferences.getInt("back", 0));
+        controller.setAntennaLeft(sharedPreferences.getInt("left", 0));
+        controller.setAntennaRight(sharedPreferences.getInt("right", 0));
+
     }
 
     @Override

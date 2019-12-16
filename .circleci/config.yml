@@ -21,6 +21,10 @@ jobs:
       - restore_cache:
             key: jars-{{ checksum "./build.gradle" }}-{{ checksum  "./build.gradle" }}
       - run: echo 'export TERM=dumb' >> $BASH_ENV
+      
+      - run:
+        name: chmod permissions
+        command: chmod +x ./gradlew
 
       - run:  
           name: Download Dependencies

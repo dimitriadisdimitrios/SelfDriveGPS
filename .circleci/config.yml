@@ -5,6 +5,10 @@
 version: 2
 jobs:
   build:
+   branches:
+      only:
+        - master
+        - /rc-.*/
     docker:
       - image: circleci/android:api-28
 

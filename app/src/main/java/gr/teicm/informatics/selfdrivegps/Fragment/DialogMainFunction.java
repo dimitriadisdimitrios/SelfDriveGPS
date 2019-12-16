@@ -1,5 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -42,8 +42,7 @@ public class DialogMainFunction extends android.app.DialogFragment {
         // Use the Builder class for convenient mDialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.dialog_main_function, nullParent); // Inflate the layout to interact with xml
+        @SuppressLint("InflateParams") final View mView = inflater.inflate(R.layout.dialog_main_function, null); // Inflate the layout to interact with xml
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Connect FireBase Database so I will able to use it
         mAuth = FirebaseAuth.getInstance();

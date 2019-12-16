@@ -90,17 +90,15 @@ public class FieldFunctionsUtilities {
     }
 
     //Take 2 points and find their bearing
-    public static Double calculateBearing(LatLng startLatLng, LatLng endLatLng){
-        Double startLat = startLatLng.latitude;
-        Double startLng = startLatLng.longitude;
-        Double endLat = endLatLng.latitude;
-        Double endLng = endLatLng.longitude;
+    public static double calculateBearing(LatLng startLatLng, LatLng endLatLng){
+        double startLat = startLatLng.latitude;
+        double startLng = startLatLng.longitude;
+        double endLat = endLatLng.latitude;
+        double endLng = endLatLng.longitude;
 
-        double longitude1 = startLng;
-        double longitude2 = endLng;
         double latitude1 = Math.toRadians(startLat);
         double latitude2 = Math.toRadians(endLat);
-        double longDiff= Math.toRadians(longitude2-longitude1);
+        double longDiff= Math.toRadians(endLng - startLng);
         double y= Math.sin(longDiff)*Math.cos(latitude2);
         double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
 
@@ -141,7 +139,7 @@ public class FieldFunctionsUtilities {
 
     //Function to generate invisible parallel
     // Under right orientation the parallelLine.get(0) is the right Line and the parallelLine.get(1) is the left Line. So the 1 is for left and 0 for right
-    public static void generateTempLineAndNavigationAlgorithm(GoogleMap googleMap, LatLng mCurrentLocation, Double bearingOfUser){
+    public static void generateTempLineAndNavigationAlgorithm(GoogleMap googleMap, LatLng mCurrentLocation, double bearingOfUser){
         Boolean focusOnSpecificSecondLine = false; //initialize variable in which i will save (if user is inside of main Line)
 
         if(checkingInWhichPolylineUserEntered(mCurrentLocation)){ //Check if user is in anyone of MultiPolyLines
@@ -163,7 +161,7 @@ public class FieldFunctionsUtilities {
             if(focusOnSpecificSecondLine){ //After pass "for" loop, check if user cross on of parallel line
                 MapsUtilities.placePolylineParallel(controller.getSecondLineThatActivated(), googleMap); // If he pass it, draw only this specific polyLines on map
 
-                Double bearingOfMainLine = controller.getBearingForNavigationPurpose();
+                double bearingOfMainLine = controller.getBearingForNavigationPurpose();
 
                 registerStatusForNavigationBar(isOrientationReversed(bearingOfUser, bearingOfMainLine), parPolyline.indexOf(controller.getSecondLineThatActivated()));
             }else{ // If he doesn't cron none of two, re-draw the map
@@ -196,10 +194,10 @@ public class FieldFunctionsUtilities {
         return focusOnSpecificMainLine;
     }
     // Function to simplify the generateTempLineAndNavigationAlgorithm because it has start become spaghetti
-    private static Boolean isOrientationReversed(Double bearingOfUser, Double bearingOfLine) {
+    private static Boolean isOrientationReversed(double bearingOfUser, double bearingOfLine) {
         //if returns false, we don't change anything. If Function return false we must reverse left and right
-        Double startLimit = bearingOfLine - 90;
-        Double endLimit = bearingOfLine + 90;
+        double startLimit = bearingOfLine - 90;
+        double endLimit = bearingOfLine + 90;
         if(startLimit<0){
             return !((0 <= bearingOfUser && bearingOfUser <= endLimit) || (startLimit+360 <= bearingOfUser && bearingOfUser < 360));
         }else if(endLimit>=360){
@@ -240,7 +238,7 @@ public class FieldFunctionsUtilities {
             LatLng tempSpotForFillMainLine = mArray.get(0); //Temp spot in every loop
             int distanceThatAlgorithmCovered = 0, distanceOfTwoSpots ;
 
-            Double mBearing = calculateBearing(mArray.get(0), mArray.get(1)); // To Calculate bearing of 2 spots
+            double mBearing = calculateBearing(mArray.get(0), mArray.get(1)); // To Calculate bearing of 2 spots
 
             firstTempLocation.setLatitude(mArray.get(0).latitude);     //Initialize with values the 2 locations
             firstTempLocation.setLongitude(mArray.get(0).longitude);   //So I could take the distance

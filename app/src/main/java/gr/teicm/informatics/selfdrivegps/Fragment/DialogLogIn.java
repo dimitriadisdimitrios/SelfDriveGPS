@@ -1,5 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -11,7 +12,6 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +37,7 @@ public class DialogLogIn extends android.app.DialogFragment {
     public AlertDialog onCreateDialog(final Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.dialog_log_in, nullParent);
+        @SuppressLint("InflateParams") final View mView = inflater.inflate(R.layout.dialog_log_in, null);
 
         etEmailToLogIn = mView.findViewById(R.id.et_email_log_in);
         etPasswordToLogIn = mView.findViewById(R.id.et_password_log_in);

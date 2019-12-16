@@ -1,12 +1,12 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,8 +21,7 @@ public class DialogCenterOfAntenna extends android.app.DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.dialog_change_antenna_position, nullParent);
+        @SuppressLint("InflateParams") final View mView = inflater.inflate(R.layout.dialog_change_antenna_position, null);
 
         Button btFrontPlus = mView.findViewById(R.id.btn_antenna_front_plus);
         Button btFrontSub = mView.findViewById(R.id.btn_antenna_front_sub);

@@ -101,15 +101,15 @@ public class bdccGeoObject {
 
         // point on opposite side of the world to this point
         bdccGeo function_antipode() {
-            return this.function_scale(-1.0);
+            return this.function_scale();
         }
 
         //More Maths
-        bdccGeo function_scale(double s) {
+        bdccGeo function_scale() {
             bdccGeo r = new bdccGeo(0, 0);
-            r.x = this.x * s;
-            r.y = this.y * s;
-            r.z = this.z * s;
+            r.x = this.x * -1.0;
+            r.y = this.y * -1.0;
+            r.z = this.z * -1.0;
             return r;
         }
 

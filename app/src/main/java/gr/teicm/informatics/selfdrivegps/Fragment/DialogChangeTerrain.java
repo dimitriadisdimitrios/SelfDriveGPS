@@ -1,5 +1,6 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -25,8 +25,7 @@ public class DialogChangeTerrain extends  android.app.DialogFragment {
         // Use the Builder class for convenient mDialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.dialog_change_terrain, nullParent); // Inflate the layout to interact with xml
+        @SuppressLint("InflateParams") final View mView = inflater.inflate(R.layout.dialog_change_terrain, null); // Inflate the layout to interact with xml
 
         builder.setView(mView)
                 .setMessage("Change terrain of map")

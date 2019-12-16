@@ -1,12 +1,12 @@
 package gr.teicm.informatics.selfdrivegps.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -23,8 +23,7 @@ public class DialogShowAccount extends android.app.DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ViewGroup nullParent = null; //To override the warning about null
-        final View mView = inflater.inflate(R.layout.dialog_show_account, nullParent);
+        @SuppressLint("InflateParams") final View mView = inflater.inflate(R.layout.dialog_show_account, null);
 
         Button btnLogOut = mView.findViewById(R.id.btn_log_out);
         TextView tvUserMail = mView.findViewById(R.id.tv_logged_in_username_show);

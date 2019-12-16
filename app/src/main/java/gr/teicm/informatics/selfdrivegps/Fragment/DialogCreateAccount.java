@@ -72,15 +72,15 @@ public class DialogCreateAccount extends  android.app.DialogFragment {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
                     //To be sure that all fills is not empty
-                    Boolean allChecksToBeSureThatAllFillIsNotEmpty = (TextUtils.isEmpty(etEmailSignUp.getText().toString())
+                    boolean allChecksToBeSureThatAllFillIsNotEmpty = (TextUtils.isEmpty(etEmailSignUp.getText().toString())
                             || TextUtils.isEmpty(etPasswordSignUp.getText().toString())
                             || TextUtils.isEmpty(etReEnterPasswordSignUp.getText().toString()));
 
                     //To be sure that password contains more than 6 chars
-                    Boolean checkIfUserUsePasswordWithMoreThanFiveElements = etPasswordSignUp.getText().toString().length() >= 6;
+                    boolean checkIfUserUsePasswordWithMoreThanFiveElements = etPasswordSignUp.getText().toString().length() >= 6;
 
                     //To be sure that etPasswordSingUp and etReEnterPasswordSignUp are equal
-                    Boolean checkIfPasswordAndReEnterMatch = etPasswordSignUp.getText().toString().equals(etReEnterPasswordSignUp.getText().toString());
+                    boolean checkIfPasswordAndReEnterMatch = etPasswordSignUp.getText().toString().equals(etReEnterPasswordSignUp.getText().toString());
 
                     if (TextUtils.isEmpty(etEmailSignUp.getText().toString())) {
                         Toast.makeText(getContext(), "Email fill is empty !", Toast.LENGTH_SHORT).show();

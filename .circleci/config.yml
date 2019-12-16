@@ -23,13 +23,39 @@ jobs:
       - run: echo 'export TERM=dumb' >> $BASH_ENV
       
       - run:
-        name: chmod permissions
-        command: chmod +x ./gradlew
-
-      - run:  
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run:
           name: Download Dependencies
-          command: ./gradlew androidDependencies
-
+          command: ./gradlew androidDependencies      
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "./build.gradle" }}-{{ checksum  "./compuconTaxi/build.gradle" }}
+      - run:
+          name: Clean
+          command: ./gradlew clean
+#      - run:
+#          name: Lint
+#          command: cd IGNrando && ./gradlew lintRelease
+#      - run:
+#          name: Prepare Lint Reports
+#          command: >
+#            cd IGNrando ;
+#            mkdir lint_reports || true ;
+#            for i in `find . -type d -maxdepth 1 -name 'ubicarta.*'` ; do
+#              if [ -d $i/build/reports ] ; then
+#                echo Store lint $i ;
+#                mkdir lint_reports/$i || true ;
+#                mv $i/build/reports/* lint_reports/$i ;
+#              fi ;
+#            done
+#      - store_artifacts:
+#          path: IGNrando/lint_reports/
+#          destination: lint_reports/
+#      - run:
+#           name: Build Bundle
+#           command: cd IGNrando && ./gradlew bundle -PdisablePreDex -DCI=${CIRCLE_CI} -Dversion-build=${CIRCLE_BUILD_NUM} 
       - save_cache:
           paths:
             - ~/.gradle

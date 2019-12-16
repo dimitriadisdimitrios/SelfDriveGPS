@@ -5,14 +5,15 @@
 version: 2
 jobs:
   build:
-   branches:
-      only:
-        - master
-        - /rc-.*/
     docker:
       - image: circleci/android:api-28
 
     #working_directory: ~/repo
+    
+    branches:
+      only:
+        - master
+        - /rc-.*/
 
     environment:
       # Customize the JVM maximum heap limit

@@ -13,7 +13,6 @@ jobs:
     branches:
       only:
         - master
-        - /rc-.*/
 
     environment:
       # Customize the JVM maximum heap limit

@@ -39,6 +39,9 @@ jobs:
       - run:
           name: Clean
           command: ./gradlew clean
+      - run:
+          name: Build mApr Release APKs
+          command: ./gradlew assembleDebug
 #      - run:
 #          name: Lint
 #          command: cd IGNrando && ./gradlew lintRelease

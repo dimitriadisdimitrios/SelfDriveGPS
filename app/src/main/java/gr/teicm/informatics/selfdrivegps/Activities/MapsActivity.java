@@ -1,15 +1,16 @@
 package gr.teicm.informatics.selfdrivegps.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,12 +23,10 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -85,7 +84,7 @@ public class MapsActivity extends FragmentActivity
 
         context = getApplicationContext(); //Set GetApplicationContext to use it all over the class
 
-        createGoogleApiClient();
+//        createGoogleApiClient(); //TODO: Deprecated
 
         MapsUtilities.counterToCheckIfModeChanged(labelAboveToggleBtn, mainStartBtn, coverRouteTBtn, relativeLayoutForNavigationBar, imageToggleButtonForActivationTouchListener, ivTouchMainLineCalculation);
 
@@ -181,11 +180,11 @@ public class MapsActivity extends FragmentActivity
         PermissionUtilities.enableLoc(googleApiClient,this);
 
         mMap.setMyLocationEnabled(false);
-//        mMap.getUiSettings().setZoomControlsEnabled(true);
-//
-//        mMap.setPadding(0,0,0, 100);
-//        mMap.getUiSettings().setZoomGesturesEnabled(false);  //TODO: After finishing branch remove comments
-//        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        mMap.setPadding(0,0,0, 100);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
@@ -312,25 +311,26 @@ public class MapsActivity extends FragmentActivity
             super.onBackPressed();
         }
     }
+//TODO: Deprecated
 
-    public void createGoogleApiClient(){
-        MapsUtilities.checkLocationPermission(context);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        googleApiClient = new GoogleApiClient.Builder(this).
-                enableAutoManage(this, this).
-                addApi(LocationServices.API).
-                addConnectionCallbacks(this).
-                addOnConnectionFailedListener(this).
-                build();
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        assert locationManager != null; //Auto-generate method for function requestLocationUpdates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-    }
+//    public void createGoogleApiClient(){
+//        MapsUtilities.checkLocationPermission(context);
+//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
+//
+//        googleApiClient = new GoogleApiClient.Builder(this).
+//                enableAutoManage(this, this).
+//                addApi(LocationServices.API).
+//                addConnectionCallbacks(this).
+//                addOnConnectionFailedListener(this).
+//                build();
+//
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        assert locationManager != null; //Auto-generate method for function requestLocationUpdates
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+//    }
 
     public void checkToGetDataFromAnotherActivity(ToggleButton mainCalculationTBtn, ToggleButton coverPassedPlacesTBtn){
         // When load field from "load btn" draw the necessary lines to show it and

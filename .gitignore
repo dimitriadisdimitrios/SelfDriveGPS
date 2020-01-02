@@ -7,6 +7,7 @@
 /build
 /captures
 .externalNativeBuild
+/values/google_maps_api.xml
   
 # Built application files
 *.apk
@@ -92,6 +93,3 @@ lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
-
-/google_maps_api.xml
-
